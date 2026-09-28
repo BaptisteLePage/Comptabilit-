@@ -94,6 +94,9 @@
 
 * { box-sizing: border-box; }
 
+/* Un élément masqué l'est toujours, même si son style lui donne un display. */
+[hidden] { display: none !important; }
+
 /* Quand le navigateur amène un champ à l'écran (clavier, lien), il le place sous
    l'en-tête, la navigation et le mini-bilan, jamais caché derrière. */
 html { scroll-padding-top: calc(var(--haut-tete) + var(--haut-nav) + 72px); }
@@ -349,7 +352,8 @@ select.champ { cursor: pointer; }
   display: flex; align-items: center; gap: 10px 14px; flex-wrap: wrap;
   padding: 16px 20px; border-bottom: 1px solid var(--filet);
 }
-.bloc__titre { display: flex; align-items: baseline; gap: 6px 12px; flex-wrap: wrap; }
+.bloc__titre { display: flex; align-items: baseline; gap: 2px 12px; flex-wrap: wrap; flex: 1 1 240px; min-width: 0; }
+.bloc__titre .bloc__sous { flex-basis: 100%; }
 .bloc__titre h2 { font-size: 1.15rem; }
 .bloc__chiffre { font-size: 1.3rem; font-weight: 700; font-variant-numeric: tabular-nums; padding: 0 3px; }
 .bloc__sous { font-size: .88rem; color: var(--encre-3); font-variant-numeric: tabular-nums; }
@@ -659,6 +663,116 @@ select.champ { cursor: pointer; }
 @media (prefers-reduced-motion: reduce) {
   *, .eclat, .ligne--neuve { transition: none !important; animation: none !important; }
 }
+
+/* ====================================================== SÉCURITÉ DES DONNÉES === */
+
+.etat-fichier {
+  appearance: none; cursor: pointer; white-space: nowrap;
+  padding: 6px 12px; border-radius: 999px; border: 1px solid transparent;
+  font: inherit; font-size: .84rem; font-weight: 600;
+}
+.etat-fichier--ok { background: color-mix(in srgb, var(--bon) 14%, var(--surface)); color: var(--bon-texte); }
+.etat-fichier--attente { background: color-mix(in srgb, var(--alerte) 22%, var(--surface)); color: var(--encre); border-color: color-mix(in srgb, var(--alerte) 60%, transparent); }
+.etat-fichier--jamais { background: color-mix(in srgb, var(--critique) 12%, var(--surface)); color: var(--critique); border-color: color-mix(in srgb, var(--critique) 40%, transparent); }
+.etat-fichier:hover { filter: brightness(.97); }
+kbd {
+  margin-left: 6px; padding: 1px 6px; border-radius: 5px; border: 1px solid var(--bord-champ);
+  background: var(--surface-2); color: var(--encre-2); font: inherit; font-size: .74rem;
+}
+
+.rappel {
+  display: flex; align-items: center; gap: 10px 14px; flex-wrap: wrap;
+  margin-bottom: 16px; padding: 12px 16px;
+  background: color-mix(in srgb, var(--alerte) 16%, var(--surface));
+  border: 1px solid color-mix(in srgb, var(--alerte) 55%, transparent); border-radius: var(--r-l);
+}
+.rappel__icone { font-size: 1.3rem; }
+.rappel__texte { flex: 1 1 280px; font-size: .92rem; }
+
+.carte--importante { border-color: color-mix(in srgb, var(--accent) 35%, var(--bord)); }
+.niveaux { margin: 0 0 16px; padding-left: 22px; display: grid; gap: 10px; font-size: .93rem; }
+.niveaux li::marker { font-weight: 700; color: var(--accent); }
+.niveaux__etat { display: block; margin-top: 2px; color: var(--encre-2); font-size: .88rem; }
+.actions-sauvegarde { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 14px; }
+
+.guide { margin: 6px 0 18px; border: 1px solid var(--bord); border-radius: var(--r-l); background: var(--surface-2); }
+.guide > summary { cursor: pointer; padding: 11px 14px; font-weight: 600; }
+.guide__corps { padding: 0 16px 14px; font-size: .92rem; }
+.guide__corps ol { padding-left: 20px; display: grid; gap: 7px; }
+.guide__note { color: var(--encre-2); font-size: .88rem; }
+
+.sous-titre-section { font-size: .98rem; margin: 18px 0 10px; }
+.versions { display: grid; border: 1px solid var(--bord); border-radius: var(--r-l); overflow: hidden; }
+.version {
+  display: grid; align-items: center; gap: 6px 14px; padding: 10px 14px;
+  grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr) auto;
+}
+.version + .version { border-top: 1px solid var(--filet); }
+.version__quand { display: grid; font-size: .9rem; }
+.version__quand span { color: var(--encre-3); font-size: .82rem; }
+.version__resume { font-size: .86rem; color: var(--encre-2); }
+.version__actions { display: flex; gap: 6px; }
+
+/* ================================================================ PARAMÈTRES === */
+
+.reglages { display: grid; gap: 14px 20px; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); margin-bottom: 14px; }
+.reglage__etiquette { display: grid; gap: 5px; font-size: .88rem; color: var(--encre-2); }
+.reglage__aide { margin: 5px 0 0; font-size: .82rem; color: var(--encre-3); }
+textarea.champ { height: auto; resize: vertical; line-height: 1.5; }
+.interrupteur { display: inline-flex; align-items: center; gap: 10px; font-size: .92rem; cursor: pointer; }
+.module-reglage { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 10px 20px; align-items: start; padding: 12px 0; }
+.module-reglage + .module-reglage { border-top: 1px solid var(--filet); }
+.module-reglage .interrupteur { padding-top: 26px; }
+
+.cat-liste { display: grid; border: 1px solid var(--bord); border-radius: var(--r-l); overflow: hidden; margin-bottom: 12px; }
+.cat-edit {
+  display: grid; align-items: center; gap: 8px 12px; padding: 8px 12px;
+  grid-template-columns: minmax(0, 1fr) 150px minmax(0, 1fr) auto;
+}
+.cat-edit + .cat-edit { border-top: 1px solid var(--filet); }
+#section-categories ~ .carte .cat-edit, .cat-liste:not(:has(select)) .cat-edit { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) auto; }
+.cat-edit__compte { font-size: .84rem; color: var(--encre-3); }
+.cat-edit__actions { display: flex; gap: 4px; }
+.bouton:disabled { opacity: .35; cursor: default; }
+
+.groupe__pied { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; padding-right: 20px; }
+.groupe__gestion { display: flex; gap: 2px; flex-wrap: wrap; }
+.groupe__gestion .bouton { font-size: .84rem; min-height: 32px; padding: 4px 10px; }
+
+/* ================================================================= DIALOGUES === */
+
+.dialogue {
+  width: min(520px, calc(100vw - 24px)); padding: 0; border: 1px solid var(--bord);
+  border-radius: var(--r-xl); background: var(--surface); color: var(--encre); box-shadow: var(--ombre-3);
+}
+.dialogue::backdrop { background: rgba(0, 0, 0, .45); }
+.dialogue__forme { display: grid; gap: 14px; padding: 22px 22px 18px; }
+.dialogue__titre { font-size: 1.12rem; }
+.dialogue__texte { margin: 0; color: var(--encre-2); font-size: .94rem; }
+.dialogue__champ { display: grid; gap: 5px; font-size: .88rem; color: var(--encre-2); flex: 1 1 160px; }
+.dialogue__rangee { display: flex; gap: 12px; flex-wrap: wrap; }
+.dialogue__choix { margin: 0; padding: 12px 14px; border: 1px solid var(--bord); border-radius: var(--r-m); display: grid; gap: 10px; }
+.dialogue__choix legend { padding: 0 6px; font-size: .88rem; color: var(--encre-2); }
+.dialogue__radio { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; font-size: .94rem; }
+.dialogue__radio .champ { width: auto; min-width: 160px; }
+.dialogue__erreur { margin: 0; color: var(--critique); font-weight: 600; font-size: .9rem; }
+.dialogue__erreur:empty { display: none; }
+.dialogue__actions { display: flex; justify-content: flex-end; gap: 8px; flex-wrap: wrap; margin-top: 4px; }
+.bouton--danger { background: var(--critique); border-color: transparent; color: #fff; }
+.bouton--danger:hover { background: var(--critique); filter: brightness(1.08); }
+.apercu p { margin: 0 0 8px; font-size: .94rem; }
+.apercu__note { color: var(--encre-2); font-size: .88rem; }
+
+@media (max-width: 720px) {
+  .etat-fichier { padding: 6px 10px; font-size: .9rem; flex: none; }
+  .etat-fichier__texte { display: none; }
+  .cat-edit, .cat-liste:not(:has(select)) .cat-edit { grid-template-columns: minmax(0, 1fr) auto; }
+  .cat-edit__compte { grid-column: 1 / -1; order: 3; }
+  .version { grid-template-columns: 1fr; }
+  .module-reglage { grid-template-columns: 1fr; }
+  .module-reglage .interrupteur { padding-top: 0; }
+  .groupe__pied { padding-right: 14px; }
+}
 </style>
 </head>
 <body>
@@ -680,21 +794,23 @@ select.champ { cursor: pointer; }
   </div>
 
   <div class="tete__actions">
+    <!-- Où en est la copie de sécurité dans le fichier : un clic l'enregistre. -->
+    <button type="button" class="etat-fichier" id="etat-fichier" data-action="enregistrer-fichier"></button>
     <details class="menu">
       <summary class="bouton" title="Menu">⋯ <span class="cache">Menu</span></summary>
       <div class="menu__contenu">
+        <button type="button" data-action="enregistrer-fichier">Enregistrer dans le fichier <kbd>Ctrl+S</kbd></button>
+        <button type="button" data-action="ouvrir-sauvegarde">Ouvrir une sauvegarde…</button>
+        <hr>
         <button type="button" data-action="nouveau-mois">Créer un nouveau mois…</button>
+        <button type="button" data-action="export-csv">Exporter ce mois (CSV pour Excel)</button>
         <hr>
-        <button type="button" data-action="export-csv">Exporter ce mois (CSV)</button>
-        <button type="button" data-action="export-json">Sauvegarder tout (JSON)</button>
-        <button type="button" data-action="import-json">Restaurer une sauvegarde…</button>
-        <hr>
-        <button type="button" data-action="theme">Thème : <span id="etat-theme">auto</span></button>
+        <button type="button" data-vue="parametres">Paramètres et sauvegardes</button>
         <hr>
         <button type="button" data-action="supprimer-mois" class="danger">Supprimer ce mois…</button>
       </div>
     </details>
-    <input type="file" id="fichier-import" accept="application/json,.json" hidden>
+    <input type="file" id="fichier-import" accept=".html,.htm,.json,text/html,application/json" hidden>
   </div>
 </header>
 
@@ -704,11 +820,12 @@ select.champ { cursor: pointer; }
   <span class="nav__groupe">
     <button type="button" class="nav__lien" data-vue="graphiques">Graphiques</button>
     <button type="button" class="nav__lien" data-vue="courses">
-      Courses <span class="nav__jeton" id="jeton-courses"></span>
+      <span class="nav__titre">Courses</span> <span class="nav__jeton" id="jeton-courses"></span>
     </button>
     <button type="button" class="nav__lien" data-vue="heures">
-      Heures<span class="nav__long"> gardées</span> <span class="nav__jeton" id="jeton-heures"></span>
+      <span class="nav__titre">Heures gardées</span> <span class="nav__jeton" id="jeton-heures"></span>
     </button>
+    <button type="button" class="nav__lien" data-vue="parametres">⚙ Paramètres</button>
   </span>
 </nav>
 
@@ -720,6 +837,7 @@ select.champ { cursor: pointer; }
 
   <!-- ============================================ LA PAGE PRINCIPALE ==== -->
   <section class="vue" id="vue-budget">
+    <div id="rappel-sauvegarde"></div>
     <div class="bilan" id="bilan" aria-live="polite"></div>
 
     <section class="bloc" id="bloc-revenus" aria-labelledby="titre-revenus">
@@ -729,11 +847,8 @@ select.champ { cursor: pointer; }
         <label class="ajout__champ ajout__champ--large">Libellé
           <input class="champ" name="libelle" placeholder="ex. Prime, Virement…" required>
         </label>
-        <label class="ajout__champ">Type
-          <select class="champ" name="type">
-            <option value="salaire">Salaire</option>
-            <option value="aide">Aide</option>
-          </select>
+        <label class="ajout__champ">Catégorie
+          <input class="champ" name="categorie" list="liste-categories-revenus" placeholder="ex. Salaires">
         </label>
         <label class="ajout__champ">Prévu
           <span class="champ-euro"><input class="champ champ--nombre" name="estime" inputmode="decimal" placeholder="0,00"></span>
@@ -780,7 +895,13 @@ select.champ { cursor: pointer; }
     </section>
 
     <datalist id="liste-categories"></datalist>
+    <datalist id="liste-categories-revenus"></datalist>
     <div class="modules" id="modules"></div>
+  </section>
+
+  <!-- ==================================================== PARAMÈTRES ==== -->
+  <section class="vue" id="vue-parametres" hidden>
+    <div id="parametres"></div>
   </section>
 
   <!-- ==================================================== GRAPHIQUES ==== -->
@@ -845,6 +966,10 @@ select.champ { cursor: pointer; }
 <div id="toasts" class="toasts" aria-live="polite"></div>
 <div id="sauvegarde" class="sauvegarde" aria-live="polite"></div>
 
+<!-- Données enregistrées dans le fichier. Vide dans le fichier d'origine ; rempli
+     par « Enregistrer dans le fichier » (Ctrl+S). Ne pas modifier à la main. -->
+<script type="application/json" id="donnees-integrees">null</script>
+
 <script>
 'use strict';
 
@@ -853,7 +978,22 @@ select.champ { cursor: pointer; }
 /* ========================================================================== */
 
 const CLE_STOCKAGE = 'comptes.donnees.v1';
-const VERSION_DONNEES = 1;
+const CLE_REVISION = 'comptes.revision.v1';
+const CLE_VERSIONS = 'comptes.versions.v1';
+const PREFIXE_SECOURS = 'comptes.secours.';
+const VERSION_DONNEES = 2;
+const MAX_VERSIONS = 30;
+const INTERVALLE_VERSION_AUTO = 60 * 60 * 1000;     // une version automatique par heure d'activité
+
+/** Copie intacte de la page, prise avant tout affichage : c'est elle qui sert à
+    produire le fichier « comptes.html » contenant l'application ET les données. */
+const SOURCE_PAGE = (() => {
+  const clone = document.documentElement.cloneNode(true);
+  // Ce que des extensions du navigateur auraient pu injecter ne doit pas être enregistré.
+  clone.querySelectorAll('script[src], link[href^="moz-extension:"], link[href^="chrome-extension:"]')
+    .forEach(n => n.remove());
+  return clone;
+})();
 
 const TYPES = ['depense', 'salaire', 'aide'];
 const NATURES = ['fixe', 'variable'];
@@ -869,6 +1009,25 @@ const ACHATS_COURANTS = ['Fruits/Légumes', 'Olives', 'Fromage', 'Viande', 'Pois
                          'Pain', 'Italien', 'Café', 'Poulet'];
 const LIENS = { '': '—', courses: 'Courses', heures: 'Heures gardées',
                 garde: 'Garde (coût brut)', caf: 'CAF (aide garde)' };
+
+/** Tout ce qui est réglable. Stocké avec les données, donc sauvegardé avec elles. */
+const PARAMETRES_DEFAUT = {
+  categoriesDepenses: [],            // [{ nom, nature }] dans l'ordre d'affichage
+  categoriesRevenus: [],             // [{ nom }]
+  postesCourses: POSTES_COURANTS.slice(),
+  articlesCourses: ACHATS_COURANTS.slice(),
+  budgetSemaineDefaut: BUDGET_SEMAINE_DEFAUT,
+  semainesDefaut: SEMAINES_PAR_DEFAUT,
+  tauxHoraireDefaut: TAUX_HORAIRE_DEFAUT,
+  tauxCotisationDefaut: TAUX_COTISATION_DEFAUT,
+  modules: { courses: true, heures: true },
+  nomCourses: 'Courses',
+  nomHeures: 'Heures gardées',
+  seuilAlerte: 85,                   // % du budget à partir duquel une jauge passe à l'orange
+  rappelJours: 7,                    // rappel d'enregistrement dans un fichier (0 = jamais)
+  avertirFermeture: false,           // prévenir à la fermeture si le fichier n'est pas à jour
+};
+const CATEGORIE_REVENUS_DEFAUT = { salaire: 'Salaires', aide: 'Aides' };
 
 /* Reprise du tableau d'origine : [nature, catégorie, libellé, prévu, réel, actif, note, lien] */
 const DEPENSES_INITIALES = [
@@ -915,14 +1074,14 @@ const DEPENSES_INITIALES = [
 
 /* [type, nature, catégorie, libellé, prévu, réel, lien] */
 const REVENUS_INITIAUX = [
-  ['salaire', 'fixe', 'Salaire', 'Evry', 1781.34, 1174.88, ''],
-  ['salaire', 'fixe', 'Salaire', 'Creil', 394.40, 394.40, ''],
-  ['salaire', 'variable', 'Salaire', 'Caracole', 0, 0, 'heures'],
-  ['salaire', 'variable', 'Salaire', 'Commande', 0, 0, ''],
-  ['salaire', 'variable', 'Salaire', 'Virement 1', 0, 0, ''],
-  ['salaire', 'variable', 'Salaire', 'Virement 2', 0, 0, ''],
-  ['aide', 'fixe', 'Aide', 'RLP', 360, 360, ''],
-  ['aide', 'variable', 'Aide', 'CAF', 0, 0, 'caf'],
+  ['salaire', 'fixe', 'Salaires', 'Evry', 1781.34, 1174.88, ''],
+  ['salaire', 'fixe', 'Salaires', 'Creil', 394.40, 394.40, ''],
+  ['salaire', 'variable', 'Salaires', 'Caracole', 0, 0, 'heures'],
+  ['salaire', 'variable', 'Salaires', 'Commande', 0, 0, ''],
+  ['salaire', 'variable', 'Salaires', 'Virement 1', 0, 0, ''],
+  ['salaire', 'variable', 'Salaires', 'Virement 2', 0, 0, ''],
+  ['aide', 'fixe', 'Aides', 'RLP', 360, 360, ''],
+  ['aide', 'variable', 'Aides', 'CAF', 0, 0, 'caf'],
 ];
 
 /* [semaine, jour, matin début, matin fin, après-midi début, après-midi fin] */
@@ -1084,6 +1243,7 @@ function recapBudget(lignes) {
   for (const type of TYPES) for (const nature of NATURES) groupes[type + '-' + nature] = cumulVide();
 
   const parCategorie = new Map();
+  const parCategorieRevenus = new Map();
   const enPause = [];
   const garde = cumulVide();
   const caf = cumulVide();
@@ -1103,6 +1263,17 @@ function recapBudget(lignes) {
     if (!actif && estimeSaisi) {
       enPause.push({ id: ligne.id, libelle: ligne.libelle || '',
                      categorie: ligne.categorie || '', estime: estimeSaisi });
+    }
+
+    if (ligne.type !== 'depense') {
+      const categorie = (ligne.categorie || '').trim() || 'Sans catégorie';
+      if (!parCategorieRevenus.has(categorie)) {
+        parCategorieRevenus.set(categorie, { categorie, estime: 0, reel: 0, nb: 0, enPause: 0 });
+      }
+      const cumulRevenu = parCategorieRevenus.get(categorie);
+      cumule(cumulRevenu, estime, reel);
+      cumulRevenu.nb += 1;
+      if (!actif) cumulRevenu.enPause += 1;
     }
 
     if (ligne.type === 'depense') {
@@ -1139,6 +1310,7 @@ function recapBudget(lignes) {
     gardeNette: { estime: eur(garde.estime - caf.estime), reel: eur(garde.reel - caf.reel) },
     enPause: enPause.sort((a, b) => b.estime - a.estime),
     economieEnPause: eur(enPause.reduce((s, l) => s + l.estime, 0)),
+    parCategorieRevenus: Array.from(parCategorieRevenus.values()),
     parCategorie: Array.from(parCategorie.values()).sort((a, b) => {
       const ecart = Math.max(b.reel, b.estime) - Math.max(a.reel, a.estime);
       return ecart !== 0 ? ecart : a.categorie.localeCompare(b.categorie, 'fr');
@@ -1163,6 +1335,13 @@ function recap(mois) {
 let D = null;
 let stockageDisponible = true;
 
+/* Protection entre onglets : chaque enregistrement porte un numéro de révision.
+   Un onglet qui n'a pas vu la dernière révision n'a pas le droit d'écrire
+   par-dessus : il se met d'abord à jour. */
+let revisionConnue = 0;
+let derniereSignature = null;
+const CHAMPS_META = new Set(['revision', 'modifieLe', 'fichierLe', 'fichierRevision']);
+
 function moisCourantLibelle() {
   const maintenant = new Date();
   return maintenant.getFullYear() + '-' + String(maintenant.getMonth() + 1).padStart(2, '0');
@@ -1179,39 +1358,219 @@ function testeStockage() {
   }
 }
 
-function lisDonnees() {
-  if (!stockageDisponible) return null;
+/** Empreinte du contenu, sans les informations d'enregistrement : sert à ne
+    rien réécrire (ni compter comme modification) quand rien n'a changé. */
+function signatureContenu(donnees) {
+  return JSON.stringify(donnees, (cle, valeur) => CHAMPS_META.has(cle) ? undefined : valeur);
+}
+
+/** Lecture des données du navigateur. Ne renvoie jamais « rien » quand il y a
+    quelque chose d'illisible : l'appelant doit pouvoir le mettre à l'abri. */
+function lisNavigateur() {
+  if (!stockageDisponible) return { etat: 'absent' };
+  let brut = null;
+  try { brut = localStorage.getItem(CLE_STOCKAGE); } catch (e) { return { etat: 'absent' }; }
+  if (!brut) return { etat: 'absent' };
   try {
-    const brut = localStorage.getItem(CLE_STOCKAGE);
-    if (!brut) return null;
-    const donnees = JSON.parse(brut);
-    return validees(donnees);
+    const donnees = validees(JSON.parse(brut));
+    return donnees ? { etat: 'ok', donnees } : { etat: 'corrompu', brut };
   } catch (erreur) {
-    console.warn('Données illisibles, on repart de zéro.', erreur);
-    return null;
+    return { etat: 'corrompu', brut };
   }
 }
 
-function enregistreDonnees() {
-  if (!stockageDisponible) return false;
+/** Données enregistrées DANS le fichier comptes.html (voir enregistreFichier). */
+function lisIntegrees() {
+  const bloc = document.getElementById('donnees-integrees');
+  if (!bloc) return null;
+  try { return validees(JSON.parse(bloc.textContent || 'null')); } catch (e) { return null; }
+}
+
+function revisionStockee() {
+  try { return Number(localStorage.getItem(CLE_REVISION)) || 0; } catch (e) { return 0; }
+}
+
+/** Écriture brute, vérifiée par relecture. */
+function ecritStockage() {
+  const texte = JSON.stringify(D);
+  localStorage.setItem(CLE_STOCKAGE, texte);
+  localStorage.setItem(CLE_REVISION, String(D.revision));
+  if (localStorage.getItem(CLE_STOCKAGE) !== texte) {
+    throw new Error('la relecture ne correspond pas à ce qui a été écrit');
+  }
+  revisionConnue = D.revision;
+}
+
+/**
+ * Enregistre dans le navigateur.
+ * Renvoie 'ok', 'inchange', 'conflit' (un autre onglet a écrit entre-temps :
+ * rien n'est écrasé) ou 'echec'.
+ */
+function enregistreDonnees(options = {}) {
+  if (!stockageDisponible || !D) return 'echec';
+  const signature = signatureContenu(D);
+  if (!options.meta && signature === derniereSignature) return 'inchange';
+  if (!options.force && revisionStockee() > revisionConnue) return 'conflit';
   try {
-    localStorage.setItem(CLE_STOCKAGE, JSON.stringify(D));
-    return true;
+    if (!options.meta) {
+      D.revision = Math.max(Number(D.revision) || 0, revisionStockee()) + 1;
+      D.modifieLe = new Date().toISOString();
+    }
+    ecritStockage();
+    derniereSignature = signature;
+    if (!options.meta) versionAutomatique();
+    return 'ok';
   } catch (erreur) {
     stockageDisponible = false;
-    montreAlerteStockage(
-      'Le navigateur a refusé d’enregistrer (mémoire pleine ou navigation privée).');
-    return false;
+    montreAlerteStockage('Le navigateur a refusé d’enregistrer (' + (erreur.message || erreur.name) + ').');
+    return 'echec';
   }
+}
+
+/** Cet onglet a-t-il des modifications pas encore écrites dans le navigateur ? */
+function modificationsNonEnregistrees() {
+  return !!D && signatureContenu(D) !== derniereSignature;
+}
+
+/** Remplace les données de cet onglet par celles du stockage (après un conflit). */
+function rechargeDepuisStockage() {
+  const lu = lisNavigateur();
+  if (lu.etat !== 'ok') return false;
+  D = lu.donnees;
+  revisionConnue = revisionStockee();
+  derniereSignature = signatureContenu(D);
+  return true;
+}
+
+/* -- Versions précédentes : un filet de sécurité dans le navigateur --------- */
+
+function lisVersions() {
+  try {
+    const liste = JSON.parse(localStorage.getItem(CLE_VERSIONS) || '[]');
+    return Array.isArray(liste) ? liste : [];
+  } catch (e) { return []; }
+}
+
+function resumeDonnees(donnees) {
+  const mois = donnees.mois.find(m => m.id === donnees.moisActif) || donnees.mois[0];
+  if (!mois) return donnees.mois.length + ' mois';
+  const b = recapBudget(mois.lignes);
+  return donnees.mois.length + ' mois · ' + mois.libelle + ' : reste ' +
+         b.restant.reel.toFixed(2).replace('.', ',') + ' € · ' + mois.lignes.length + ' lignes';
+}
+
+/** Ajoute une version à l'historique. Ne fait jamais échouer l'enregistrement principal. */
+function ajouteVersion(raison, donnees = D, automatique = false) {
+  if (!stockageDisponible || !donnees) return false;
+  const liste = lisVersions();
+  const contenu = JSON.stringify(donnees);
+  if (liste[0] && liste[0].donnees === contenu) return false;       // rien de neuf
+  liste.unshift({ le: new Date().toISOString(), raison, automatique,
+                  resume: resumeDonnees(donnees), donnees: contenu });
+  while (liste.length > MAX_VERSIONS) liste.pop();
+  for (let essai = 0; essai < 3; essai++) {
+    try { localStorage.setItem(CLE_VERSIONS, JSON.stringify(liste)); return true; }
+    catch (e) { liste.splice(Math.max(3, Math.floor(liste.length / 2))); }   // mémoire pleine : on allège
+  }
+  return false;
+}
+
+function versionAutomatique() {
+  const derniere = lisVersions().find(v => v.automatique);
+  if (!derniere || Date.now() - Date.parse(derniere.le) > INTERVALLE_VERSION_AUTO) {
+    ajouteVersion('Enregistrement automatique (toutes les heures d’activité)', D, true);
+  }
+}
+
+/** Garde de côté un contenu illisible au lieu de l'écraser. */
+function metAbri(brut) {
+  const cle = PREFIXE_SECOURS + new Date().toISOString();
+  try { localStorage.setItem(cle, brut); return cle; } catch (e) { return null; }
+}
+
+/**
+ * Choisit les données à ouvrir au démarrage, entre celles du navigateur et
+ * celles enregistrées dans le fichier. Rien n'est jamais jeté : la version
+ * écartée part dans l'historique.
+ */
+function chargeAuDemarrage() {
+  const messages = [];
+  let navigateur = lisNavigateur();
+  const fichier = lisIntegrees();
+
+  if (navigateur.etat === 'corrompu') {
+    const abri = metAbri(navigateur.brut);
+    const secours = lisVersions().map(v => {
+      try { return { v, d: validees(JSON.parse(v.donnees)) }; } catch (e) { return null; }
+    }).find(x => x && x.d);
+    messages.push({ erreur: true, texte: 'Les données de ce navigateur étaient illisibles. Elles n’ont pas été effacées' +
+      (abri ? ' : une copie brute est gardée de côté.' : '.') +
+      (secours ? ' La version du ' + new Date(secours.v.le).toLocaleString('fr-FR') + ' a été rouverte.'
+               : (fichier ? ' Les données du fichier ont été ouvertes.' : '')) });
+    navigateur = secours ? { etat: 'ok', donnees: secours.d } : { etat: 'absent' };
+  }
+
+  const a = navigateur.etat === 'ok' ? navigateur.donnees : null;
+  if (!a && !fichier) return { donnees: null, messages, source: 'aucune' };
+  if (a && !fichier) return { donnees: a, messages, source: 'navigateur' };
+  if (!a) {
+    messages.push({ texte: 'Comptes ouverts depuis le fichier' +
+      (fichier.fichierLe ? ' (enregistré le ' + new Date(fichier.fichierLe).toLocaleString('fr-FR') + ')' : '') + '.' });
+    return { donnees: fichier, messages, source: 'fichier' };
+  }
+  if (signatureContenu(a) === signatureContenu(fichier)) {
+    // Même contenu : on garde le navigateur, avec la date d'enregistrement la plus récente.
+    if ((fichier.fichierLe || '') > (a.fichierLe || '')) { a.fichierLe = fichier.fichierLe; a.fichierRevision = a.revision; }
+    return { donnees: a, messages, source: 'navigateur' };
+  }
+  if ((fichier.modifieLe || '') > (a.modifieLe || '')) {
+    ajouteVersion('Version du navigateur, remplacée par un fichier plus récent', a);
+    messages.push({ texte: 'Ce fichier contient des comptes plus récents que ceux du navigateur : ils ont été ouverts. ' +
+      'L’ancienne version du navigateur reste disponible dans Paramètres → Versions précédentes.' });
+    return { donnees: fichier, messages, source: 'fichier' };
+  }
+  return { donnees: a, messages, source: 'navigateur' };
 }
 
 /** Vérifie la forme des données et complète ce qui manque. */
 function validees(donnees) {
   if (!donnees || typeof donnees !== 'object' || !Array.isArray(donnees.mois)) return null;
+  const p = Object.assign({}, PARAMETRES_DEFAUT, donnees.parametres || {});
+  const liste = (valeur, defaut) => Array.isArray(valeur)
+    ? valeur.map(x => String(x).trim()).filter(Boolean) : defaut.slice();
+  const rappel = Number(p.rappelJours);
+  const parametres = {
+    categoriesDepenses: (Array.isArray(p.categoriesDepenses) ? p.categoriesDepenses : [])
+      .filter(c => c && String(c.nom || '').trim())
+      .map(c => ({ nom: String(c.nom).trim(), nature: NATURES.includes(c.nature) ? c.nature : 'variable' })),
+    categoriesRevenus: (Array.isArray(p.categoriesRevenus) ? p.categoriesRevenus : [])
+      .filter(c => c && String(c.nom || '').trim())
+      .map(c => ({ nom: String(c.nom).trim() })),
+    postesCourses: liste(p.postesCourses, POSTES_COURANTS),
+    articlesCourses: liste(p.articlesCourses, ACHATS_COURANTS),
+    budgetSemaineDefaut: eur(p.budgetSemaineDefaut),
+    semainesDefaut: Math.min(6, Math.max(1, Math.round(Number(p.semainesDefaut) || SEMAINES_PAR_DEFAUT))),
+    tauxHoraireDefaut: eur(p.tauxHoraireDefaut) || TAUX_HORAIRE_DEFAUT,
+    tauxCotisationDefaut: Number.isFinite(Number(p.tauxCotisationDefaut))
+      ? Number(p.tauxCotisationDefaut) : TAUX_COTISATION_DEFAUT,
+    modules: { courses: !(p.modules && p.modules.courses === false),
+               heures: !(p.modules && p.modules.heures === false) },
+    nomCourses: String(p.nomCourses || '').trim() || PARAMETRES_DEFAUT.nomCourses,
+    nomHeures: String(p.nomHeures || '').trim() || PARAMETRES_DEFAUT.nomHeures,
+    seuilAlerte: Math.min(100, Math.max(1, Math.round(Number(p.seuilAlerte) || 85))),
+    rappelJours: Number.isFinite(rappel) && rappel >= 0 ? Math.round(rappel) : 7,
+    avertirFermeture: !!p.avertirFermeture,
+  };
   const propre = {
     version: VERSION_DONNEES,
     prochainId: Number(donnees.prochainId) || 1,
     moisActif: donnees.moisActif ?? null,
+    revision: Number(donnees.revision) || 0,
+    modifieLe: typeof donnees.modifieLe === 'string' ? donnees.modifieLe : null,
+    fichierLe: typeof donnees.fichierLe === 'string' ? donnees.fichierLe : null,
+    fichierRevision: donnees.fichierRevision === null || donnees.fichierRevision === undefined
+      ? null : Number(donnees.fichierRevision),
+    parametres,
     mois: [],
   };
   for (const mois of donnees.mois) {
@@ -1220,9 +1579,9 @@ function validees(donnees) {
       id: Number(mois.id) || propre.prochainId++,
       libelle: mois.libelle,
       note: String(mois.note || ''),
-      tauxHoraire: Number(mois.tauxHoraire) || TAUX_HORAIRE_DEFAUT,
+      tauxHoraire: Number(mois.tauxHoraire) || parametres.tauxHoraireDefaut,
       tauxCotisation: Number.isFinite(Number(mois.tauxCotisation))
-        ? Number(mois.tauxCotisation) : TAUX_COTISATION_DEFAUT,
+        ? Number(mois.tauxCotisation) : parametres.tauxCotisationDefaut,
       budgetCourses: Number.isFinite(Number(mois.budgetCourses))
         ? Number(mois.budgetCourses) : BUDGET_COURSES_DEFAUT,
       lignes: (mois.lignes || []).map(l => ({
@@ -1261,14 +1620,34 @@ function validees(donnees) {
       })),
     };
     if (!complet.semaines.length) {
-      for (let n = 1; n <= SEMAINES_PAR_DEFAUT; n++) {
-        complet.semaines.push({ numero: n, budget: BUDGET_SEMAINE_DEFAUT });
+      for (let n = 1; n <= parametres.semainesDefaut; n++) {
+        complet.semaines.push({ numero: n, budget: parametres.budgetSemaineDefaut });
       }
     }
     assureCreneaux(complet, propre);
     propre.mois.push(complet);
   }
   if (!propre.mois.length) return null;
+
+  // Revenus : les anciens types « salaire » / « aide » deviennent des catégories.
+  for (const mois of propre.mois) {
+    for (const l of mois.lignes) {
+      if (l.type === 'depense') { l.categorie = l.categorie.trim() || 'Sans catégorie'; continue; }
+      const nom = l.categorie.trim();
+      if (!nom || nom === 'Salaire' || nom === 'Aide') l.categorie = CATEGORIE_REVENUS_DEFAUT[l.type] || 'Salaires';
+    }
+  }
+  // Toute catégorie utilisée par une ligne figure dans la liste (en fin de liste si elle manquait).
+  const depenses = new Set(parametres.categoriesDepenses.map(c => c.nom));
+  const revenus = new Set(parametres.categoriesRevenus.map(c => c.nom));
+  for (const l of propre.mois.flatMap(m => m.lignes).sort((x, y) => x.rang - y.rang)) {
+    if (l.type === 'depense' && !depenses.has(l.categorie)) {
+      depenses.add(l.categorie); parametres.categoriesDepenses.push({ nom: l.categorie, nature: l.nature });
+    } else if (l.type !== 'depense' && !revenus.has(l.categorie)) {
+      revenus.add(l.categorie); parametres.categoriesRevenus.push({ nom: l.categorie });
+    }
+  }
+
   // Les identifiants doivent rester uniques après import ou modification à la main.
   const maximum = Math.max(0, ...propre.mois.flatMap(m => [
     m.id, ...m.lignes.map(l => l.id), ...m.achats.map(a => a.id), ...m.creneaux.map(c => c.id),
@@ -1310,8 +1689,8 @@ function creeMois(libelle, copierDe) {
     id: D.prochainId++,
     libelle,
     note: '',
-    tauxHoraire: source ? source.tauxHoraire : TAUX_HORAIRE_DEFAUT,
-    tauxCotisation: source ? source.tauxCotisation : TAUX_COTISATION_DEFAUT,
+    tauxHoraire: source ? source.tauxHoraire : D.parametres.tauxHoraireDefaut,
+    tauxCotisation: source ? source.tauxCotisation : D.parametres.tauxCotisationDefaut,
     budgetCourses: source ? source.budgetCourses : BUDGET_COURSES_DEFAUT,
     // Les lignes récurrentes sont reprises, les montants réels remis à zéro.
     lignes: source
@@ -1319,8 +1698,8 @@ function creeMois(libelle, copierDe) {
       : [],
     semaines: source
       ? source.semaines.map(s => ({ numero: s.numero, budget: s.budget }))
-      : Array.from({ length: SEMAINES_PAR_DEFAUT },
-                   (_, i) => ({ numero: i + 1, budget: BUDGET_SEMAINE_DEFAUT })),
+      : Array.from({ length: D.parametres.semainesDefaut },
+                   (_, i) => ({ numero: i + 1, budget: D.parametres.budgetSemaineDefaut })),
     achats: [],
     creneaux: [],
   };
@@ -1331,7 +1710,9 @@ function creeMois(libelle, copierDe) {
 
 /** Premier démarrage : un mois pré-rempli avec les données du tableau. */
 function donneesDeDepart() {
-  D = { version: VERSION_DONNEES, prochainId: 1, moisActif: null, mois: [] };
+  D = { version: VERSION_DONNEES, prochainId: 1, moisActif: null, revision: 0, modifieLe: null,
+        fichierLe: null, fichierRevision: null,
+        parametres: JSON.parse(JSON.stringify(PARAMETRES_DEFAUT)), mois: [] };
   const mois = creeMois(moisCourantLibelle());
   let rang = 0;
 
@@ -1353,6 +1734,13 @@ function donneesDeDepart() {
   }
 
   D.moisActif = mois.id;
+  // Les catégories suivent l'ordre du tableau d'origine.
+  for (const l of mois.lignes) {
+    const liste = l.type === 'depense' ? D.parametres.categoriesDepenses : D.parametres.categoriesRevenus;
+    if (!liste.some(c => c.nom === l.categorie)) {
+      liste.push(l.type === 'depense' ? { nom: l.categorie, nature: l.nature } : { nom: l.categorie });
+    }
+  }
   return D;
 }
 
@@ -1369,6 +1757,11 @@ function donneesDeDepart() {
    La synchronisation a lieu avant chaque enregistrement et chaque affichage,
    si bien que les deux vues ne peuvent pas diverger.
 */
+
+/** Un module désactivé dans les paramètres ne pilote plus rien. */
+function moduleActif(nom) {
+  return !(D && D.parametres && D.parametres.modules && D.parametres.modules[nom] === false);
+}
 
 function ligneReliee(mois, lien) {
   return mois.lignes.find(l => (l.lien || '') === lien) || null;
@@ -1387,14 +1780,14 @@ function budgetCourses(mois) {
    règle, ouvrir l'application effacerait des montants que personne n'a
    demandé d'effacer. */
 function synchroniseLiens(mois) {
-  const ligneCourses = ligneReliee(mois, 'courses');
+  const ligneCourses = moduleActif('courses') ? ligneReliee(mois, 'courses') : null;
   if (ligneCourses) {
     mois.budgetCourses = eur(ligneCourses.estime);
     if (mois.achats.length) {
       ligneCourses.reel = recapCourses(mois.semaines, mois.achats, budgetCourses(mois)).depense;
     }
   }
-  const ligneHeures = ligneReliee(mois, 'heures');
+  const ligneHeures = moduleActif('heures') ? ligneReliee(mois, 'heures') : null;
   if (ligneHeures) {
     const heures = recapHeures(mois.creneaux, mois.tauxHoraire, mois.tauxCotisation);
     if (heures.minutes > 0) ligneHeures.reel = heures.net;
@@ -1403,7 +1796,7 @@ function synchroniseLiens(mois) {
 
 /** Un module pilote-t-il déjà sa ligne de budget ? */
 function modulePilote(mois, lien) {
-  if (!ligneReliee(mois, lien)) return false;
+  if (!moduleActif(lien) || !ligneReliee(mois, lien)) return false;
   return lien === 'courses' ? mois.achats.length > 0
     : recapHeures(mois.creneaux, mois.tauxHoraire, mois.tauxCotisation).minutes > 0;
 }
@@ -1438,7 +1831,11 @@ function ecrisLigne(ligne, champ, valeur) {
     if (lien) for (const autre of moisActif().lignes) if (autre !== ligne && autre.lien === lien) autre.lien = '';
     ligne.lien = lien;
   }
-  else if (champ === 'categorie') ligne.categorie = String(valeur || '').trim() || 'Sans catégorie';
+  else if (champ === 'categorie') {
+    const sorte = ligne.type === 'depense' ? 'depense' : 'revenu';
+    const nom = String(valeur || '').trim() || 'Sans catégorie';
+    ligne.categorie = assureCategorie(sorte, nom, ligne.nature).nom;   // respecte la casse existante
+  }
   else if (champ === 'libelle' || champ === 'note') ligne[champ] = String(valeur || '');
 }
 
@@ -1518,7 +1915,7 @@ function supprimeAchat(id) {
 function ajouteSemaine() {
   const mois = moisActif();
   const numero = mois.semaines.reduce((maxi, s) => Math.max(maxi, s.numero), 0) + 1;
-  mois.semaines.push({ numero, budget: BUDGET_SEMAINE_DEFAUT });
+  mois.semaines.push({ numero, budget: D.parametres.budgetSemaineDefaut });
   assureCreneaux(mois);
   return numero;
 }
@@ -1529,6 +1926,103 @@ function retireSemaine(numero) {
   mois.semaines = mois.semaines.filter(s => s.numero !== numero);
   mois.achats = mois.achats.filter(a => a.semaine !== numero);
   mois.creneaux = mois.creneaux.filter(c => c.semaine !== numero);
+  return true;
+}
+
+/* -- Catégories -------------------------------------------------------------
+   Les catégories sont communes à tous les mois : les renommer ou les supprimer
+   agit sur chaque mois, pour que les comparaisons d'un mois à l'autre gardent
+   leur sens. Toute opération destructrice est précédée d'une version dans
+   l'historique, et peut être annulée. */
+
+function categoriesDe(sorte) {
+  return sorte === 'depense' ? D.parametres.categoriesDepenses : D.parametres.categoriesRevenus;
+}
+
+function estDeSorte(ligne, sorte) {
+  return sorte === 'depense' ? ligne.type === 'depense' : ligne.type !== 'depense';
+}
+
+function trouveCategorie(sorte, nom) {
+  const cle = String(nom || '').trim().toLocaleLowerCase('fr');
+  return categoriesDe(sorte).find(c => c.nom.toLocaleLowerCase('fr') === cle) || null;
+}
+
+/** Nombre de lignes d'une catégorie, dans le mois affiché et dans les autres. */
+function compteLignesCategorie(sorte, nom) {
+  let ici = 0, ailleurs = 0;
+  for (const mois of D.mois) {
+    const n = mois.lignes.filter(l => estDeSorte(l, sorte) && l.categorie === nom).length;
+    if (mois.id === D.moisActif) ici += n; else ailleurs += n;
+  }
+  return { ici, ailleurs };
+}
+
+/** Crée une catégorie. Lève une erreur lisible si le nom est vide ou déjà pris. */
+function creeCategorie(sorte, nom, nature) {
+  const propre = String(nom || '').trim();
+  if (!propre) throw new Error('Donnez un nom à la catégorie.');
+  if (trouveCategorie(sorte, propre)) throw new Error('La catégorie « ' + propre + ' » existe déjà.');
+  const categorie = sorte === 'depense'
+    ? { nom: propre, nature: NATURES.includes(nature) ? nature : 'variable' }
+    : { nom: propre };
+  categoriesDe(sorte).push(categorie);
+  return categorie;
+}
+
+/** S'assure qu'une catégorie existe (utile quand on tape un nom nouveau sur une ligne). */
+function assureCategorie(sorte, nom, nature) {
+  return trouveCategorie(sorte, nom) || creeCategorie(sorte, nom, nature);
+}
+
+/**
+ * Renomme une catégorie dans tous les mois. Si le nouveau nom est celui d'une
+ * autre catégorie, les deux sont fusionnées. Renvoie 'renommee' ou 'fusionnee'.
+ */
+function renommeCategorie(sorte, ancien, nouveau) {
+  const propre = String(nouveau || '').trim();
+  if (!propre) throw new Error('Le nom ne peut pas être vide.');
+  const source = trouveCategorie(sorte, ancien);
+  if (!source) throw new Error('Catégorie introuvable.');
+  const cible = trouveCategorie(sorte, propre);
+  const fusion = cible && cible !== source;
+  const nomFinal = fusion ? cible.nom : propre;
+  for (const mois of D.mois) {
+    for (const l of mois.lignes) if (estDeSorte(l, sorte) && l.categorie === source.nom) l.categorie = nomFinal;
+  }
+  if (fusion) categoriesDe(sorte).splice(categoriesDe(sorte).indexOf(source), 1);
+  else source.nom = nomFinal;
+  return fusion ? 'fusionnee' : 'renommee';
+}
+
+/**
+ * Supprime une catégorie. Ses lignes (de tous les mois) sont soit déplacées
+ * vers `destination`, soit supprimées si `destination` est vide.
+ */
+function supprimeCategorie(sorte, nom, destination) {
+  const source = trouveCategorie(sorte, nom);
+  if (!source) throw new Error('Catégorie introuvable.');
+  const cible = destination ? trouveCategorie(sorte, destination) : null;
+  if (destination && (!cible || cible === source)) throw new Error('Catégorie de destination invalide.');
+  let deplacees = 0, supprimees = 0;
+  for (const mois of D.mois) {
+    const garder = [];
+    for (const l of mois.lignes) {
+      if (!estDeSorte(l, sorte) || l.categorie !== source.nom) { garder.push(l); continue; }
+      if (cible) { l.categorie = cible.nom; garder.push(l); deplacees++; } else supprimees++;
+    }
+    mois.lignes = garder;
+  }
+  categoriesDe(sorte).splice(categoriesDe(sorte).indexOf(source), 1);
+  return { deplacees, supprimees };
+}
+
+function deplaceCategorie(sorte, nom, pas) {
+  const liste = categoriesDe(sorte);
+  const i = liste.indexOf(trouveCategorie(sorte, nom));
+  const j = i + pas;
+  if (i < 0 || j < 0 || j >= liste.length) return false;
+  [liste[i], liste[j]] = [liste[j], liste[i]];
   return true;
 }
 
@@ -1545,7 +2039,7 @@ function retireSemaine(numero) {
 const $  = (sel, racine = document) => racine.querySelector(sel);
 const $$ = (sel, racine = document) => Array.from(racine.querySelectorAll(sel));
 
-const VUES = ['budget', 'graphiques', 'courses', 'heures'];
+const VUES = ['budget', 'graphiques', 'courses', 'heures', 'parametres'];
 
 const etat = {
   vue: 'budget',
@@ -1670,24 +2164,18 @@ function restaureFocus(memoire) {
 
 function cleCategorie(ligne) { return (ligne.categorie || '').trim() || 'Sans catégorie'; }
 
-function groupesRevenus(mois) {
-  return [
-    { cle: 'r:salaire', type: 'salaire', nom: 'Salaires' },
-    { cle: 'r:aide', type: 'aide', nom: 'Aides' },
-  ].map(g => Object.assign(g, {
-    lignes: mois.lignes.filter(l => l.type === g.type).sort((a, b) => a.rang - b.rang),
+/** Les groupes suivent la liste des catégories (Paramètres), y compris les catégories vides. */
+function groupesDe(mois, sorte) {
+  const prefixe = sorte === 'depense' ? 'd:' : 'r:';
+  const lignes = mois.lignes.filter(l => estDeSorte(l, sorte)).sort((a, b) => a.rang - b.rang);
+  return categoriesDe(sorte).map((c, index, liste) => ({
+    cle: prefixe + c.nom, categorie: c.nom, nom: c.nom, nature: c.nature, sorte,
+    premier: index === 0, dernier: index === liste.length - 1,
+    lignes: lignes.filter(l => cleCategorie(l) === c.nom),
   }));
 }
-
-function groupesDepenses(mois) {
-  const parCle = new Map();
-  for (const l of mois.lignes.filter(x => x.type === 'depense').sort((a, b) => a.rang - b.rang)) {
-    const cle = cleCategorie(l);
-    if (!parCle.has(cle)) parCle.set(cle, { cle: 'd:' + cle, categorie: cle, nom: cle, lignes: [] });
-    parCle.get(cle).lignes.push(l);
-  }
-  return Array.from(parCle.values());
-}
+function groupesRevenus(mois) { return groupesDe(mois, 'revenu'); }
+function groupesDepenses(mois) { return groupesDe(mois, 'depense'); }
 
 function signaturePilotage(mois) {
   return modulePilote(mois, 'courses') + '|' + modulePilote(mois, 'heures');
@@ -1709,6 +2197,7 @@ function dessineTout() {
   dessineBlocDepenses();
   dessinePageCourses();
   dessinePageHeures();
+  dessinePageParametres();
   rafraichitCalculs();
   restaureFocus(memoire);
   if (etat.nouvelleLigne) setTimeout(() => { etat.nouvelleLigne = null; }, 50);
@@ -1836,30 +2325,33 @@ function detailLigne(l, sorte) {
     }, attributs)));
 
   return el('div', { class: 'ligne-detail' },
-    sorte === 'depense' ? texte('categorie', 'Catégorie', { list: 'liste-categories' }) : null,
+    texte('categorie', 'Catégorie', { list: sorte === 'depense' ? 'liste-categories' : 'liste-categories-revenus' }),
     sorte === 'depense'
       ? selecteur('nature', 'Nature', [['fixe', 'Charge fixe'], ['variable', 'Dépense variable']])
-      : selecteur('type', 'Type', [['salaire', 'Salaire'], ['aide', 'Aide']]),
+      : null,
     texte('note', 'Note', { placeholder: 'facultatif' }),
-    selecteur('lien', 'Calculé par', Object.entries(LIENS).map(([v, t]) => [v, v ? t : 'Personne (saisie à la main)'])),
+    selecteur('lien', 'Calculé par', Object.entries(libellesLiens()).map(([v, t]) => [v, v ? t : 'Personne (saisie à la main)'])),
     el('span', { class: 'pousse' }),
     el('button', { type: 'button', class: 'bouton danger', texte: 'Supprimer la ligne',
                    'data-supprimer': 'ligne', 'data-id': l.id }));
 }
 
 function groupe(g, sorte) {
-  const libelleAjout = sorte === 'depense' ? '+ Ajouter une dépense dans « ' + g.nom + ' »'
-    : (g.type === 'aide' ? '+ Ajouter une aide' : '+ Ajouter un salaire');
+  const action = (texte, attributs) => el('button', Object.assign({ type: 'button', class: 'bouton bouton--discret' }, attributs), texte);
+  const cible = { 'data-sorte': sorte, 'data-nom': g.nom };
   return el('details', { class: 'groupe', open: etat.groupesOuverts.has(g.cle), 'data-groupe': g.cle },
     el('summary', { 'data-zone-groupe': g.cle }),
     el('div', { class: 'groupe__corps' },
-      entetesColonnes(sorte),
-      g.lignes.length ? g.lignes.map(l => ligneBudget(l, sorte))
-                      : el('div', { class: 'vide', texte: 'Aucune ligne pour le moment.' }),
+      g.lignes.length ? [entetesColonnes(sorte), g.lignes.map(l => ligneBudget(l, sorte))]
+                      : el('div', { class: 'vide', texte: 'Cette catégorie est vide pour ce mois.' }),
       el('div', { class: 'groupe__pied' },
-        el('button', { type: 'button', class: 'bouton bouton--discret', texte: libelleAjout,
-                       'data-ajouter': sorte === 'depense' ? 'depense' : g.type,
-                       'data-categorie': g.categorie || '' }))));
+        action('+ Ajouter une ligne ici', { 'data-ajouter': sorte === 'depense' ? 'depense' : 'salaire', 'data-categorie': g.categorie }),
+        el('span', { class: 'pousse' }),
+        el('span', { class: 'groupe__gestion', role: 'group', 'aria-label': 'Gérer la catégorie « ' + g.nom + ' »' },
+          action('✎ Renommer', Object.assign({ 'data-categorie-action': 'renommer', title: 'Renommer la catégorie (dans tous les mois)' }, cible)),
+          action('↑', Object.assign({ 'data-categorie-action': 'monter', title: 'Monter la catégorie', 'aria-label': 'Monter « ' + g.nom + ' »', disabled: g.premier }, cible)),
+          action('↓', Object.assign({ 'data-categorie-action': 'descendre', title: 'Descendre la catégorie', 'aria-label': 'Descendre « ' + g.nom + ' »', disabled: g.dernier }, cible)),
+          action('Supprimer la catégorie', Object.assign({ class: 'bouton bouton--discret danger', 'data-categorie-action': 'supprimer' }, cible))))));
 }
 
 function dessineBlocRevenus() {
@@ -1870,15 +2362,19 @@ function dessineBlocRevenus() {
       el('span', { class: 'bloc__sous', 'data-zone': 'prevu-revenus' })),
     el('span', { class: 'pousse' }),
     boutonPlier('revenus'),
+    el('button', { type: 'button', class: 'bouton', texte: '+ Catégorie', 'data-nouvelle-categorie': 'revenu' }),
     el('button', { type: 'button', class: 'bouton bouton--primaire', texte: '+ Revenu',
                    'data-ouvrir-ajout': 'revenu' }));
 
+  const groupes = groupesRevenus(etat.mois);
+  remplace($('#liste-categories-revenus'), groupes.map(g => el('option', { value: g.categorie })));
   remplace($('#corps-revenus'),
     el('div', { class: 'bloc__aide' },
       el('span', {}, 'Écart = reçu − prévu :'),
       el('span', { class: 'texte-bon', texte: '+ reçu en plus' }),
       el('span', { class: 'texte-mauvais', texte: '− reçu en moins' })),
-    groupesRevenus(etat.mois).map(g => groupe(g, 'revenu')));
+    groupes.length ? groupes.map(g => groupe(g, 'revenu'))
+                   : el('div', { class: 'vide', texte: 'Aucune catégorie de revenus. Utilisez « + Catégorie ».' }));
 }
 
 function dessineBlocDepenses() {
@@ -1892,6 +2388,7 @@ function dessineBlocDepenses() {
       el('span', { class: 'bloc__sous', 'data-zone': 'prevu-depenses' })),
     el('span', { class: 'pousse' }),
     boutonPlier('depenses'),
+    el('button', { type: 'button', class: 'bouton', texte: '+ Catégorie', 'data-nouvelle-categorie': 'depense' }),
     el('button', { type: 'button', class: 'bouton bouton--primaire', texte: '+ Dépense',
                    'data-ouvrir-ajout': 'depense' }));
 
@@ -1903,7 +2400,7 @@ function dessineBlocDepenses() {
       el('span', { class: 'texte-bon', texte: '+ marge restante' }),
       el('span', { class: 'texte-mauvais', texte: '− dépassement' })),
     groupes.length ? groupes.map(g => groupe(g, 'depense'))
-                   : el('div', { class: 'vide', texte: 'Aucune dépense pour l’instant. Utilisez « + Dépense ».' }));
+                   : el('div', { class: 'vide', texte: 'Aucune catégorie de dépenses. Utilisez « + Catégorie ».' }));
 }
 
 /* ======================================================= ZONES CALCULÉES === */
@@ -1919,12 +2416,14 @@ function rafraichitCalculs() {
   dessineBilan();
   dessineBilanMini();
   dessineJetonsNav();
+  dessineEtatFichier();
   majBlocRevenus();
   majBlocDepenses();
   majLignes();
   dessineModules();
   majPageCourses();
   majPageHeures();
+  majPageParametres();
   majBoutonsPlier();
   if (etat.vue === 'graphiques') { dessineGraphiqueCategories(); dessineGraphiqueEvolution(); }
   signaleChangements();
@@ -2090,20 +2589,18 @@ function majVisibiliteMini() {
 /* ------------------------------------------------- Totaux des blocs --- */
 
 function totauxGroupeRevenus(g) {
-  const b = etat.recap.budget;
-  const cumul = g.type === 'aide' ? b.aides : b.salaires;
-  return { reel: cumul.reel, estime: cumul.estime, nb: g.lignes.length,
-           enPause: g.lignes.filter(l => !l.actif).length };
+  const cumul = etat.recap.budget.parCategorieRevenus.find(c => c.categorie === g.categorie);
+  return cumul || { reel: 0, estime: 0, nb: 0, enPause: 0 };
 }
 
 function totauxGroupeDepenses(g) {
   const cumul = etat.recap.budget.parCategorie.find(c => c.categorie === g.categorie);
-  return cumul || { reel: 0, estime: 0, nb: g.lignes.length, enPause: 0 };
+  return cumul || { reel: 0, estime: 0, nb: 0, enPause: 0 };
 }
 
 function contenuResume(g, sorte, t) {
   const revenus = etat.recap.budget.revenus.reel;
-  let compte = t.nb + (t.nb > 1 ? ' lignes' : ' ligne');
+  let compte = t.nb ? t.nb + (t.nb > 1 ? ' lignes' : ' ligne') : 'vide';
   if (t.enPause) compte += ' · ' + t.enPause + ' en pause';
   if (sorte === 'depense' && g.lignes.some(l => l.lien === 'garde')) {
     compte += ' · net après CAF ' + euros(etat.recap.budget.gardeNette.reel);
@@ -2172,7 +2669,7 @@ function jauge(nom, valeur, budget) {
   const pct = Math.min(100, Math.max(0, part * 100));
   let mod = '', icone = '✓', message = 'Dans le budget';
   if (part > 1) { mod = '--critique'; icone = '✕'; message = 'Budget dépassé'; }
-  else if (part >= 0.85) { mod = '--alerte'; icone = '⚠'; message = 'Budget presque atteint'; }
+  else if (part >= D.parametres.seuilAlerte / 100) { mod = '--alerte'; icone = '⚠'; message = 'Budget presque atteint'; }
   const reste = eur(budget - valeur);
   return el('div', { class: 'jauge' },
     el('div', { class: 'jauge__entete' },
@@ -2195,36 +2692,91 @@ function tuile(etiquette, valeur, note, classeNote, suivi) {
     note ? el('div', { class: 'tuile__note ' + (classeNote || ''), texte: note }) : null);
 }
 
+function libellesLiens() {
+  return Object.assign({}, LIENS, { courses: D.parametres.nomCourses, heures: D.parametres.nomHeures });
+}
+
 function dessineModules() {
   const { courses, heures } = etat.recap;
+  const p = D.parametres;
   const ligneCourses = ligneReliee(etat.mois, 'courses');
   const ligneHeures = ligneReliee(etat.mois, 'heures');
   const detailLien = (ligne, lien, nomDefaut, verbe) => !ligne
-    ? 'Aucune ligne reliée : choisissez « ' + LIENS[lien] + ' » dans le ⋯ d’une ligne.'
+    ? 'Aucune ligne reliée : choisissez « ' + libellesLiens()[lien] + ' » dans le ⋯ d’une ligne.'
     : (modulePilote(etat.mois, lien)
       ? '↳ ' + verbe + ' « ' + (ligne.libelle || nomDefaut) + ' » dans le budget'
       : '↳ ' + verbe + ' « ' + (ligne.libelle || nomDefaut) + ' » dès la première saisie ici');
 
   remplace($('#modules'),
-    el('article', { class: 'module' },
+    p.modules.courses ? el('article', { class: 'module' },
       el('header', { class: 'module__tete' },
         el('span', { class: 'module__icone', 'aria-hidden': 'true', texte: '🛒' }),
-        el('div', {}, el('div', { class: 'module__titre', texte: 'Courses' }),
+        el('div', {}, el('div', { class: 'module__titre', texte: p.nomCourses }),
                       el('div', { class: 'module__sous-titre', texte: courses.semaines.length + ' semaines suivies' }))),
       jauge('Dépensé', courses.depense, courses.budgetTotal),
       el('div', { class: 'module__detail', texte: detailLien(ligneCourses, 'courses', 'Courses', 'remplit la dépense') }),
-      el('button', { type: 'button', class: 'bouton', 'data-aller': 'courses', texte: 'Ouvrir les courses →' })),
-    el('article', { class: 'module' },
+      el('button', { type: 'button', class: 'bouton', 'data-aller': 'courses', texte: 'Ouvrir « ' + p.nomCourses + ' » →' })) : null,
+    p.modules.heures ? el('article', { class: 'module' },
       el('header', { class: 'module__tete' },
         el('span', { class: 'module__icone', 'aria-hidden': 'true', texte: '⏱' }),
-        el('div', {}, el('div', { class: 'module__titre', texte: 'Heures gardées' }),
+        el('div', {}, el('div', { class: 'module__titre', texte: p.nomHeures }),
                       el('div', { class: 'module__sous-titre',
                                   texte: heures.duree + ' à ' + formatNombre.format(heures.tauxHoraire) + ' €/h' }))),
       el('div', { class: 'module__valeur', 'data-suivi': 'net-heures', texte: euros(heures.net) }),
       el('div', { class: 'module__detail',
                   texte: 'Salaire net = brut ' + euros(heures.brut) + ' − cotisations ' + euros(heures.cotisation) }),
       el('div', { class: 'module__detail', texte: detailLien(ligneHeures, 'heures', 'Caracole', 'remplit le revenu') }),
-      el('button', { type: 'button', class: 'bouton', 'data-aller': 'heures', texte: 'Ouvrir les heures →' })));
+      el('button', { type: 'button', class: 'bouton', 'data-aller': 'heures', texte: 'Ouvrir « ' + p.nomHeures + ' » →' })) : null);
+
+  // Navigation : un module désactivé disparaît, un module renommé change de nom.
+  for (const nom of ['courses', 'heures']) {
+    const lien = $('.nav__lien[data-vue="' + nom + '"]');
+    if (!lien) continue;
+    lien.hidden = !p.modules[nom];
+    const titre = lien.querySelector('.nav__titre');
+    if (titre) titre.textContent = nom === 'courses' ? p.nomCourses : p.nomHeures;
+  }
+}
+
+/* ------------------------------------------ Sécurité des données : état --- */
+
+function fichierAJour() {
+  return D.fichierRevision !== null && D.fichierRevision === D.revision;
+}
+
+function joursDepuis(iso) {
+  return iso ? Math.floor((Date.now() - Date.parse(iso)) / 86400000) : Infinity;
+}
+
+function dateCourte(iso) {
+  return new Date(iso).toLocaleString('fr-FR', { day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit' });
+}
+
+/** Pastille de l'en-tête et rappel : où en est la copie de sécurité dans un fichier. */
+function dessineEtatFichier() {
+  const bouton = $('#etat-fichier');
+  if (!bouton) return;
+  const aJour = fichierAJour();
+  const jamais = !D.fichierLe;
+  bouton.className = 'etat-fichier ' + (aJour ? 'etat-fichier--ok' : (jamais ? 'etat-fichier--jamais' : 'etat-fichier--attente'));
+  const icone = aJour ? '✓' : (jamais ? '⚠' : '●');
+  const texte = aJour ? 'Fichier à jour' : (jamais ? 'Pas encore de fichier' : 'À enregistrer');
+  // Sur téléphone, seule l'icône reste visible ; le texte complet reste lu et survolable.
+  remplace(bouton, el('span', { 'aria-hidden': 'true', texte: icone }), el('span', { class: 'etat-fichier__texte', texte: ' ' + texte }));
+  bouton.setAttribute('aria-label', texte + ' — enregistrer dans le fichier');
+  bouton.title = aJour ? 'Vos comptes sont enregistrés dans le fichier (' + dateCourte(D.fichierLe) + ').'
+    : 'Des modifications ne sont pour l’instant que dans ce navigateur. Cliquez (ou Ctrl+S) pour les enregistrer dans le fichier.';
+
+  const p = D.parametres;
+  const retard = joursDepuis(D.fichierLe);
+  const rappel = !aJour && p.rappelJours > 0 && (jamais || retard >= p.rappelJours);
+  remplace($('#rappel-sauvegarde'), rappel ? el('div', { class: 'rappel', role: 'status' },
+    el('span', { class: 'rappel__icone', 'aria-hidden': 'true', texte: '🛟' }),
+    el('span', { class: 'rappel__texte' },
+      jamais ? 'Vos comptes ne sont pour l’instant que dans ce navigateur. Enregistrez-les dans un fichier (par exemple dans votre Drive) pour les mettre à l’abri.'
+             : 'Dernier enregistrement dans un fichier : ' + dateCourte(D.fichierLe) + ' (il y a ' + retard + ' jours).'),
+    el('button', { type: 'button', class: 'bouton bouton--primaire', 'data-action': 'enregistrer-fichier', texte: 'Enregistrer maintenant' }),
+    el('button', { type: 'button', class: 'bouton bouton--discret', 'data-vue': 'parametres', texte: 'Comment faire ?' })) : null);
 }
 
 function montreVue(nom) {
@@ -2235,7 +2787,7 @@ function montreVue(nom) {
     else lien.removeAttribute('aria-current');
   }
   for (const vue of $$('.vue')) vue.hidden = vue.id !== 'vue-' + nom;
-  $('#contenu').classList.toggle('large', nom !== 'budget');
+  $('#contenu').classList.toggle('large', nom === 'graphiques' || nom === 'courses' || nom === 'heures');
   if (nom === 'graphiques') { dessineGraphiqueCategories(); dessineGraphiqueEvolution(); }
   majVisibiliteMini();
   if (location.hash.slice(1) !== nom) history.replaceState(null, '', '#' + nom);
@@ -2559,8 +3111,8 @@ function dessinePageCourses() {
   const semaines = mois.semaines.slice().sort((a, b) => a.numero - b.numero);
 
   remplace($('#semaines-courses'),
-    el('datalist', { id: 'postes-courses' }, POSTES_COURANTS.map(p => el('option', { value: p }))),
-    el('datalist', { id: 'achats-courses' }, ACHATS_COURANTS.map(a => el('option', { value: a }))),
+    el('datalist', { id: 'postes-courses' }, D.parametres.postesCourses.map(p => el('option', { value: p }))),
+    el('datalist', { id: 'achats-courses' }, D.parametres.articlesCourses.map(a => el('option', { value: a }))),
     semaines.map(semaine => {
       const achats = mois.achats.filter(a => a.semaine === semaine.numero);
       return el('article', { class: 'carte' },
@@ -2597,7 +3149,7 @@ function dessinePageCourses() {
                          'data-ajouter-achat': semaine.numero }),
           el('details', { class: 'suggestions' },
             el('summary', { texte: 'Ajout rapide' }),
-            el('div', { class: 'puces' }, ACHATS_COURANTS.map(nom => el('button', {
+            el('div', { class: 'puces' }, D.parametres.articlesCourses.map(nom => el('button', {
               type: 'button', class: 'puce', texte: nom,
               'data-ajouter-achat': semaine.numero, 'data-libelle': nom, 'data-poste': 'Marché',
             }))))));
@@ -2689,6 +3241,255 @@ function majPageHeures() {
   }
 }
 
+/* ============================================================ DIALOGUES === */
+
+/**
+ * Fenêtre de dialogue accessible (élément <dialog> natif).
+ * Renvoie une promesse { valeur, donnees } — valeur vaut null si l'on annule.
+ * `valide(valeur, donnees)` peut renvoyer un message d'erreur qui garde la fenêtre ouverte.
+ */
+function dialogue({ titre, texte, corps, boutons, valide, danger }) {
+  return new Promise(resolve => {
+    const erreur = el('p', { class: 'dialogue__erreur', role: 'alert' });
+    const forme = el('form', { class: 'dialogue__forme', novalidate: true },
+      el('h2', { class: 'dialogue__titre', texte: titre }),
+      texte ? el('p', { class: 'dialogue__texte', texte }) : null,
+      corps || null,
+      erreur,
+      el('div', { class: 'dialogue__actions' },
+        boutons.map(b => el('button', {
+          type: b.valeur === null ? 'button' : 'submit', value: b.valeur === null ? '' : b.valeur,
+          class: 'bouton' + (b.principal ? (danger ? ' bouton--danger' : ' bouton--primaire') : ''),
+          'data-annuler': b.valeur === null ? '1' : null,
+        }, b.libelle))));
+    const boite = el('dialog', { class: 'dialogue', 'aria-label': titre }, forme);
+    document.body.append(boite);
+
+    const termine = (resultat) => { boite.close(); boite.remove(); resolve(resultat); };
+    forme.addEventListener('submit', (evenement) => {
+      evenement.preventDefault();
+      const principal = boutons.find(b => b.principal && b.valeur !== null) || boutons.find(b => b.valeur !== null);
+      const valeur = evenement.submitter && evenement.submitter.value ? evenement.submitter.value : principal.valeur;
+      const donnees = Object.fromEntries(new FormData(forme));
+      const message = valide ? valide(valeur, donnees) : null;
+      if (message) {
+        erreur.textContent = message;
+        // Le curseur revient là où il faut corriger.
+        const champ = forme.querySelector('input:not([type="radio"]), select, textarea');
+        if (champ) { champ.focus(); if (champ.select) champ.select(); }
+        return;
+      }
+      termine({ valeur, donnees });
+    });
+    forme.addEventListener('click', (evenement) => {
+      if (evenement.target.closest('[data-annuler]')) termine({ valeur: null, donnees: {} });
+    });
+    boite.addEventListener('cancel', (evenement) => { evenement.preventDefault(); termine({ valeur: null, donnees: {} }); });
+    boite.showModal();
+    const premier = forme.querySelector('input:not([type="radio"]), select, textarea') ||
+                    forme.querySelector('input[type="radio"]:checked') || forme.querySelector('button[type="submit"]');
+    if (premier) { premier.focus(); if (premier.select) premier.select(); }
+  });
+}
+
+function champDialogue(etiquette, attributs) {
+  return el('label', { class: 'dialogue__champ' }, etiquette,
+    el(attributs.balise || 'input', Object.assign({ class: 'champ' }, attributs, { balise: null })));
+}
+
+/* ============================================================ PARAMÈTRES === */
+
+function titreSection(titre, sousTitre) {
+  return el('header', { class: 'carte__tete' }, el('h2', { texte: titre }),
+    sousTitre ? el('p', { class: 'carte__sous-titre', texte: sousTitre }) : null);
+}
+
+function reglage(etiquette, controle, aide) {
+  return el('div', { class: 'reglage' },
+    el('label', { class: 'reglage__etiquette' }, etiquette, controle),
+    aide ? el('p', { class: 'reglage__aide', texte: aide }) : null);
+}
+
+function champParametre(cle, valeur, attributs = {}) {
+  return el('input', Object.assign({
+    type: 'text', class: 'champ', value: valeur, 'data-param': cle, 'data-cle': 'param-' + cle,
+  }, attributs));
+}
+
+function editeurCategories(sorte) {
+  const liste = categoriesDe(sorte);
+  const lignes = liste.map((c, i) => {
+    const compte = compteLignesCategorie(sorte, c.nom);
+    const attributs = { 'data-sorte': sorte, 'data-nom': c.nom };
+    return el('div', { class: 'cat-edit' },
+      el('input', Object.assign({
+        type: 'text', class: 'champ', value: c.nom, 'aria-label': 'Nom de la catégorie « ' + c.nom + ' »',
+        'data-cat-champ': 'nom', 'data-cle': 'cat-' + sorte + '-' + c.nom,
+      }, attributs)),
+      sorte === 'depense' ? el('select', Object.assign({
+        class: 'champ', 'aria-label': 'Nature par défaut des nouvelles lignes de « ' + c.nom + ' »',
+        'data-cat-champ': 'nature', title: 'Nature proposée pour les nouvelles lignes de cette catégorie',
+      }, attributs), [['variable', 'Variable'], ['fixe', 'Charge fixe']].map(([v, t]) =>
+        el('option', { value: v, selected: c.nature === v }, t))) : null,
+      el('span', { class: 'cat-edit__compte', texte:
+        (compte.ici ? compte.ici + ' ligne' + (compte.ici > 1 ? 's' : '') + ' ce mois' : 'vide ce mois') +
+        (compte.ailleurs ? ' · ' + compte.ailleurs + ' dans les autres mois' : '') }),
+      el('span', { class: 'cat-edit__actions' },
+        el('button', Object.assign({ type: 'button', class: 'bouton bouton--discret bouton--icone', texte: '↑',
+          title: 'Monter', 'aria-label': 'Monter « ' + c.nom + ' »', disabled: i === 0, 'data-categorie-action': 'monter' }, attributs)),
+        el('button', Object.assign({ type: 'button', class: 'bouton bouton--discret bouton--icone', texte: '↓',
+          title: 'Descendre', 'aria-label': 'Descendre « ' + c.nom + ' »', disabled: i === liste.length - 1, 'data-categorie-action': 'descendre' }, attributs)),
+        el('button', Object.assign({ type: 'button', class: 'bouton bouton--discret danger', texte: 'Supprimer',
+          'data-categorie-action': 'supprimer' }, attributs))));
+  });
+  return [
+    lignes.length ? el('div', { class: 'cat-liste' }, lignes) : el('p', { class: 'vide', texte: 'Aucune catégorie.' }),
+    el('div', { class: 'cat-ajout' },
+      el('button', { type: 'button', class: 'bouton', 'data-nouvelle-categorie': sorte,
+                     texte: sorte === 'depense' ? '+ Nouvelle catégorie de dépenses' : '+ Nouvelle catégorie de revenus' })),
+  ];
+}
+
+function dessinePageParametres() {
+  const hote = $('#parametres');
+  if (!hote) return;
+  const p = D.parametres;
+  const versions = lisVersions();
+  const surFirefox = /firefox/i.test(navigator.userAgent);
+  const enregistrementDirect = typeof window.showSaveFilePicker === 'function';
+
+  remplace(hote,
+    /* -- Sauvegarde ------------------------------------------------------ */
+    el('article', { class: 'carte carte--importante', id: 'section-sauvegarde' },
+      titreSection('Sauvegarde et sécurité des données',
+        'Vos comptes sont protégés à trois niveaux. Le troisième dépend de vous : c’est le seul qui survit à un changement d’ordinateur ou de navigateur.'),
+      el('ol', { class: 'niveaux' },
+        el('li', {},
+          el('strong', { texte: 'Enregistrement automatique dans ce navigateur. ' }),
+          'À chaque modification, vérifié par relecture. Si l’application est ouverte dans deux onglets, ils se synchronisent au lieu de s’écraser. ',
+          el('span', { 'data-zone': 'persistance', class: 'niveaux__etat' }),
+          el('button', { type: 'button', class: 'bouton bouton--discret', 'data-action': 'persister',
+                         'data-zone': 'bouton-persistance', hidden: true,
+                         texte: 'Demander au navigateur de ne jamais effacer ces données' })),
+        el('li', {},
+          el('strong', { texte: 'Versions précédentes. ' }),
+          'Une copie par heure d’activité, et une avant chaque opération délicate (suppression de catégorie, restauration…). ',
+          el('span', { class: 'niveaux__etat', texte: versions.length + ' version' + (versions.length > 1 ? 's' : '') + ' gardée' + (versions.length > 1 ? 's' : '') + ' (30 au plus).' })),
+        el('li', {},
+          el('strong', { texte: 'Le fichier comptes.html lui-même. ' }),
+          '« Enregistrer » produit un fichier qui contient l’application ET toutes vos données. Rangé dans votre Drive, il est copié dans le cloud et Google en garde les versions successives. ',
+          el('span', { class: 'niveaux__etat', 'data-zone': 'etat-fichier-detail' }))),
+      el('div', { class: 'actions-sauvegarde' },
+        el('button', { type: 'button', class: 'bouton bouton--primaire', 'data-action': 'enregistrer-fichier', texte: 'Enregistrer dans le fichier (Ctrl+S)' }),
+        el('button', { type: 'button', class: 'bouton', 'data-action': 'ouvrir-sauvegarde', texte: 'Ouvrir une sauvegarde…' }),
+        el('button', { type: 'button', class: 'bouton', 'data-action': 'export-json', texte: 'Exporter les données (JSON)' })),
+
+      el('details', { class: 'guide', open: !D.fichierLe },
+        el('summary', { texte: 'Mode d’emploi : Google Drive et Firefox' }),
+        el('div', { class: 'guide__corps' },
+          el('p', {}, 'Mettre le fichier sur votre Drive avec un raccourci Firefox est une bonne idée, ',
+            el('strong', { texte: 'à une condition' }),
+            ' : sans « Enregistrer », vos données restent dans Firefox, pas dans le fichier. Le Drive ne copierait alors que l’application, vide.'),
+          el('ol', {},
+            el('li', {}, 'Installez « Google Drive pour ordinateur » et placez comptes.html dans un dossier de « Mon Drive » (par exemple Mon Drive › Comptes).'),
+            el('li', {}, 'Ouvrez-le depuis ce dossier (double-clic), puis ajoutez-le aux marque-pages de Firefox. N’ouvrez pas le fichier depuis le site drive.google.com : le Drive en ligne n’exécute pas les applications.'),
+            el('li', {}, 'Dans Firefox : Paramètres › Général › Fichiers et applications › cochez « Toujours vous demander où enregistrer les fichiers ».'),
+            el('li', {}, 'Après une séance de saisie, faites Ctrl+S (ou « Enregistrer dans le fichier »). Choisissez le fichier comptes.html de votre Drive et acceptez de le remplacer.'),
+            el('li', {}, 'Si un jour le navigateur perd vos données, ou sur un autre ordinateur : ouvrez simplement comptes.html depuis le Drive, tout y est. Pour revenir en arrière, clic droit sur le fichier dans drive.google.com › « Gérer les versions ».')),
+          el('p', { class: 'guide__note' },
+            surFirefox
+              ? 'Firefox ne permet pas à une page d’écrire directement dans un fichier : chaque enregistrement passe donc par la fenêtre « Enregistrer sous ». C’est une limite volontaire de Firefox, pas un défaut de l’application.'
+              : (enregistrementDirect
+                ? 'Votre navigateur permet l’écriture directe : au premier enregistrement vous choisissez le fichier, les suivants l’écrasent sans rien demander tant que l’onglet reste ouvert.'
+                : 'Votre navigateur passe par un téléchargement : choisissez le fichier existant pour le remplacer.')),
+          el('p', { class: 'guide__note' },
+            'Évitez d’avoir comptes.html ouvert sur deux ordinateurs à la fois : chaque ordinateur garde ses propres modifications jusqu’au prochain enregistrement, et le dernier enregistré l’emporte (l’autre version est gardée dans l’historique).'))),
+
+      el('h3', { class: 'sous-titre-section', texte: 'Versions précédentes' }),
+      versions.length
+        ? el('div', { class: 'versions' }, versions.map((v, i) => el('div', { class: 'version' },
+            el('div', { class: 'version__quand' },
+              el('strong', { texte: new Date(v.le).toLocaleString('fr-FR', { dateStyle: 'medium', timeStyle: 'short' }) }),
+              el('span', { texte: v.raison })),
+            el('span', { class: 'version__resume', texte: v.resume || '' }),
+            el('span', { class: 'version__actions' },
+              el('button', { type: 'button', class: 'bouton', 'data-version': i, 'data-version-action': 'restaurer', texte: 'Restaurer' }),
+              el('button', { type: 'button', class: 'bouton bouton--discret', 'data-version': i, 'data-version-action': 'telecharger', texte: 'Télécharger' })))))
+        : el('p', { class: 'reglage__aide', texte: 'Aucune version pour l’instant : la première sera créée à la prochaine modification.' })),
+
+    /* -- Catégories ------------------------------------------------------ */
+    el('article', { class: 'carte', id: 'section-categories' },
+      titreSection('Catégories de dépenses',
+        'Communes à tous les mois. Renommer une catégorie la renomme partout ; lui donner le nom d’une autre fusionne les deux.'),
+      editeurCategories('depense')),
+    el('article', { class: 'carte' },
+      titreSection('Catégories de revenus', 'Même fonctionnement que pour les dépenses.'),
+      editeurCategories('revenu')),
+
+    /* -- Modules --------------------------------------------------------- */
+    el('article', { class: 'carte' },
+      titreSection('Modules', 'Désactiver un module le retire de la navigation ; ses données sont conservées.'),
+      ['courses', 'heures'].map(nom => el('div', { class: 'module-reglage' },
+        el('label', { class: 'interrupteur' },
+          el('input', { type: 'checkbox', class: 'bascule', checked: p.modules[nom], 'data-param': 'module-' + nom,
+                        'aria-label': 'Activer le module ' + (nom === 'courses' ? p.nomCourses : p.nomHeures) }),
+          'Activé'),
+        reglage('Nom affiché', champParametre(nom === 'courses' ? 'nomCourses' : 'nomHeures', nom === 'courses' ? p.nomCourses : p.nomHeures),
+          nom === 'courses' ? 'Suivi des achats semaine par semaine ; son total remplit la dépense reliée.'
+                            : 'Relevé d’heures ; le salaire net calculé remplit le revenu relié.')))),
+
+    /* -- Courses et heures ------------------------------------------------ */
+    el('article', { class: 'carte' },
+      titreSection(p.nomCourses, 'Valeurs utilisées pour les nouveaux mois et suggestions de saisie.'),
+      el('div', { class: 'reglages' },
+        reglage('Budget par semaine (nouveaux mois)', el('span', { class: 'champ-euro' },
+          champParametre('budgetSemaineDefaut', montantSaisi(p.budgetSemaineDefaut), { inputmode: 'decimal', class: 'champ champ--nombre' }))),
+        reglage('Nombre de semaines (nouveaux mois)', champParametre('semainesDefaut', String(p.semainesDefaut),
+          { type: 'number', min: '1', max: '6', class: 'champ champ--nombre' }))),
+      el('div', { class: 'reglages' },
+        reglage('Postes suggérés (un par ligne)', el('textarea', { class: 'champ', rows: '6', 'data-param': 'postesCourses',
+          'data-cle': 'param-postesCourses' }, p.postesCourses.join('\n'))),
+        reglage('Articles en ajout rapide (un par ligne)', el('textarea', { class: 'champ', rows: '6', 'data-param': 'articlesCourses',
+          'data-cle': 'param-articlesCourses' }, p.articlesCourses.join('\n'))))),
+    el('article', { class: 'carte' },
+      titreSection(p.nomHeures, 'Valeurs de départ des nouveaux mois. Celles du mois en cours se règlent sur la page du module.'),
+      el('div', { class: 'reglages' },
+        reglage('Taux horaire brut', el('span', { class: 'champ-euro' },
+          champParametre('tauxHoraireDefaut', montantSaisi(p.tauxHoraireDefaut), { inputmode: 'decimal', class: 'champ champ--nombre' }))),
+        reglage('Cotisations', el('span', { class: 'champ-pourcent' },
+          champParametre('tauxCotisationDefaut', montantSaisi(p.tauxCotisationDefaut), { inputmode: 'decimal', class: 'champ champ--nombre' }))))),
+
+    /* -- Affichage ------------------------------------------------------- */
+    el('article', { class: 'carte' },
+      titreSection('Affichage et alertes'),
+      el('div', { class: 'reglages' },
+        reglage('Thème', el('select', { class: 'champ', 'data-param': 'theme', 'data-cle': 'param-theme' },
+          [['auto', 'Comme le système'], ['light', 'Clair'], ['dark', 'Sombre']].map(([v, t]) =>
+            el('option', { value: v, selected: (document.documentElement.dataset.theme || 'auto') === v }, t)))),
+        reglage('Alerte « budget presque atteint » à', el('span', { class: 'champ-pourcent' },
+          champParametre('seuilAlerte', String(p.seuilAlerte), { type: 'number', min: '1', max: '100', class: 'champ champ--nombre' }))),
+        reglage('Rappel d’enregistrement dans un fichier', el('select', { class: 'champ', 'data-param': 'rappelJours', 'data-cle': 'param-rappelJours' },
+          [[0, 'Jamais'], [1, 'Chaque jour'], [3, 'Tous les 3 jours'], [7, 'Chaque semaine'], [14, 'Toutes les 2 semaines'], [30, 'Chaque mois']]
+            .map(([v, t]) => el('option', { value: v, selected: p.rappelJours === v }, t))))),
+      el('label', { class: 'interrupteur' },
+        el('input', { type: 'checkbox', class: 'bascule', checked: p.avertirFermeture, 'data-param': 'avertirFermeture' }),
+        'Prévenir en fermant l’onglet si des modifications ne sont pas encore dans le fichier')));
+  majPageParametres();
+}
+
+/** Parties calculées de la page Paramètres (mises à jour sans reconstruire les champs). */
+function majPageParametres() {
+  const bouton = $('[data-zone="bouton-persistance"]');
+  if (bouton) bouton.hidden = etat.persistance !== false;
+  texteZone('[data-zone="etat-fichier-detail"]', D.fichierLe
+    ? (fichierAJour() ? 'À jour : enregistré le ' + dateCourte(D.fichierLe) + '.'
+                      : 'Dernier enregistrement le ' + dateCourte(D.fichierLe) + ' — des modifications plus récentes ne sont que dans ce navigateur.')
+    : 'Pas encore fait.');
+  texteZone('[data-zone="persistance"]', etat.persistance === true
+    ? 'Le navigateur s’est engagé à ne pas effacer ces données de lui-même.'
+    : (etat.persistance === false ? 'Le navigateur peut effacer ces données en cas de manque de place : d’où l’importance du fichier.' : ''));
+}
+
 /* ========================================================================== */
 /* 6. Interactions                                                            */
 /*                                                                            */
@@ -2713,10 +3514,45 @@ function enregistreBientot() {
 function enregistreMaintenant() {
   clearTimeout(minuteurEnregistrement);
   minuteurEnregistrement = null;
-  if (enregistreDonnees()) signaleSauvegarde('Enregistré');
+  const resultat = enregistreDonnees();
+  if (resultat === 'ok') signaleSauvegarde('Enregistré');
+  else if (resultat === 'conflit') resoutConflit();
+  return resultat;
 }
 
+/** Un autre onglet a enregistré entre-temps : on garde sa version (déjà enregistrée),
+    et la saisie de cet onglet part dans l'historique au lieu d'être perdue. */
+function resoutConflit() {
+  clearTimeout(minuteurEnregistrement);
+  minuteurEnregistrement = null;
+  ajouteVersion('Saisie d’un autre onglet, faite en même temps (conflit)', D);
+  rechargeDepuisStockage();
+  dessineTout();
+  toast('Les comptes ont été modifiés dans un autre onglet en même temps que celui-ci. ' +
+        'Cet onglet affiche la version enregistrée ; sa propre saisie est gardée dans Paramètres → Versions précédentes.',
+        { erreur: true, duree: 15000 });
+}
+
+/* Deux onglets ouverts : chacun suit les modifications de l'autre. */
+window.addEventListener('storage', (evenement) => {
+  if (evenement.key !== CLE_STOCKAGE && evenement.key !== CLE_REVISION) return;
+  if (revisionStockee() <= revisionConnue) return;
+  // Le contenu, pas une minuterie, dit s'il reste une saisie non enregistrée ici.
+  if (modificationsNonEnregistrees()) { resoutConflit(); return; }
+  if (rechargeDepuisStockage()) {
+    dessineTout();
+    toast('Mis à jour avec les modifications faites dans un autre onglet.', { duree: 3000 });
+  }
+});
+
 window.addEventListener('pagehide', () => { if (minuteurEnregistrement) enregistreMaintenant(); });
+window.addEventListener('beforeunload', (evenement) => {
+  if (minuteurEnregistrement) enregistreMaintenant();
+  if (D && D.parametres.avertirFermeture && !fichierAJour()) {
+    evenement.preventDefault();
+    evenement.returnValue = '';
+  }
+});
 document.addEventListener('visibilitychange', () => {
   if (document.hidden && minuteurEnregistrement) enregistreMaintenant();
 });
@@ -2795,15 +3631,23 @@ document.addEventListener('change', (evenement) => {
   if (champ.id === 'fichier-import') { importeFichier(champ.files[0]); return; }
 
   const d = champ.dataset || {};
+  if (d.param) { ecrisParametre(d.param, champ); return; }
+  if (d.catChamp === 'nom') { appliqueRenommage(d.sorte, d.nom, champ.value); return; }
+  if (d.catChamp === 'nature') {
+    const categorie = trouveCategorie(d.sorte, d.nom);
+    if (categorie) { categorie.nature = champ.value; enregistreMaintenant(); }
+    return;
+  }
   if (!d.entite || !d.champ) return;
   const mois = moisActif();
 
   if (d.entite === 'ligne') {
     const ligne = cible(d); if (!ligne) return;
     ecrisLigne(ligne, d.champ, champ.type === 'checkbox' ? champ.checked : champ.value);
+
     if (CHAMPS_STRUCTURELS.has(d.champ)) {
       // La ligne doit rester visible là où elle arrive.
-      etat.groupesOuverts.add(ligne.type === 'depense' ? 'd:' + cleCategorie(ligne) : 'r:' + ligne.type);
+      etat.groupesOuverts.add((ligne.type === 'depense' ? 'd:' : 'r:') + cleCategorie(ligne));
       enregistrePreferences();
       enregistreMaintenant();
       rafraichitCalculs();
@@ -2831,6 +3675,13 @@ document.addEventListener('change', (evenement) => {
   enregistreMaintenant();
 });
 
+/* -- Ctrl+S (ou Cmd+S) : enregistrer dans le fichier, au lieu de la page brute. -- */
+document.addEventListener('keydown', (evenement) => {
+  if ((evenement.ctrlKey || evenement.metaKey) && !evenement.altKey && evenement.key.toLowerCase() === 's') {
+    evenement.preventDefault();
+    enregistreFichier();
+  }
+}, true);
 /* -- Clavier : Entrée valide, Échap annule la saisie en cours -------------- */
 
 document.addEventListener('focusin', (evenement) => {
@@ -2881,6 +3732,9 @@ document.addEventListener('click', (evenement) => {
   if (d.ajouterAchat) { ajouteAchat(bouton); return; }
   if (d.supprimer) { demandeSuppression(bouton); return; }
   if (d.plier) { plieBloc(d.plier, d.sens !== 'fermer'); return; }
+  if (d.nouvelleCategorie) { nouvelleCategorie(d.nouvelleCategorie); return; }
+  if (d.categorieAction) { actionCategorie(d.categorieAction, d.sorte, d.nom); return; }
+  if (d.versionAction) { actionVersion(d.versionAction, Number(d.version)); return; }
 
   if (d.detail) {
     const id = Number(d.detail);
@@ -2948,14 +3802,17 @@ document.addEventListener('submit', (evenement) => {
   const v = Object.fromEntries(new FormData(formulaire));
   const depense = formulaire.id === 'ajout-depense';
 
+  const sorte = depense ? 'depense' : 'revenu';
+  const nomCategorie = String(v.categorie || '').trim() ||
+    (categoriesDe(sorte)[0] ? categoriesDe(sorte)[0].nom : (depense ? 'Sans catégorie' : 'Salaires'));
+  const categorie = assureCategorie(sorte, nomCategorie, v.nature);
   const ligne = creeLigne({
-    type: depense ? 'depense' : v.type,
-    nature: depense ? v.nature : 'fixe',
-    categorie: depense ? (String(v.categorie || '').trim() || 'Sans catégorie')
-                       : (v.type === 'aide' ? 'Aide' : 'Salaire'),
+    type: depense ? 'depense' : 'salaire',
+    nature: depense ? (v.nature || categorie.nature) : 'fixe',
+    categorie: categorie.nom,
     libelle: v.libelle, estime: v.estime, reel: v.reel,
   });
-  etat.groupesOuverts.add(depense ? 'd:' + cleCategorie(ligne) : 'r:' + ligne.type);
+  etat.groupesOuverts.add((depense ? 'd:' : 'r:') + ligne.categorie);
   etat.nouvelleLigne = ligne.id;
   enregistrePreferences();
   fermeAjout(depense ? 'depense' : 'revenu');
@@ -2963,17 +3820,19 @@ document.addEventListener('submit', (evenement) => {
   dessineTout();
   const rangee = $('[data-ligne="' + ligne.id + '"]');
   if (rangee) rangee.scrollIntoView({ block: 'center', behavior: 'smooth' });
-  toast('« ' + ligne.libelle + ' » ajouté' + (depense ? ' dans ' + cleCategorie(ligne) : '') + '.', { duree: 3500 });
+  toast('« ' + ligne.libelle + ' » ajouté dans « ' + ligne.categorie + ' ».', { duree: 3500 });
 });
 
 function ajouteLigneRapide(bouton) {
   const type = bouton.dataset.ajouter;
+  const sorte = type === 'depense' ? 'depense' : 'revenu';
+  const categorie = assureCategorie(sorte, bouton.dataset.categorie || (sorte === 'depense' ? 'Sans catégorie' : 'Salaires'));
   const ligne = creeLigne({
     type,
-    nature: type === 'depense' ? 'variable' : 'fixe',
-    categorie: bouton.dataset.categorie || (type === 'depense' ? 'Sans catégorie' : (type === 'aide' ? 'Aide' : 'Salaire')),
+    nature: sorte === 'depense' ? categorie.nature : 'fixe',
+    categorie: categorie.nom,
   });
-  etat.groupesOuverts.add(type === 'depense' ? 'd:' + cleCategorie(ligne) : 'r:' + type);
+  etat.groupesOuverts.add((sorte === 'depense' ? 'd:' : 'r:') + categorie.nom);
   etat.nouvelleLigne = ligne.id;
   enregistrePreferences();
   enregistreMaintenant();
@@ -3019,24 +3878,36 @@ function demandeSuppression(bouton) {
 
 /* -- Mois --------------------------------------------------------------------- */
 
-function nouveauMois() {
-  const propose = decaleMois(moisActif().libelle, 1);
-  const saisi = prompt('Quel mois créer ? (format AAAA-MM)\n\n' +
-    'Les lignes du mois affiché sont recopiées avec leurs montants prévus ; ' +
-    'les montants payés et reçus repartent de zéro.', propose);
-  if (!saisi) return;
-  const libelle = saisi.trim();
-  if (!/^\d{4}-(0[1-9]|1[0-2])$/.test(libelle)) {
-    toast('Le mois doit être au format AAAA-MM (par exemple 2026-10).', { erreur: true });
-    return;
-  }
-  const mois = creeMois(libelle, D.moisActif);
-  D.moisActif = mois.id;
+const NOMS_MOIS = ['janvier', 'février', 'mars', 'avril', 'mai', 'juin', 'juillet',
+                   'août', 'septembre', 'octobre', 'novembre', 'décembre'];
+
+async function nouveauMois() {
+  const [annee, mois] = decaleMois(moisActif().libelle, 1).split('-').map(Number);
+  const r = await dialogue({
+    titre: 'Créer un nouveau mois',
+    texte: 'Les lignes du mois affiché sont recopiées avec leurs montants prévus ; les montants payés et reçus repartent de zéro.',
+    corps: el('div', { class: 'dialogue__rangee' },
+      el('label', { class: 'dialogue__champ' }, 'Mois',
+        el('select', { class: 'champ', name: 'mois' }, NOMS_MOIS.map((nom, i) =>
+          el('option', { value: i + 1, selected: i + 1 === mois }, nom.charAt(0).toUpperCase() + nom.slice(1))))),
+      el('label', { class: 'dialogue__champ' }, 'Année',
+        el('input', { class: 'champ', name: 'annee', type: 'number', min: '2000', max: '2100', value: annee }))),
+    boutons: [{ libelle: 'Annuler', valeur: null }, { libelle: 'Créer', valeur: 'ok', principal: true }],
+    valide: (_, v) => {
+      const a = Number(v.annee);
+      if (!Number.isInteger(a) || a < 2000 || a > 2100) return 'Indiquez une année entre 2000 et 2100.';
+      const libelle = a + '-' + String(v.mois).padStart(2, '0');
+      return D.mois.some(m => m.libelle === libelle) ? libelleMois(libelle) + ' existe déjà.' : null;
+    },
+  });
+  if (!r.valeur) return;
+  const libelle = r.donnees.annee + '-' + String(r.donnees.mois).padStart(2, '0');
+  D.moisActif = creeMois(libelle, D.moisActif).id;
   etat.detailsOuverts.clear();
   enregistreMaintenant();
   dessineTout();
+  toast(libelleMois(libelle) + ' créé.', { duree: 3000 });
 }
-
 function changeMoisRelatif(pas) {
   enregistreMaintenant();
   const cibleMois = decaleMois(moisActif().libelle, pas);
@@ -3097,50 +3968,287 @@ function construitCsv(mois) {
 function actionMenu(action) {
   $$('.menu[open]').forEach(m => m.removeAttribute('open'));
   if (action === 'nouveau-mois') { nouveauMois(); return; }
+  if (action === 'enregistrer-fichier') { enregistreFichier(); return; }
+  if (action === 'ouvrir-sauvegarde') { $('#fichier-import').click(); return; }
+  if (action === 'persister') { demandePersistance(); return; }
   if (action === 'export-csv') {
     telecharge('comptes-' + moisActif().libelle + '.csv', construitCsv(moisActif()), 'text/csv;charset=utf-8');
     return;
   }
   if (action === 'export-json') {
     enregistreMaintenant();
-    telecharge('comptes-sauvegarde-' + new Date().toISOString().slice(0, 10) + '.json',
+    telecharge('comptes-donnees-' + new Date().toISOString().slice(0, 10) + '.json',
                JSON.stringify(Object.assign({ application: 'comptes' }, D), null, 2), 'application/json');
-    toast('Sauvegarde téléchargée. Rangez ce fichier : il contient tous vos mois.');
+    toast('Données exportées. Pour une sauvegarde complète, préférez « Enregistrer dans le fichier ».');
     return;
   }
-  if (action === 'import-json') { $('#fichier-import').click(); return; }
-  if (action === 'theme') { changeTheme(); return; }
-  if (action === 'supprimer-mois') {
-    if (D.mois.length <= 1) { toast('C’est le seul mois : il ne peut pas être supprimé.', { erreur: true }); return; }
-    if (!confirm('Supprimer définitivement ' + libelleMois(moisActif().libelle) + ' et toutes ses données ?')) return;
+  if (action === 'supprimer-mois') { supprimeMoisAffiche(); }
+}
+
+async function supprimeMoisAffiche() {
+  if (D.mois.length <= 1) { toast('C’est le seul mois : il ne peut pas être supprimé.', { erreur: true }); return; }
+  const nom = libelleMois(moisActif().libelle);
+  const r = await dialogue({
+    titre: 'Supprimer ' + nom + ' ?', danger: true,
+    texte: 'Toutes ses lignes, ses courses et ses heures seront supprimées. Vous pourrez annuler juste après, ou revenir en arrière depuis les versions précédentes.',
+    boutons: [{ libelle: 'Annuler', valeur: null }, { libelle: 'Supprimer ' + nom, valeur: 'ok', principal: true }],
+  });
+  if (!r.valeur) return;
+  avecAnnulation('Suppression de ' + nom, () => {
     D.mois = D.mois.filter(m => m.id !== D.moisActif);
     D.moisActif = trieMois(D.mois)[0].id;
+    return nom + ' supprimé.';
+  });
+}
+
+/* -- Annulation générale : une copie complète avant chaque opération délicate --- */
+
+function avecAnnulation(description, operation) {
+  const avant = JSON.stringify(D);
+  ajouteVersion('Avant : ' + description);
+  const message = operation();
+  enregistreMaintenant();
+  dessineTout();
+  toast(message || description + ' : fait.', {
+    duree: 10000,
+    action: { libelle: 'Annuler', faire: () => {
+      const retour = validees(JSON.parse(avant));
+      if (!retour) return;
+      D = retour;
+      enregistreDonnees({ force: true });
+      dessineTout();
+      signaleSauvegarde('Annulé');
+    } },
+  });
+}
+
+/* -- Catégories ----------------------------------------------------------------- */
+
+async function nouvelleCategorie(sorte) {
+  const r = await dialogue({
+    titre: sorte === 'depense' ? 'Nouvelle catégorie de dépenses' : 'Nouvelle catégorie de revenus',
+    texte: 'Elle apparaîtra dans tous les mois.',
+    corps: el('div', { class: 'dialogue__rangee' },
+      champDialogue('Nom', { name: 'nom', placeholder: sorte === 'depense' ? 'ex. Loisirs, Logement…' : 'ex. Primes, Loyers perçus…', autocomplete: 'off' }),
+      sorte === 'depense' ? el('label', { class: 'dialogue__champ' }, 'Nature des lignes',
+        el('select', { class: 'champ', name: 'nature' },
+          el('option', { value: 'variable' }, 'Dépenses variables'), el('option', { value: 'fixe' }, 'Charges fixes'))) : null),
+    boutons: [{ libelle: 'Annuler', valeur: null }, { libelle: 'Créer la catégorie', valeur: 'ok', principal: true }],
+    valide: (_, v) => !String(v.nom || '').trim() ? 'Donnez un nom à la catégorie.'
+      : (trouveCategorie(sorte, v.nom) ? 'La catégorie « ' + v.nom.trim() + ' » existe déjà.' : null),
+  });
+  if (!r.valeur) return;
+  const categorie = creeCategorie(sorte, r.donnees.nom, r.donnees.nature);
+  etat.groupesOuverts.add((sorte === 'depense' ? 'd:' : 'r:') + categorie.nom);
+  enregistrePreferences();
+  enregistreMaintenant();
+  dessineTout();
+  const groupe = $('details[data-groupe="' + CSS.escape((sorte === 'depense' ? 'd:' : 'r:') + categorie.nom) + '"]');
+  if (groupe && etat.vue === 'budget') groupe.scrollIntoView({ block: 'center', behavior: 'smooth' });
+  toast('Catégorie « ' + categorie.nom + ' » créée.', { duree: 3500 });
+}
+
+async function actionCategorie(action, sorte, nom) {
+  if (action === 'monter' || action === 'descendre') {
+    deplaceCategorie(sorte, nom, action === 'monter' ? -1 : 1);
     enregistreMaintenant();
     dessineTout();
+    const bouton = $('[data-categorie-action="' + action + '"][data-nom="' + CSS.escape(nom) + '"]:not([disabled])');
+    if (bouton) bouton.focus({ preventScroll: true });
+    return;
   }
+  if (action === 'renommer') {
+    const r = await dialogue({
+      titre: 'Renommer « ' + nom + ' »',
+      texte: 'Le nouveau nom s’applique à tous les mois. Si vous choisissez le nom d’une autre catégorie, les deux seront fusionnées.',
+      corps: champDialogue('Nouveau nom', { name: 'nom', value: nom, autocomplete: 'off' }),
+      boutons: [{ libelle: 'Annuler', valeur: null }, { libelle: 'Renommer', valeur: 'ok', principal: true }],
+      valide: (_, v) => String(v.nom || '').trim() ? null : 'Le nom ne peut pas être vide.',
+    });
+    if (r.valeur) await appliqueRenommage(sorte, nom, r.donnees.nom);
+    return;
+  }
+  if (action === 'supprimer') await demandeSuppressionCategorie(sorte, nom);
+}
+
+async function appliqueRenommage(sorte, ancien, nouveau) {
+  const propre = String(nouveau || '').trim();
+  if (!propre || propre === ancien) { dessineTout(); return; }
+  const cible = trouveCategorie(sorte, propre);
+  if (cible && cible.nom !== ancien) {
+    const n = compteLignesCategorie(sorte, ancien);
+    const r = await dialogue({
+      titre: 'Fusionner avec « ' + cible.nom + ' » ?',
+      texte: '« ' + cible.nom + ' » existe déjà. Les ' + (n.ici + n.ailleurs) + ' ligne(s) de « ' + ancien +
+             ' » (tous mois confondus) la rejoindront, et « ' + ancien + ' » disparaîtra.',
+      boutons: [{ libelle: 'Annuler', valeur: null }, { libelle: 'Fusionner', valeur: 'ok', principal: true }],
+    });
+    if (!r.valeur) { dessineTout(); return; }
+  }
+  const prefixe = sorte === 'depense' ? 'd:' : 'r:';
+  avecAnnulation('Renommage de « ' + ancien + ' »', () => {
+    const resultat = renommeCategorie(sorte, ancien, propre);
+    const nomFinal = trouveCategorie(sorte, propre).nom;
+    if (etat.groupesOuverts.delete(prefixe + ancien)) etat.groupesOuverts.add(prefixe + nomFinal);
+    enregistrePreferences();
+    return resultat === 'fusionnee' ? '« ' + ancien + ' » fusionnée dans « ' + nomFinal + ' ».'
+                                    : '« ' + ancien + ' » renommée en « ' + nomFinal + ' ».';
+  });
+}
+
+async function demandeSuppressionCategorie(sorte, nom) {
+  const n = compteLignesCategorie(sorte, nom);
+  const total = n.ici + n.ailleurs;
+  const autres = categoriesDe(sorte).filter(c => c.nom !== nom);
+  const detail = n.ici + ' dans ce mois' + (n.ailleurs ? ', ' + n.ailleurs + ' dans les autres mois' : '');
+  const choix = total === 0 ? null : el('fieldset', { class: 'dialogue__choix' },
+    el('legend', { texte: 'Que faire de ses ' + total + ' ligne(s) (' + detail + ') ?' }),
+    autres.length ? el('label', { class: 'dialogue__radio' },
+      el('input', { type: 'radio', name: 'choix', value: 'deplacer', checked: true }),
+      'Les déplacer vers ',
+      el('select', { class: 'champ', name: 'destination', 'aria-label': 'Catégorie de destination' },
+        autres.map(c => el('option', { value: c.nom }, c.nom)))) : null,
+    el('label', { class: 'dialogue__radio' },
+      el('input', { type: 'radio', name: 'choix', value: 'supprimer', checked: !autres.length }),
+      'Les supprimer aussi, dans tous les mois'));
+  const r = await dialogue({
+    titre: 'Supprimer la catégorie « ' + nom + ' » ?', danger: true,
+    texte: total === 0 ? 'Elle ne contient aucune ligne, dans aucun mois.'
+                       : 'Vous pourrez annuler juste après, ou revenir en arrière depuis les versions précédentes.',
+    corps: choix,
+    boutons: [{ libelle: 'Annuler', valeur: null }, { libelle: 'Supprimer la catégorie', valeur: 'ok', principal: true }],
+  });
+  if (!r.valeur) return;
+  const destination = total && r.donnees.choix === 'deplacer' ? r.donnees.destination : null;
+  avecAnnulation('Suppression de la catégorie « ' + nom + ' »', () => {
+    const bilan = supprimeCategorie(sorte, nom, destination);
+    if (destination) etat.groupesOuverts.add((sorte === 'depense' ? 'd:' : 'r:') + destination);
+    return 'Catégorie « ' + nom + ' » supprimée' +
+      (bilan.deplacees ? ' ; ' + bilan.deplacees + ' ligne(s) déplacée(s) vers « ' + destination + ' »' : '') +
+      (bilan.supprimees ? ' ; ' + bilan.supprimees + ' ligne(s) supprimée(s)' : '') + '.';
+  });
+}
+
+/* -- Paramètres ------------------------------------------------------------------- */
+
+function ecrisParametre(cle, champ) {
+  const p = D.parametres;
+  const liste = (texte) => Array.from(new Set(texte.split('\n').map(x => x.trim()).filter(Boolean)));
+  if (cle === 'theme') { appliqueTheme(champ.value); return; }
+  if (cle === 'module-courses' || cle === 'module-heures') p.modules[cle.slice(7)] = champ.checked;
+  else if (cle === 'avertirFermeture') p.avertirFermeture = champ.checked;
+  else if (cle === 'postesCourses' || cle === 'articlesCourses') p[cle] = liste(champ.value);
+  else if (cle === 'nomCourses' || cle === 'nomHeures') p[cle] = champ.value.trim() || PARAMETRES_DEFAUT[cle];
+  else if (cle === 'seuilAlerte') p.seuilAlerte = Math.min(100, Math.max(1, Math.round(nombre(champ.value)) || 85));
+  else if (cle === 'semainesDefaut') p.semainesDefaut = Math.min(6, Math.max(1, Math.round(nombre(champ.value)) || 4));
+  else if (cle === 'rappelJours') p.rappelJours = Math.max(0, Math.round(Number(champ.value)) || 0);
+  else if (cle === 'budgetSemaineDefaut' || cle === 'tauxHoraireDefaut' || cle === 'tauxCotisationDefaut') p[cle] = nombre(champ.value);
+  else return;
+  enregistreMaintenant();
+  planifieRendu();
+}
+
+/* -- Sauvegarde dans un fichier ------------------------------------------------------
+   Le fichier produit est l'application elle-même, avec les données à l'intérieur :
+   l'ouvrir sur n'importe quel ordinateur retrouve les comptes. */
+
+let poigneeFichier = null;      // écriture directe (Chrome, Edge) : garde le fichier choisi
+
+function nomDuFichier() {
+  const nom = decodeURIComponent(location.pathname.split('/').pop() || '');
+  return /\.html?$/i.test(nom) ? nom : 'comptes.html';
+}
+
+function pageAvecDonnees(donnees) {
+  const clone = SOURCE_PAGE.cloneNode(true);
+  // « < » échappé : le JSON ne peut pas refermer la balise qui le contient.
+  clone.querySelector('#donnees-integrees').textContent = JSON.stringify(donnees).replace(/</g, '\\u003c');
+  return '<!doctype html>\n' + clone.outerHTML + '\n';
+}
+
+async function enregistreFichier() {
+  if (enregistreMaintenant() === 'conflit') return false;
+  const avant = { fichierLe: D.fichierLe, fichierRevision: D.fichierRevision };
+  D.fichierLe = new Date().toISOString();
+  D.fichierRevision = D.revision;
+  const contenu = pageAvecDonnees(D);
+  const termine = (message) => {
+    enregistreDonnees({ meta: true, force: true });
+    dessineEtatFichier();
+    majPageParametres();
+    toast(message, { duree: 9000 });
+    return true;
+  };
+  if (typeof window.showSaveFilePicker === 'function') {
+    try {
+      if (!poigneeFichier) {
+        poigneeFichier = await window.showSaveFilePicker({ suggestedName: nomDuFichier(),
+          types: [{ description: 'Application Comptes', accept: { 'text/html': ['.html'] } }] });
+      }
+      const flux = await poigneeFichier.createWritable();
+      await flux.write(contenu);
+      await flux.close();
+      return termine('✓ Comptes enregistrés dans « ' + poigneeFichier.name + ' ».');
+    } catch (erreur) {
+      if (erreur && erreur.name === 'AbortError') { Object.assign(D, avant); dessineEtatFichier(); return false; }
+      poigneeFichier = null;       // écriture directe refusée : on passe par le téléchargement
+    }
+  }
+  telecharge(nomDuFichier(), contenu, 'text/html;charset=utf-8');
+  return termine('Fichier « ' + nomDuFichier() + ' » prêt. Enregistrez-le à la place de l’ancien (dans votre Drive).');
+}
+
+/** Lit un fichier de sauvegarde : comptes.html enregistré, ou export JSON. */
+async function lisSauvegarde(fichier) {
+  const texte = await fichier.text();
+  if (/^\s*[{\[]/.test(texte)) return { donnees: validees(JSON.parse(texte)), html: false };
+  const page = new DOMParser().parseFromString(texte, 'text/html');
+  const bloc = page.getElementById('donnees-integrees');
+  return { donnees: bloc ? validees(JSON.parse(bloc.textContent || 'null')) : null, html: true };
 }
 
 async function importeFichier(fichier) {
   if (!fichier) return;
   try {
-    const donnees = validees(JSON.parse(await fichier.text()));
-    if (!donnees) throw new Error('ce fichier ne contient aucun mois exploitable');
-    const existants = new Set(D.mois.map(m => m.libelle));
-    let importes = 0;
-    for (const mois of donnees.mois) {
-      if (existants.has(mois.libelle)) continue;
-      mois.id = D.prochainId++;
-      for (const collection of [mois.lignes, mois.achats, mois.creneaux]) {
-        for (const element of collection) element.id = D.prochainId++;
+    const { donnees, html } = await lisSauvegarde(fichier);
+    if (!donnees) throw new Error('ce fichier ne contient pas de comptes');
+    const nouveaux = donnees.mois.filter(m => !D.mois.some(x => x.libelle === m.libelle));
+    const r = await dialogue({
+      titre: 'Ouvrir « ' + fichier.name + ' » ?',
+      corps: el('div', { class: 'apercu' },
+        el('p', {}, donnees.fichierLe ? 'Enregistré le ' + dateCourte(donnees.fichierLe) + '. '
+                                      : (donnees.modifieLe ? 'Dernière modification le ' + dateCourte(donnees.modifieLe) + '. ' : ''),
+          resumeDonnees(donnees) + '.'),
+        el('p', {}, 'Mois contenus : ' + trieMois(donnees.mois).map(m => libelleMois(m.libelle)).join(', ') + '.'),
+        el('p', { class: 'apercu__note', texte: 'Vos comptes actuels sont d’abord gardés dans les versions précédentes : rien n’est perdu.' })),
+      boutons: [
+        { libelle: 'Annuler', valeur: null },
+        nouveaux.length ? { libelle: 'Ajouter seulement les ' + nouveaux.length + ' mois absents', valeur: 'fusion' } : null,
+        { libelle: 'Remplacer tous mes comptes', valeur: 'remplacer', principal: true },
+      ].filter(Boolean),
+    });
+    if (!r.valeur) return;
+    avecAnnulation('Ouverture de « ' + fichier.name + ' »', () => {
+      if (r.valeur === 'remplacer') {
+        const etaitAJour = donnees.fichierRevision !== null && donnees.fichierRevision === donnees.revision;
+        D = donnees;
+        if (enregistreDonnees({ force: true }) === 'ok' && html && etaitAJour) {
+          D.fichierRevision = D.revision;
+          enregistreDonnees({ meta: true, force: true });
+        }
+        return 'Comptes remplacés par ceux de « ' + fichier.name + ' ».';
       }
-      D.mois.push(mois);
-      importes++;
-    }
-    if (importes) D.moisActif = trieMois(D.mois)[0].id;
-    enregistreMaintenant();
-    dessineTout();
-    toast(importes ? importes + ' mois restauré(s). Les mois déjà présents ont été conservés.'
-                   : 'Aucun mois nouveau à restaurer : ils sont déjà tous là.');
+      for (const mois of nouveaux) {
+        mois.id = D.prochainId++;
+        for (const collection of [mois.lignes, mois.achats, mois.creneaux]) {
+          for (const element of collection) element.id = D.prochainId++;
+        }
+        for (const l of mois.lignes) assureCategorie(l.type === 'depense' ? 'depense' : 'revenu', l.categorie, l.nature);
+        D.mois.push(mois);
+      }
+      D.moisActif = trieMois(D.mois)[0].id;
+      return nouveaux.length + ' mois ajouté(s) depuis « ' + fichier.name + ' ».';
+    });
   } catch (erreur) {
     toast('Fichier illisible : ' + erreur.message, { erreur: true });
   } finally {
@@ -3148,6 +4256,40 @@ async function importeFichier(fichier) {
   }
 }
 
+async function actionVersion(action, index) {
+  const version = lisVersions()[index];
+  if (!version) return;
+  if (action === 'telecharger') {
+    telecharge('comptes-version-' + version.le.slice(0, 16).replace(/[:T]/g, '-') + '.json', version.donnees, 'application/json');
+    return;
+  }
+  let donnees = null;
+  try { donnees = validees(JSON.parse(version.donnees)); } catch (e) { donnees = null; }
+  if (!donnees) { toast('Cette version est illisible.', { erreur: true }); return; }
+  const quand = new Date(version.le).toLocaleString('fr-FR', { dateStyle: 'long', timeStyle: 'short' });
+  const r = await dialogue({
+    titre: 'Revenir à la version du ' + quand + ' ?',
+    texte: version.resume + '. Vos comptes actuels sont d’abord gardés dans l’historique : vous pourrez y revenir.',
+    boutons: [{ libelle: 'Annuler', valeur: null }, { libelle: 'Revenir à cette version', valeur: 'ok', principal: true }],
+  });
+  if (!r.valeur) return;
+  avecAnnulation('Retour à la version du ' + quand, () => {
+    D = donnees;
+    enregistreDonnees({ force: true });
+    return 'Comptes revenus à la version du ' + quand + '.';
+  });
+}
+
+async function demandePersistance() {
+  if (!navigator.storage || !navigator.storage.persist) {
+    toast('Ce navigateur ne propose pas cette protection.', { erreur: true });
+    return;
+  }
+  try { etat.persistance = await navigator.storage.persist(); } catch (e) { etat.persistance = false; }
+  majPageParametres();
+  toast(etat.persistance ? 'Le navigateur protège désormais ces données.'
+                         : 'Le navigateur a refusé : gardez l’habitude d’enregistrer dans le fichier.', { erreur: !etat.persistance });
+}
 /* -- Thème, préférences, mise en page ------------------------------------------- */
 
 function changeTheme() {
@@ -3157,7 +4299,8 @@ function changeTheme() {
 
 function appliqueTheme(theme) {
   document.documentElement.dataset.theme = theme;
-  $('#etat-theme').textContent = { auto: 'auto', light: 'clair', dark: 'sombre' }[theme];
+  const etiquette = $('#etat-theme');
+  if (etiquette) etiquette.textContent = { auto: 'auto', light: 'clair', dark: 'sombre' }[theme];
   try { localStorage.setItem('comptes.theme', theme); } catch (e) { /* ignoré */ }
   if (etat.recap && etat.vue === 'graphiques') { dessineGraphiqueCategories(); dessineGraphiqueEvolution(); }
 }
@@ -3216,19 +4359,37 @@ function demarre() {
   } catch (e) { /* stockage indisponible */ }
   appliqueTheme(theme);
 
-  D = lisDonnees();
-  if (!D) { donneesDeDepart(); synchroniseLiens(moisActif()); enregistreDonnees(); }
+  // Navigateur ou fichier : on ouvre le plus récent, sans jamais rien écraser d'illisible.
+  const { donnees, messages, source } = chargeAuDemarrage();
+  D = donnees || donneesDeDepart();
+  const stocke = lisNavigateur();
+  revisionConnue = revisionStockee();
+  derniereSignature = stocke.etat === 'ok' ? signatureContenu(stocke.donnees) : null;
+  const fichierEtaitAJour = fichierAJour();
+  synchroniseLiens(moisActif());
+  const resultat = enregistreDonnees({ force: true });          // n'écrit que si le contenu a changé
+  if (resultat === 'ok' && source === 'fichier' && fichierEtaitAJour) {
+    D.fichierRevision = D.revision;
+    enregistreDonnees({ meta: true, force: true });
+  } else if (resultat === 'inchange' && stocke.etat === 'ok' && stocke.donnees.fichierLe !== D.fichierLe) {
+    enregistreDonnees({ meta: true, force: true });
+  }
   if (!stockageDisponible) montreAlerteStockage();
 
   dessineTout();
   montreVue(location.hash.slice(1) || vue);
   ajusteAncrages();
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(ajusteAncrages);
+  if (navigator.storage && navigator.storage.persisted) {
+    navigator.storage.persisted().then(v => { etat.persistance = v; majPageParametres(); }).catch(() => {});
+  }
+  for (const m of messages) toast(m.texte, { erreur: !!m.erreur, duree: 15000 });
 }
-
 /* -- Auto-vérification : ouvrir le fichier avec #autotest ------------------ */
 
 function verifie() {
+  // Par sécurité, toute écriture dans le stockage est neutralisée pendant la vérification.
+  stockageDisponible = false;
   const resultats = [];
   const teste = (nom, obtenu, attendu) => resultats.push({
     nom, memeChose: JSON.stringify(obtenu) === JSON.stringify(attendu), obtenu, attendu,
@@ -3322,7 +4483,7 @@ function verifie() {
           .depenses.reel, 0);
 
   // Duplication d'un mois.
-  D = { version: 1, prochainId: 1, moisActif: null, mois: [] };
+  D = { version: 2, prochainId: 1, moisActif: null, parametres: JSON.parse(JSON.stringify(PARAMETRES_DEFAUT)), mois: [] };
   const source = creeMois('2026-01');
   source.lignes.push({ id: D.prochainId++, type: 'depense', nature: 'fixe', categorie: 'A',
                        libelle: 'X', estime: 10, reel: 9, actif: false, note: '', lien: '',
@@ -3378,6 +4539,77 @@ function verifie() {
   const creneau = mois.creneaux.find(c => c.semaine === 4 && c.jour === 2);
   teste('Horaire « 8h5 » normalisé', ecrisCreneau(creneau, 'matinDebut', '8h5'), '08:05');
   teste('Horaire illisible effacé', ecrisCreneau(creneau, 'matinFin', 'midi'), '');
+
+  // Anciennes données (version 1) : les revenus deviennent des catégories, rien n'est perdu.
+  const ancienFormat = validees({ version: 1, prochainId: 10, moisActif: 1, mois: [{ id: 1, libelle: '2026-08',
+    lignes: [
+      { id: 2, type: 'salaire', nature: 'fixe', categorie: 'Salaire', libelle: 'Evry', estime: 100, reel: 90, actif: true },
+      { id: 3, type: 'aide', nature: 'fixe', categorie: 'Aide', libelle: 'RLP', estime: 50, reel: 50, actif: true },
+      { id: 4, type: 'depense', nature: 'fixe', categorie: 'Santé', libelle: 'MNH', estime: 70, reel: 70, actif: true },
+    ], semaines: [], achats: [], creneaux: [] }] });
+  teste('Migration : « Salaire » devient la catégorie « Salaires »', ancienFormat.mois[0].lignes[0].categorie, 'Salaires');
+  teste('Migration : « Aide » devient la catégorie « Aides »', ancienFormat.mois[0].lignes[1].categorie, 'Aides');
+  teste('Migration : les catégories de dépenses sont recensées',
+        ancienFormat.parametres.categoriesDepenses.map(c => c.nom), ['Santé']);
+  teste('Migration : les catégories de revenus sont recensées',
+        ancienFormat.parametres.categoriesRevenus.map(c => c.nom), ['Salaires', 'Aides']);
+  teste('Migration : les montants sont intacts', recapBudget(ancienFormat.mois[0].lignes).restant.reel, 70);
+
+  // Catégories : opérations sur tous les mois à la fois.
+  donneesDeDepart();
+  const septembre = moisActif();
+  const octobre = creeMois('2099-10', septembre.id);
+  const nbAbonnements = (m) => m.lignes.filter(l => l.categorie === 'Abonnements').length;
+  const avantRenommage = nbAbonnements(septembre);
+  let erreurDoublon = null;
+  try { creeCategorie('depense', 'abonnements'); } catch (e) { erreurDoublon = e.message; }
+  teste('Catégorie : un doublon est refusé (même sans majuscule)', !!erreurDoublon, true);
+  const vide = creeCategorie('depense', 'Vacances', 'variable');
+  teste('Catégorie : une catégorie vide existe pour tous les mois',
+        groupesDepenses(octobre).some(g => g.nom === 'Vacances' && g.lignes.length === 0), true);
+  teste('Catégorie : renommer agit sur tous les mois', renommeCategorie('depense', 'Abonnements', 'Abonnements en ligne'), 'renommee');
+  teste('Catégorie : lignes renommées en septembre', septembre.lignes.filter(l => l.categorie === 'Abonnements en ligne').length, avantRenommage);
+  teste('Catégorie : lignes renommées en octobre', octobre.lignes.filter(l => l.categorie === 'Abonnements en ligne').length, avantRenommage);
+  const nbStreaming = septembre.lignes.filter(l => l.categorie === 'Streaming').length;
+  teste('Catégorie : renommer vers un nom existant fusionne', renommeCategorie('depense', 'Streaming', 'abonnements EN LIGNE'), 'fusionnee');
+  teste('Catégorie : après fusion, les lignes sont réunies',
+        septembre.lignes.filter(l => l.categorie === 'Abonnements en ligne').length, avantRenommage + nbStreaming);
+  teste('Catégorie : après fusion, l’ancienne a disparu', !!trouveCategorie('depense', 'Streaming'), false);
+  const totalAvant = recapBudget(septembre.lignes).depenses.reel;
+  const bilanDeplacement = supprimeCategorie('depense', 'Presse', 'Autres');
+  teste('Catégorie : supprimer en déplaçant garde les lignes', bilanDeplacement.deplacees, 2 * 2);
+  teste('Catégorie : le total ne bouge pas quand on déplace', recapBudget(septembre.lignes).depenses.reel, totalAvant);
+  const nbBanque = septembre.lignes.filter(l => l.categorie === 'Banque').length;
+  const bilanSuppression = supprimeCategorie('depense', 'Banque', null);
+  teste('Catégorie : supprimer sans destination retire ses lignes partout', bilanSuppression.supprimees, nbBanque * 2);
+  teste('Catégorie : le total baisse du montant de la catégorie supprimée',
+        recapBudget(septembre.lignes).depenses.reel, eur(totalAvant - 10));
+  const ordre = categoriesDe('depense').map(c => c.nom);
+  deplaceCategorie('depense', ordre[1], -1);
+  teste('Catégorie : monter échange avec la précédente', categoriesDe('depense').slice(0, 2).map(c => c.nom), [ordre[1], ordre[0]]);
+  teste('Catégorie : la première ne peut pas monter', deplaceCategorie('depense', categoriesDe('depense')[0].nom, -1), false);
+  teste('Catégorie : un nom inconnu tapé sur une ligne crée la catégorie',
+        (ecrisLigne(septembre.lignes[0], 'categorie', 'Nouvelle'), !!trouveCategorie('depense', 'Nouvelle')), true);
+  teste('Catégorie : de même pour les revenus',
+        (ecrisLigne(septembre.lignes.find(l => l.type !== 'depense'), 'categorie', 'Primes'), !!trouveCategorie('revenu', 'Primes')), true);
+  teste('Totaux par catégorie de revenus', recapBudget(septembre.lignes).parCategorieRevenus.some(c => c.categorie === 'Primes'), true);
+
+  // Le fichier enregistré contient les données, et les restitue à l'identique.
+  const page = pageAvecDonnees(D);
+  const relue = new DOMParser().parseFromString(page, 'text/html');
+  const integrees = validees(JSON.parse(relue.getElementById('donnees-integrees').textContent));
+  teste('Fichier : les données sont intégrées à la page', !!integrees, true);
+  teste('Fichier : restituées à l’identique', integrees && signatureContenu(integrees), signatureContenu(D));
+  teste('Fichier : l’application est incluse', page.includes('function dessineTout()'), true);
+  teste('Fichier : une seule balise de données', relue.querySelectorAll('#donnees-integrees').length, 1);
+  const piege = JSON.parse(JSON.stringify(D));
+  piege.mois[0].lignes[0].libelle = '<\/script><script>alert(1)<\/script>';
+  const pagePiege = new DOMParser().parseFromString(pageAvecDonnees(piege), 'text/html');
+  teste('Fichier : un libellé contenant « <\/script> » ne casse pas la page',
+        validees(JSON.parse(pagePiege.getElementById('donnees-integrees').textContent)).mois[0].lignes[0].libelle,
+        '<\/script><script>alert(1)<\/script>');
+  teste('Empreinte : ignore les informations d’enregistrement',
+        signatureContenu(Object.assign({}, D, { revision: 999, modifieLe: 'x', fichierLe: 'y' })), signatureContenu(D));
 
   // Aller-retour export / import.
   donneesDeDepart();

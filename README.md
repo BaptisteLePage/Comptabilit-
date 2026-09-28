@@ -94,20 +94,94 @@ récurrentes du mois affiché (libellés, montants prévus, mises en pause) en
 remettant les montants réels à zéro : le nouveau mois démarre pré-rempli mais
 vierge. Dès que vous avez deux mois, la page Graphiques trace l'évolution.
 
-## Où sont les données
+## Sécurité des données
 
-Elles sont enregistrées **dans votre navigateur**, sur votre ordinateur, et ne
-partent nulle part.
+Vos comptes sont protégés à trois niveaux.
 
-- Changer de navigateur ou d'ordinateur ne les transporte pas : menu `⋯` →
-  **Sauvegarder tout (JSON)**, puis **Restaurer une sauvegarde** de l'autre côté.
-- Effacer les données de navigation en cochant « cookies et données de sites »
-  les efface aussi. Une sauvegarde JSON de temps en temps met à l'abri.
-- En navigation privée, rien n'est conservé. L'application le signale par un
-  bandeau rouge si elle n'arrive pas à enregistrer.
+1. **Dans le navigateur, automatiquement.** Chaque modification est
+   enregistrée puis relue pour vérifier qu'elle a bien été écrite. Si
+   l'application est ouverte dans deux onglets, ils se synchronisent au lieu de
+   s'écraser ; si les deux écrivent au même instant, aucune saisie n'est
+   perdue (l'une est gardée dans les versions précédentes, et vous êtes
+   prévenu). Si les données du navigateur sont un jour illisibles, elles ne
+   sont jamais écrasées : une copie est mise de côté et la dernière version
+   saine est rouverte.
+2. **Les versions précédentes.** Une copie par heure d'activité, et une avant
+   chaque opération délicate (suppression de catégorie ou de mois,
+   restauration…). Les 30 dernières sont listées dans Paramètres, et chacune
+   peut être restaurée ou téléchargée. Les opérations délicates proposent
+   aussi un « Annuler » immédiat.
+3. **Le fichier `comptes.html` lui-même.** `Ctrl+S` (ou le bouton
+   « Enregistrer dans le fichier ») produit un fichier qui contient
+   l'application **et toutes vos données**. Ouvert sur n'importe quel
+   ordinateur ou navigateur, il retrouve vos comptes. S'il est plus récent que
+   ce que le navigateur connaît, c'est lui qui l'emporte, et l'ancienne version
+   du navigateur est gardée dans l'historique.
 
-Le menu `⋯` exporte aussi le mois en CSV, directement lisible par Excel
-(séparateur `;`, virgule décimale).
+Une pastille en haut à droite indique où vous en êtes : **✓ Fichier à jour**,
+**● À enregistrer** (des modifications ne sont que dans le navigateur) ou
+**⚠ Pas encore de fichier**. Un rappel apparaît si le fichier n'a pas été
+enregistré depuis longtemps (réglable).
+
+### Avec Google Drive et Firefox
+
+C'est une bonne organisation, **à condition d'enregistrer dans le fichier** :
+sans cela, les données restent dans Firefox et le Drive ne copie que
+l'application vide.
+
+1. Installez « Google Drive pour ordinateur » et placez `comptes.html` dans un
+   dossier de « Mon Drive » (par exemple *Mon Drive › Comptes*).
+2. Ouvrez-le depuis ce dossier (double-clic), puis mettez-le en marque-page
+   dans Firefox. Ne l'ouvrez pas depuis le site drive.google.com : le Drive en
+   ligne n'exécute pas les applications.
+3. Dans Firefox : *Paramètres › Général › Fichiers et applications* › cochez
+   « Toujours vous demander où enregistrer les fichiers ».
+4. Après une séance de saisie : `Ctrl+S`, choisissez le `comptes.html` du Drive
+   et acceptez de le remplacer.
+5. Le Drive garde les versions successives du fichier : clic droit sur le
+   fichier dans drive.google.com › « Gérer les versions ».
+
+Firefox ne permet pas à une page d'écrire directement dans un fichier : chaque
+enregistrement passe donc par la fenêtre « Enregistrer sous ». Chrome et Edge
+le permettent : le fichier est choisi une fois, puis `Ctrl+S` l'écrase
+directement tant que l'onglet reste ouvert.
+
+Évitez de modifier vos comptes sur deux ordinateurs à la fois sans enregistrer
+entre les deux : le dernier fichier enregistré l'emporte (l'autre version reste
+dans l'historique du navigateur où elle a été faite).
+
+## Catégories
+
+Dépenses et revenus sont rangés par catégories **que vous gérez vous-même**.
+Elles sont communes à tous les mois.
+
+- **Créer** : « + Catégorie » en haut de chaque bloc. Une catégorie peut rester
+  vide.
+- **Renommer, déplacer, supprimer** : ouvrez la catégorie ; ses commandes sont
+  en bas (✎ Renommer, ↑, ↓, Supprimer la catégorie). Tout se fait aussi depuis
+  la page Paramètres.
+- **Renommer** agit sur tous les mois. Donner le nom d'une catégorie existante
+  **fusionne** les deux (une confirmation est demandée).
+- **Supprimer** propose de déplacer ses lignes vers une autre catégorie (choix
+  par défaut) ou de les supprimer aussi. Dans les deux cas, « Annuler » est
+  possible juste après.
+- Taper un nom nouveau dans la case Catégorie d'une ligne crée la catégorie.
+
+## Paramètres
+
+La page ⚙ Paramètres regroupe tout ce qui se règle :
+
+- la sauvegarde (enregistrer, ouvrir une sauvegarde, versions précédentes) ;
+- les catégories de dépenses (avec la nature proposée pour leurs nouvelles
+  lignes) et de revenus ;
+- les modules : activer ou désactiver Courses et Heures gardées, et les
+  renommer ;
+- les valeurs de départ des nouveaux mois (budget et nombre de semaines de
+  courses, taux horaire, cotisations) et les suggestions de courses ;
+- le thème, le seuil d'alerte des jauges, la fréquence du rappel
+  d'enregistrement, et l'avertissement à la fermeture.
+
+Les paramètres sont enregistrés avec les données : ils voyagent dans le fichier.
 
 ## Ce que devient le tableau Excel
 
@@ -133,11 +207,12 @@ Deux écarts assumés, à corriger d'un clic si besoin :
 ## Vérifier que les calculs sont justes
 
 Ouvrez `comptes.html#autotest` (ajoutez `#autotest` à la fin de l'adresse dans
-la barre du navigateur). Une page liste 63 vérifications : lecture des montants
+la barre du navigateur). Une page liste 91 vérifications : lecture des montants
 (virgule, point des milliers, négatifs), durées de garde, salaire brut/net,
 budget courses, totaux, lignes et revenus en pause, liaison entre le budget et
-les modules, duplication d'un mois, sauvegarde et restauration. Un lien ramène
-ensuite à l'application.
+les modules, duplication d'un mois, opérations sur les catégories, reprise des
+anciennes données, et fidélité du fichier enregistré. Cette vérification
+n'écrit jamais dans vos données. Un lien ramène ensuite à l'application.
 
 ## Modifier l'application
 
