@@ -111,44 +111,48 @@ Vos comptes sont protégés à trois niveaux.
    restauration…). Les 30 dernières sont listées dans Paramètres, et chacune
    peut être restaurée ou téléchargée. Les opérations délicates proposent
    aussi un « Annuler » immédiat.
-3. **Le fichier `comptes.html` lui-même.** `Ctrl+S` (ou le bouton
-   « Enregistrer dans le fichier ») produit un fichier qui contient
-   l'application **et toutes vos données**. Ouvert sur n'importe quel
+3. **Les copies de sauvegarde.** Un clic (pastille `✓ Enregistré`, bandeau
+   de rappel, menu `⋯` ou Paramètres) télécharge un fichier **daté**, par
+   exemple `comptes-sauvegarde-2026-09-28-18h30.html`, qui contient
+   l'application **et toutes vos données**. C'est un fichier nouveau à chaque
+   fois : **il n'y a jamais rien à remplacer**. Ouvert sur n'importe quel
    ordinateur ou navigateur, il retrouve vos comptes. S'il est plus récent que
    ce que le navigateur connaît, c'est lui qui l'emporte, et l'ancienne version
    du navigateur est gardée dans l'historique.
 
-Une pastille en haut à droite indique où vous en êtes : **✓ Fichier à jour**,
-**● À enregistrer** (des modifications ne sont que dans le navigateur) ou
-**⚠ Pas encore de fichier**. Un rappel apparaît si le fichier n'a pas été
-enregistré depuis longtemps (réglable).
+**Il n'y a rien à enregistrer à la main.** Vous pouvez fermer l'onglet ou
+éteindre l'ordinateur à tout moment : en rouvrant `comptes.html`, tout est là.
+`Ctrl+S` le confirme simplement, sans rien télécharger.
 
-### Avec Google Drive et Firefox
+La pastille en haut à droite indique **✓ Enregistré**. Elle devient
+**✓ Enregistré · copie conseillée** (avec un bandeau de rappel) quand la
+dernière copie de sauvegarde date de plus d'une semaine et que vos comptes ont
+changé depuis (délai réglable), et **⚠ Non enregistré** si le navigateur
+refusait d'enregistrer ; dans ce cas seulement, fermer l'onglet demande
+confirmation.
 
-C'est une bonne organisation, **à condition d'enregistrer dans le fichier** :
-sans cela, les données restent dans Firefox et le Drive ne copie que
-l'application vide.
+### Avec Firefox
 
-1. Installez « Google Drive pour ordinateur » et placez `comptes.html` dans un
-   dossier de « Mon Drive » (par exemple *Mon Drive › Comptes*).
-2. Ouvrez-le depuis ce dossier (double-clic), puis mettez-le en marque-page
-   dans Firefox. Ne l'ouvrez pas depuis le site drive.google.com : le Drive en
-   ligne n'exécute pas les applications.
-3. Dans Firefox : *Paramètres › Général › Fichiers et applications* › cochez
-   « Toujours vous demander où enregistrer les fichiers ».
-4. Après une séance de saisie : `Ctrl+S`, choisissez le `comptes.html` du Drive
-   et acceptez de le remplacer.
-5. Le Drive garde les versions successives du fichier : clic droit sur le
-   fichier dans drive.google.com › « Gérer les versions ».
+Par sécurité, Firefox ne permet à aucune page web d'écrire dans un fichier de
+votre ordinateur. L'application enregistre donc vos comptes **dans Firefox**,
+et les copies de sauvegarde sont des téléchargements.
 
-Firefox ne permet pas à une page d'écrire directement dans un fichier : chaque
-enregistrement passe donc par la fenêtre « Enregistrer sous ». Chrome et Edge
-le permettent : le fichier est choisi une fois, puis `Ctrl+S` l'écrase
-directement tant que l'onglet reste ouvert.
+1. Ouvrez toujours le même `comptes.html` (un marque-page est idéal). Vos
+   comptes sont liés à ce fichier à cet emplacement : ne le déplacez pas et ne
+   le renommez pas. Si cela arrive, ouvrez votre dernière copie de sauvegarde
+   (menu `⋯` › « Ouvrir une sauvegarde… », ou double-clic sur la copie).
+2. Pour que les copies se rangent seules, sans question : *Paramètres ›
+   Général › Fichiers et applications › Téléchargements* › « Enregistrer les
+   fichiers dans » un dossier de votre choix (par exemple *Sauvegardes
+   comptes*, éventuellement dans votre Drive), et décochez « Toujours vous
+   demander où enregistrer les fichiers ».
+3. Attention : effacer l'historique de Firefox avec la case « Cookies et
+   données de sites », ou activer « Supprimer les cookies et les données des
+   sites à la fermeture de Firefox », efface aussi les comptes enregistrés
+   dans Firefox. Évitez-le, ou téléchargez une copie juste avant.
 
-Évitez de modifier vos comptes sur deux ordinateurs à la fois sans enregistrer
-entre les deux : le dernier fichier enregistré l'emporte (l'autre version reste
-dans l'historique du navigateur où elle a été faite).
+Les anciennes copies peuvent être supprimées quand vous voulez ; gardez au
+moins les plus récentes.
 
 ## Catégories
 
@@ -171,17 +175,19 @@ Elles sont communes à tous les mois.
 
 La page ⚙ Paramètres regroupe tout ce qui se règle :
 
-- la sauvegarde (enregistrer, ouvrir une sauvegarde, versions précédentes) ;
+- la sauvegarde (copies de sauvegarde, ouvrir une sauvegarde, versions
+  précédentes) ;
 - les catégories de dépenses (avec la nature proposée pour leurs nouvelles
   lignes) et de revenus ;
 - les modules : activer ou désactiver Courses et Heures gardées, et les
   renommer ;
 - les valeurs de départ des nouveaux mois (budget et nombre de semaines de
   courses, taux horaire, cotisations) et les suggestions de courses ;
-- le thème, le seuil d'alerte des jauges, la fréquence du rappel
-  d'enregistrement, et l'avertissement à la fermeture.
+- le thème, le seuil d'alerte des jauges, la fréquence du rappel de copie
+  de sauvegarde, et l'avertissement à la fermeture.
 
-Les paramètres sont enregistrés avec les données : ils voyagent dans le fichier.
+Les paramètres sont enregistrés avec les données : ils voyagent dans les copies
+de sauvegarde.
 
 ## Ce que devient le tableau Excel
 
@@ -207,11 +213,11 @@ Deux écarts assumés, à corriger d'un clic si besoin :
 ## Vérifier que les calculs sont justes
 
 Ouvrez `comptes.html#autotest` (ajoutez `#autotest` à la fin de l'adresse dans
-la barre du navigateur). Une page liste 91 vérifications : lecture des montants
+la barre du navigateur). Une page liste 97 vérifications : lecture des montants
 (virgule, point des milliers, négatifs), durées de garde, salaire brut/net,
 budget courses, totaux, lignes et revenus en pause, liaison entre le budget et
 les modules, duplication d'un mois, opérations sur les catégories, reprise des
-anciennes données, et fidélité du fichier enregistré. Cette vérification
+anciennes données, fidélité des copies de sauvegarde et rappel de copie. Cette vérification
 n'écrit jamais dans vos données. Un lien ramène ensuite à l'application.
 
 ## Modifier l'application

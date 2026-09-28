@@ -17,9 +17,10 @@
     - ou téléchargez-le (bouton de téléchargement en haut à droite), puis
       double-cliquez dessus.
 
-  Ce fichier contient l'application et, une fois enregistré avec Ctrl+S,
-  toutes vos données. Pour vérifier les calculs : ajoutez #autotest à la fin
-  de l'adresse.
+  Vos comptes s'enregistrent automatiquement dans le navigateur. Une copie
+  de sauvegarde (menu ... > Télécharger une copie de sauvegarde) contient
+  l'application et toutes vos données. Pour vérifier les calculs : ajoutez
+  #autotest à la fin de l'adresse.
 -->
 <style>
 /* ==========================================================================
@@ -797,12 +798,12 @@ textarea.champ { height: auto; resize: vertical; line-height: 1.5; }
   </div>
 
   <div class="tete__actions">
-    <!-- Où en est la copie de sécurité dans le fichier : un clic l'enregistre. -->
-    <button type="button" class="etat-fichier" id="etat-fichier" data-action="enregistrer-fichier"></button>
+    <!-- Enregistrement automatique : la pastille le confirme ; un clic propose une copie de sauvegarde. -->
+    <button type="button" class="etat-fichier" id="etat-fichier" data-action="etat-enregistrement"></button>
     <details class="menu">
       <summary class="bouton" title="Menu">⋯ <span class="cache">Menu</span></summary>
       <div class="menu__contenu">
-        <button type="button" data-action="enregistrer-fichier">Enregistrer dans le fichier <kbd>Ctrl+S</kbd></button>
+        <button type="button" data-action="copie-sauvegarde">Télécharger une copie de sauvegarde</button>
         <button type="button" data-action="ouvrir-sauvegarde">Ouvrir une sauvegarde…</button>
         <hr>
         <button type="button" data-action="nouveau-mois">Créer un nouveau mois…</button>
@@ -970,7 +971,7 @@ textarea.champ { height: auto; resize: vertical; line-height: 1.5; }
 <div id="sauvegarde" class="sauvegarde" aria-live="polite"></div>
 
 <!-- Données enregistrées dans le fichier. Vide dans le fichier d'origine ; rempli
-     par « Enregistrer dans le fichier » (Ctrl+S). Ne pas modifier à la main. -->
+     dans les copies de sauvegarde. Ne pas modifier à la main. -->
 <script type="application/json" id="donnees-integrees">null</script>
 
 <script>
@@ -1027,8 +1028,8 @@ const PARAMETRES_DEFAUT = {
   nomCourses: 'Courses',
   nomHeures: 'Heures gardées',
   seuilAlerte: 85,                   // % du budget à partir duquel une jauge passe à l'orange
-  rappelJours: 7,                    // rappel d'enregistrement dans un fichier (0 = jamais)
-  avertirFermeture: false,           // prévenir à la fermeture si le fichier n'est pas à jour
+  rappelJours: 7,                    // rappel de copie de sauvegarde (0 = jamais)
+  avertirFermeture: true,            // prévenir à la fermeture si le navigateur n'a pas pu enregistrer
 };
 const CATEGORIE_REVENUS_DEFAUT = { salaire: 'Salaires', aide: 'Aides' };
 
@@ -1382,7 +1383,7 @@ function lisNavigateur() {
   }
 }
 
-/** Données enregistrées DANS le fichier comptes.html (voir enregistreFichier). */
+/** Données enregistrées DANS le fichier comptes.html (copies de sauvegarde, voir telechargeCopie). */
 function lisIntegrees() {
   const bloc = document.getElementById('donnees-integrees');
   if (!bloc) return null;
@@ -1518,7 +1519,8 @@ function chargeAuDemarrage() {
   if (a && !fichier) return { donnees: a, messages, source: 'navigateur' };
   if (!a) {
     messages.push({ texte: 'Comptes ouverts depuis le fichier' +
-      (fichier.fichierLe ? ' (enregistré le ' + new Date(fichier.fichierLe).toLocaleString('fr-FR') + ')' : '') + '.' });
+      (fichier.fichierLe ? ' (enregistré le ' + new Date(fichier.fichierLe).toLocaleString('fr-FR') + ')' : '') +
+      '. Si vous avez une copie de sauvegarde plus récente, ouvrez-la : menu ⋯ → Ouvrir une sauvegarde.' });
     return { donnees: fichier, messages, source: 'fichier' };
   }
   if (signatureContenu(a) === signatureContenu(fichier)) {
@@ -2058,6 +2060,7 @@ const etat = {
   renduEnAttente: false,
   pointeurEnfonce: false,
   valeurInitiale: null,
+  dernierEnregistrement: null, // 'ok', 'inchange', 'conflit' ou 'echec'
 };
 
 /** replaceChildren insère « null » comme texte : on filtre avant. */
@@ -2755,31 +2758,32 @@ function dateCourte(iso) {
   return new Date(iso).toLocaleString('fr-FR', { day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit' });
 }
 
-/** Pastille de l'en-tête et rappel : où en est la copie de sécurité dans un fichier. */
+/** Pastille de l'en-tête et rappel : l'enregistrement automatique, et la dernière copie de sauvegarde. */
 function dessineEtatFichier() {
   const bouton = $('#etat-fichier');
-  if (!bouton) return;
-  const aJour = fichierAJour();
+  if (!bouton || !D) return;
+  const enregistre = stockageDisponible && etat.dernierEnregistrement !== 'echec';
+  const conseillee = enregistre && copieConseillee();
   const jamais = !D.fichierLe;
-  bouton.className = 'etat-fichier ' + (aJour ? 'etat-fichier--ok' : (jamais ? 'etat-fichier--jamais' : 'etat-fichier--attente'));
-  const icone = aJour ? '✓' : (jamais ? '⚠' : '●');
-  const texte = aJour ? 'Fichier à jour' : (jamais ? 'Pas encore de fichier' : 'À enregistrer');
+  bouton.className = 'etat-fichier ' + (!enregistre ? 'etat-fichier--jamais' : (conseillee ? 'etat-fichier--attente' : 'etat-fichier--ok'));
+  const icone = !enregistre ? '⚠' : '✓';
+  const texte = !enregistre ? 'Non enregistré' : (conseillee ? 'Enregistré · copie conseillée' : 'Enregistré');
   // Sur téléphone, seule l'icône reste visible ; le texte complet reste lu et survolable.
   remplace(bouton, el('span', { 'aria-hidden': 'true', texte: icone }), el('span', { class: 'etat-fichier__texte', texte: ' ' + texte }));
-  bouton.setAttribute('aria-label', texte + ' — enregistrer dans le fichier');
-  bouton.title = aJour ? 'Vos comptes sont enregistrés dans le fichier (' + dateCourte(D.fichierLe) + ').'
-    : 'Des modifications ne sont pour l’instant que dans ce navigateur. Cliquez (ou Ctrl+S) pour les enregistrer dans le fichier.';
+  bouton.setAttribute('aria-label', texte);
+  bouton.title = !enregistre
+    ? 'Le navigateur refuse d’enregistrer : téléchargez une copie de sauvegarde pour ne rien perdre.'
+    : 'Enregistré automatiquement dans ce navigateur, à chaque modification. ' +
+      (jamais ? 'Aucune copie de sauvegarde pour l’instant.' : 'Dernière copie de sauvegarde : ' + dateCourte(D.fichierLe) + '.');
 
-  const p = D.parametres;
   const retard = joursDepuis(D.fichierLe);
-  const rappel = !aJour && p.rappelJours > 0 && (jamais || retard >= p.rappelJours);
-  remplace($('#rappel-sauvegarde'), rappel ? el('div', { class: 'rappel', role: 'status' },
+  remplace($('#rappel-sauvegarde'), conseillee ? el('div', { class: 'rappel', role: 'status' },
     el('span', { class: 'rappel__icone', 'aria-hidden': 'true', texte: '🛟' }),
     el('span', { class: 'rappel__texte' },
-      jamais ? 'Vos comptes ne sont pour l’instant que dans ce navigateur. Enregistrez-les dans un fichier (par exemple dans votre Drive) pour les mettre à l’abri.'
-             : 'Dernier enregistrement dans un fichier : ' + dateCourte(D.fichierLe) + ' (il y a ' + retard + ' jours).'),
-    el('button', { type: 'button', class: 'bouton bouton--primaire', 'data-action': 'enregistrer-fichier', texte: 'Enregistrer maintenant' }),
-    el('button', { type: 'button', class: 'bouton bouton--discret', 'data-vue': 'parametres', texte: 'Comment faire ?' })) : null);
+      (jamais ? 'Vos comptes sont enregistrés dans ce navigateur. Par précaution, gardez-en aussi une copie de sauvegarde (un fichier daté, rien à remplacer).'
+              : 'Dernière copie de sauvegarde : ' + dateCourte(D.fichierLe) + ' (il y a ' + retard + ' jour' + (retard > 1 ? 's' : '') + '). Vos comptes ont changé depuis.')),
+    el('button', { type: 'button', class: 'bouton bouton--primaire', 'data-action': 'copie-sauvegarde', texte: 'Télécharger une copie' }),
+    el('button', { type: 'button', class: 'bouton bouton--discret', 'data-vue': 'parametres', texte: 'En savoir plus' })) : null);
 }
 
 function montreVue(nom) {
@@ -3358,18 +3362,17 @@ function dessinePageParametres() {
   if (!hote) return;
   const p = D.parametres;
   const versions = lisVersions();
-  const surFirefox = /firefox/i.test(navigator.userAgent);
-  const enregistrementDirect = typeof window.showSaveFilePicker === 'function';
 
   remplace(hote,
     /* -- Sauvegarde ------------------------------------------------------ */
     el('article', { class: 'carte carte--importante', id: 'section-sauvegarde' },
-      titreSection('Sauvegarde et sécurité des données',
-        'Vos comptes sont protégés à trois niveaux. Le troisième dépend de vous : c’est le seul qui survit à un changement d’ordinateur ou de navigateur.'),
+      titreSection('Enregistrement et sauvegardes',
+        'Il n’y a rien à enregistrer à la main, ni aucun fichier à remplacer. Vos comptes sont protégés à trois niveaux.'),
       el('ol', { class: 'niveaux' },
         el('li', {},
           el('strong', { texte: 'Enregistrement automatique dans ce navigateur. ' }),
-          'À chaque modification, vérifié par relecture. Si l’application est ouverte dans deux onglets, ils se synchronisent au lieu de s’écraser. ',
+          'À chaque modification, vérifié par relecture. Vous pouvez fermer l’onglet ou éteindre l’ordinateur à tout moment : en rouvrant votre fichier comptes.html, tout est là. ',
+          'Si l’application est ouverte dans deux onglets, ils se synchronisent au lieu de s’écraser. ',
           el('span', { 'data-zone': 'persistance', class: 'niveaux__etat' }),
           el('button', { type: 'button', class: 'bouton bouton--discret', 'data-action': 'persister',
                          'data-zone': 'bouton-persistance', hidden: true,
@@ -3379,34 +3382,28 @@ function dessinePageParametres() {
           'Une copie par heure d’activité, et une avant chaque opération délicate (suppression de catégorie, restauration…). ',
           el('span', { class: 'niveaux__etat', texte: versions.length + ' version' + (versions.length > 1 ? 's' : '') + ' gardée' + (versions.length > 1 ? 's' : '') + ' (30 au plus).' })),
         el('li', {},
-          el('strong', { texte: 'Le fichier comptes.html lui-même. ' }),
-          '« Enregistrer » produit un fichier qui contient l’application ET toutes vos données. Rangé dans votre Drive, il est copié dans le cloud et Google en garde les versions successives. ',
+          el('strong', { texte: 'Copies de sauvegarde. ' }),
+          'Un fichier daté (par exemple comptes-sauvegarde-2026-09-28-18h30.html) qui contient l’application ET toutes vos données. ',
+          'Chaque copie est un fichier nouveau : rien à remplacer. Elle sert si le navigateur perdait ses données, ou pour ouvrir vos comptes sur un autre ordinateur. ',
           el('span', { class: 'niveaux__etat', 'data-zone': 'etat-fichier-detail' }))),
       el('div', { class: 'actions-sauvegarde' },
-        el('button', { type: 'button', class: 'bouton bouton--primaire', 'data-action': 'enregistrer-fichier', texte: 'Enregistrer dans le fichier (Ctrl+S)' }),
+        el('button', { type: 'button', class: 'bouton bouton--primaire', 'data-action': 'copie-sauvegarde', texte: 'Télécharger une copie de sauvegarde' }),
         el('button', { type: 'button', class: 'bouton', 'data-action': 'ouvrir-sauvegarde', texte: 'Ouvrir une sauvegarde…' }),
         el('button', { type: 'button', class: 'bouton', 'data-action': 'export-json', texte: 'Exporter les données (JSON)' })),
 
       el('details', { class: 'guide', open: !D.fichierLe },
-        el('summary', { texte: 'Mode d’emploi : Google Drive et Firefox' }),
+        el('summary', { texte: 'Mode d’emploi avec Firefox' }),
         el('div', { class: 'guide__corps' },
-          el('p', {}, 'Mettre le fichier sur votre Drive avec un raccourci Firefox est une bonne idée, ',
-            el('strong', { texte: 'à une condition' }),
-            ' : sans « Enregistrer », vos données restent dans Firefox, pas dans le fichier. Le Drive ne copierait alors que l’application, vide.'),
           el('ol', {},
-            el('li', {}, 'Installez « Google Drive pour ordinateur » et placez comptes.html dans un dossier de « Mon Drive » (par exemple Mon Drive › Comptes).'),
-            el('li', {}, 'Ouvrez-le depuis ce dossier (double-clic), puis ajoutez-le aux marque-pages de Firefox. N’ouvrez pas le fichier depuis le site drive.google.com : le Drive en ligne n’exécute pas les applications.'),
-            el('li', {}, 'Dans Firefox : Paramètres › Général › Fichiers et applications › cochez « Toujours vous demander où enregistrer les fichiers ».'),
-            el('li', {}, 'Après une séance de saisie, faites Ctrl+S (ou « Enregistrer dans le fichier »). Choisissez le fichier comptes.html de votre Drive et acceptez de le remplacer.'),
-            el('li', {}, 'Si un jour le navigateur perd vos données, ou sur un autre ordinateur : ouvrez simplement comptes.html depuis le Drive, tout y est. Pour revenir en arrière, clic droit sur le fichier dans drive.google.com › « Gérer les versions ».')),
+            el('li', {}, 'Ouvrez toujours le même fichier comptes.html (un marque-page Firefox est idéal). Vos comptes sont liés à ce fichier, à cet emplacement : ne le déplacez pas et ne le renommez pas. Si vous le faites, ouvrez ensuite votre dernière copie de sauvegarde, tout reviendra.'),
+            el('li', {}, 'Pour que les copies se rangent seules, sans question : Firefox › Paramètres › Général › Fichiers et applications › Téléchargements. Choisissez « Enregistrer les fichiers dans » un dossier (par exemple un dossier « Sauvegardes comptes », éventuellement dans votre Drive) et décochez « Toujours vous demander où enregistrer les fichiers ».'),
+            el('li', {}, 'Téléchargez une copie de temps en temps : un rappel apparaît en haut de la page quand la dernière date un peu (réglable plus bas). Les anciennes copies peuvent être supprimées quand vous voulez ; gardez au moins les plus récentes.'),
+            el('li', {}, 'Si un jour vos comptes ont disparu (autre ordinateur, données du navigateur effacées) : menu ⋯ › « Ouvrir une sauvegarde… » et choisissez la copie la plus récente. Vous pouvez aussi simplement ouvrir la copie dans Firefox.')),
           el('p', { class: 'guide__note' },
-            surFirefox
-              ? 'Firefox ne permet pas à une page d’écrire directement dans un fichier : chaque enregistrement passe donc par la fenêtre « Enregistrer sous ». C’est une limite volontaire de Firefox, pas un défaut de l’application.'
-              : (enregistrementDirect
-                ? 'Votre navigateur permet l’écriture directe : au premier enregistrement vous choisissez le fichier, les suivants l’écrasent sans rien demander tant que l’onglet reste ouvert.'
-                : 'Votre navigateur passe par un téléchargement : choisissez le fichier existant pour le remplacer.')),
+            el('strong', { texte: 'Attention : ' }),
+            'l’effacement de l’historique de Firefox avec la case « Cookies et données de sites » cochée, ou le réglage « Supprimer les cookies et les données des sites à la fermeture de Firefox », efface aussi les comptes enregistrés dans le navigateur. Évitez-les, ou faites une copie de sauvegarde juste avant.'),
           el('p', { class: 'guide__note' },
-            'Évitez d’avoir comptes.html ouvert sur deux ordinateurs à la fois : chaque ordinateur garde ses propres modifications jusqu’au prochain enregistrement, et le dernier enregistré l’emporte (l’autre version est gardée dans l’historique).'))),
+            'Pourquoi une copie plutôt que le fichier lui-même ? Par sécurité, Firefox ne permet à aucune page web d’écrire dans un fichier de votre ordinateur. L’application enregistre donc dans Firefox, et les copies sont des téléchargements.'))),
 
       el('h3', { class: 'sous-titre-section', texte: 'Versions précédentes' }),
       versions.length
@@ -3471,12 +3468,12 @@ function dessinePageParametres() {
             el('option', { value: v, selected: (document.documentElement.dataset.theme || 'auto') === v }, t)))),
         reglage('Alerte « budget presque atteint » à', el('span', { class: 'champ-pourcent' },
           champParametre('seuilAlerte', String(p.seuilAlerte), { type: 'number', min: '1', max: '100', class: 'champ champ--nombre' }))),
-        reglage('Rappel d’enregistrement dans un fichier', el('select', { class: 'champ', 'data-param': 'rappelJours', 'data-cle': 'param-rappelJours' },
+        reglage('Rappel de copie de sauvegarde', el('select', { class: 'champ', 'data-param': 'rappelJours', 'data-cle': 'param-rappelJours' },
           [[0, 'Jamais'], [1, 'Chaque jour'], [3, 'Tous les 3 jours'], [7, 'Chaque semaine'], [14, 'Toutes les 2 semaines'], [30, 'Chaque mois']]
             .map(([v, t]) => el('option', { value: v, selected: p.rappelJours === v }, t))))),
       el('label', { class: 'interrupteur' },
         el('input', { type: 'checkbox', class: 'bascule', checked: p.avertirFermeture, 'data-param': 'avertirFermeture' }),
-        'Prévenir en fermant l’onglet si des modifications ne sont pas encore dans le fichier')));
+        'Prévenir en fermant l’onglet si le navigateur n’a pas pu enregistrer')));
   majPageParametres();
 }
 
@@ -3485,12 +3482,11 @@ function majPageParametres() {
   const bouton = $('[data-zone="bouton-persistance"]');
   if (bouton) bouton.hidden = etat.persistance !== false;
   texteZone('[data-zone="etat-fichier-detail"]', D.fichierLe
-    ? (fichierAJour() ? 'À jour : enregistré le ' + dateCourte(D.fichierLe) + '.'
-                      : 'Dernier enregistrement le ' + dateCourte(D.fichierLe) + ' — des modifications plus récentes ne sont que dans ce navigateur.')
-    : 'Pas encore fait.');
+    ? 'Dernière copie : ' + dateCourte(D.fichierLe) + (fichierAJour() ? ' (à jour).' : ', modifiée depuis.')
+    : 'Aucune copie pour l’instant.');
   texteZone('[data-zone="persistance"]', etat.persistance === true
     ? 'Le navigateur s’est engagé à ne pas effacer ces données de lui-même.'
-    : (etat.persistance === false ? 'Le navigateur peut effacer ces données en cas de manque de place : d’où l’importance du fichier.' : ''));
+    : (etat.persistance === false ? 'Le navigateur peut effacer ces données en cas de manque de place : d’où l’intérêt des copies de sauvegarde.' : ''));
 }
 
 /* ========================================================================== */
@@ -3520,6 +3516,7 @@ function enregistreMaintenant() {
   const resultat = enregistreDonnees();
   if (resultat === 'ok') signaleSauvegarde('Enregistré');
   else if (resultat === 'conflit') resoutConflit();
+  if (resultat !== etat.dernierEnregistrement) { etat.dernierEnregistrement = resultat; dessineEtatFichier(); }
   return resultat;
 }
 
@@ -3551,7 +3548,8 @@ window.addEventListener('storage', (evenement) => {
 window.addEventListener('pagehide', () => { if (minuteurEnregistrement) enregistreMaintenant(); });
 window.addEventListener('beforeunload', (evenement) => {
   if (minuteurEnregistrement) enregistreMaintenant();
-  if (D && D.parametres.avertirFermeture && !fichierAJour()) {
+  // Tout est enregistré dans le navigateur à chaque frappe : on ne prévient que si cela a échoué.
+  if (D && D.parametres.avertirFermeture && !stockageDisponible) {
     evenement.preventDefault();
     evenement.returnValue = '';
   }
@@ -3678,11 +3676,11 @@ document.addEventListener('change', (evenement) => {
   enregistreMaintenant();
 });
 
-/* -- Ctrl+S (ou Cmd+S) : enregistrer dans le fichier, au lieu de la page brute. -- */
+/* -- Ctrl+S (ou Cmd+S) : tout est déjà enregistré ; on le confirme au lieu d'enregistrer la page brute. -- */
 document.addEventListener('keydown', (evenement) => {
   if ((evenement.ctrlKey || evenement.metaKey) && !evenement.altKey && evenement.key.toLowerCase() === 's') {
     evenement.preventDefault();
-    enregistreFichier();
+    expliqueEnregistrement();
   }
 }, true);
 /* -- Clavier : Entrée valide, Échap annule la saisie en cours -------------- */
@@ -3971,7 +3969,8 @@ function construitCsv(mois) {
 function actionMenu(action) {
   $$('.menu[open]').forEach(m => m.removeAttribute('open'));
   if (action === 'nouveau-mois') { nouveauMois(); return; }
-  if (action === 'enregistrer-fichier') { enregistreFichier(); return; }
+  if (action === 'etat-enregistrement') { expliqueEnregistrement(); return; }
+  if (action === 'copie-sauvegarde') { telechargeCopie(); return; }
   if (action === 'ouvrir-sauvegarde') { $('#fichier-import').click(); return; }
   if (action === 'persister') { demandePersistance(); return; }
   if (action === 'export-csv') {
@@ -3982,7 +3981,7 @@ function actionMenu(action) {
     enregistreMaintenant();
     telecharge('comptes-donnees-' + new Date().toISOString().slice(0, 10) + '.json',
                JSON.stringify(Object.assign({ application: 'comptes' }, D), null, 2), 'application/json');
-    toast('Données exportées. Pour une sauvegarde complète, préférez « Enregistrer dans le fichier ».');
+    toast('Données exportées. Pour une sauvegarde complète, préférez « Télécharger une copie de sauvegarde ».');
     return;
   }
   if (action === 'supprimer-mois') { supprimeMoisAffiche(); }
@@ -4155,50 +4154,11 @@ function ecrisParametre(cle, champ) {
    Le fichier produit est l'application elle-même, avec les données à l'intérieur :
    l'ouvrir sur n'importe quel ordinateur retrouve les comptes. */
 
-let poigneeFichier = null;      // écriture directe (Chrome, Edge) : garde le fichier choisi
-
-function nomDuFichier() {
-  const nom = decodeURIComponent(location.pathname.split('/').pop() || '');
-  return /\.html?$/i.test(nom) ? nom : 'comptes.html';
-}
-
 function pageAvecDonnees(donnees) {
   const clone = SOURCE_PAGE.cloneNode(true);
   // « < » échappé : le JSON ne peut pas refermer la balise qui le contient.
   clone.querySelector('#donnees-integrees').textContent = JSON.stringify(donnees).replace(/</g, '\\u003c');
   return '<!doctype html>\n' + clone.outerHTML + '\n';
-}
-
-async function enregistreFichier() {
-  if (enregistreMaintenant() === 'conflit') return false;
-  const avant = { fichierLe: D.fichierLe, fichierRevision: D.fichierRevision };
-  D.fichierLe = new Date().toISOString();
-  D.fichierRevision = D.revision;
-  const contenu = pageAvecDonnees(D);
-  const termine = (message) => {
-    enregistreDonnees({ meta: true, force: true });
-    dessineEtatFichier();
-    majPageParametres();
-    toast(message, { duree: 9000 });
-    return true;
-  };
-  if (typeof window.showSaveFilePicker === 'function') {
-    try {
-      if (!poigneeFichier) {
-        poigneeFichier = await window.showSaveFilePicker({ suggestedName: nomDuFichier(),
-          types: [{ description: 'Application Comptes', accept: { 'text/html': ['.html'] } }] });
-      }
-      const flux = await poigneeFichier.createWritable();
-      await flux.write(contenu);
-      await flux.close();
-      return termine('✓ Comptes enregistrés dans « ' + poigneeFichier.name + ' ».');
-    } catch (erreur) {
-      if (erreur && erreur.name === 'AbortError') { Object.assign(D, avant); dessineEtatFichier(); return false; }
-      poigneeFichier = null;       // écriture directe refusée : on passe par le téléchargement
-    }
-  }
-  telecharge(nomDuFichier(), contenu, 'text/html;charset=utf-8');
-  return termine('Fichier « ' + nomDuFichier() + ' » prêt. Enregistrez-le à la place de l’ancien (dans votre Drive).');
 }
 
 /** Lit un fichier de sauvegarde : comptes.html enregistré, ou export JSON. */
@@ -4291,7 +4251,7 @@ async function demandePersistance() {
   try { etat.persistance = await navigator.storage.persist(); } catch (e) { etat.persistance = false; }
   majPageParametres();
   toast(etat.persistance ? 'Le navigateur protège désormais ces données.'
-                         : 'Le navigateur a refusé : gardez l’habitude d’enregistrer dans le fichier.', { erreur: !etat.persistance });
+                         : 'Le navigateur a refusé : gardez l’habitude de télécharger des copies de sauvegarde.', { erreur: !etat.persistance });
 }
 /* -- Thème, préférences, mise en page ------------------------------------------- */
 
@@ -4387,7 +4347,60 @@ function demarre() {
     navigator.storage.persisted().then(v => { etat.persistance = v; majPageParametres(); }).catch(() => {});
   }
   for (const m of messages) toast(m.texte, { erreur: !!m.erreur, duree: 15000 });
+}/* ========================================================================== */
+/* 6 bis. Enregistrement et copies de sauvegarde                              */
+/*                                                                            */
+/* Les comptes s'enregistrent tout seuls dans le navigateur, à chaque         */
+/* modification : il n'y a rien à « enregistrer » à la main, ni aucun         */
+/* fichier à remplacer.                                                       */
+/*                                                                            */
+/* La copie de sauvegarde est un filet de sécurité en plus : un fichier       */
+/* nouveau et daté (application + données), téléchargé d'un clic. Firefox     */
+/* ne permet pas à une page d'écrire dans un fichier existant ; un fichier    */
+/* neuf à chaque fois évite justement d'avoir à remplacer quoi que ce soit.   */
+/* ========================================================================== */
+
+function nomCopie(date = new Date()) {
+  const deux = (n) => String(n).padStart(2, '0');
+  return 'comptes-sauvegarde-' + date.getFullYear() + '-' + deux(date.getMonth() + 1) + '-' +
+         deux(date.getDate()) + '-' + deux(date.getHours()) + 'h' + deux(date.getMinutes()) + '.html';
 }
+
+/** Une copie est conseillée quand la dernière est plus vieille que le rappel choisi
+    et que des modifications ont eu lieu depuis. */
+function copieConseillee() {
+  const p = D.parametres;
+  if (!p.rappelJours || fichierAJour()) return false;
+  return joursDepuis(D.fichierLe) >= p.rappelJours;
+}
+
+function telechargeCopie() {
+  if (enregistreMaintenant() === 'conflit') return false;
+  const maintenant = new Date();
+  D.fichierLe = maintenant.toISOString();
+  D.fichierRevision = D.revision;
+  const nom = nomCopie(maintenant);
+  telecharge(nom, pageAvecDonnees(D), 'text/html;charset=utf-8');
+  enregistreDonnees({ meta: true, force: true });
+  dessineEtatFichier();
+  majPageParametres();
+  toast('Copie de sauvegarde téléchargée : « ' + nom + ' ». Rien à remplacer : continuez d’ouvrir ' +
+        'votre fichier habituel, vos comptes y sont.', { duree: 8000 });
+  return true;
+}
+
+/** Ctrl+S, ou clic sur la pastille « Enregistré » : rassure et propose une copie. */
+function expliqueEnregistrement() {
+  const resultat = enregistreMaintenant();
+  if (resultat === 'conflit') return;
+  if (!stockageDisponible) { montreAlerteStockage(); return; }
+  signaleSauvegarde('Enregistré');
+  toast('✓ Vos comptes sont enregistrés automatiquement dans ce navigateur, à chaque modification. ' +
+        (D.fichierLe ? 'Dernière copie de sauvegarde : ' + dateCourte(D.fichierLe) + '.'
+                     : 'Aucune copie de sauvegarde pour l’instant.'),
+        { duree: 7000, action: { libelle: 'Télécharger une copie', faire: telechargeCopie } });
+}
+
 /* -- Auto-vérification : ouvrir le fichier avec #autotest ------------------ */
 
 function verifie() {
@@ -4613,6 +4626,22 @@ function verifie() {
         '<\/script><script>alert(1)<\/script>');
   teste('Empreinte : ignore les informations d’enregistrement',
         signatureContenu(Object.assign({}, D, { revision: 999, modifieLe: 'x', fichierLe: 'y' })), signatureContenu(D));
+
+  // Copies de sauvegarde : nom daté, rappel seulement s'il y a du nouveau depuis la dernière copie.
+  teste('Copie : nom daté, jamais le même que le fichier', nomCopie(new Date(2026, 8, 5, 7, 3)), 'comptes-sauvegarde-2026-09-05-07h03.html');
+  const memo = { fichierLe: D.fichierLe, fichierRevision: D.fichierRevision, rappel: D.parametres.rappelJours };
+  D.parametres.rappelJours = 7;
+  D.fichierLe = null; D.fichierRevision = null;
+  teste('Copie : conseillée quand il n’y en a jamais eu', copieConseillee(), true);
+  D.fichierLe = new Date(Date.now() - 10 * 86400000).toISOString(); D.fichierRevision = D.revision - 1;
+  teste('Copie : conseillée quand la dernière est ancienne et dépassée', copieConseillee(), true);
+  D.fichierRevision = D.revision;
+  teste('Copie : pas de rappel si rien n’a changé depuis', copieConseillee(), false);
+  D.fichierLe = new Date(Date.now() - 2 * 86400000).toISOString(); D.fichierRevision = D.revision - 1;
+  teste('Copie : pas de rappel avant le délai choisi', copieConseillee(), false);
+  D.parametres.rappelJours = 0; D.fichierLe = null;
+  teste('Copie : rappel désactivable', copieConseillee(), false);
+  Object.assign(D, { fichierLe: memo.fichierLe, fichierRevision: memo.fichierRevision }); D.parametres.rappelJours = memo.rappel;
 
   // Aller-retour export / import.
   donneesDeDepart();
