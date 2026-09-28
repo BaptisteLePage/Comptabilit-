@@ -75,7 +75,7 @@ Ils sont indépendants, mais branchés sur le budget :
 
 | Module | Ce qu'il pilote dans le budget |
 |---|---|
-| **Courses** | Le budget confié aux courses **est** le montant prévu de votre dépense « Courses ». En retour, le total de vos achats devient son montant payé. |
+| **Courses** | Le budget confié aux courses **est** votre dépense « Courses » : il est compté en entier dans le budget du mois (prévu = payé), quels que soient vos achats. Le modifier dans le module le modifie dans le budget, et inversement. Les achats ne font que consommer l'enveloppe, dans le module ; l'écart de la ligne indique ce qu'il reste à dépenser en courses. |
 | **Heures gardées** | Le salaire net calculé devient le montant reçu de votre revenu « Caracole ». |
 
 Une ligne pilotée par un module n'affiche pas un champ mais un montant
@@ -83,8 +83,8 @@ encadré en pointillés avec un jeton `↗ Courses` ou `↗ Heures` : il se calc
 tout seul, et un clic vous emmène au module. Pour délier une ligne, ouvrez son
 `⋯` et choisissez « Calculé par : personne ».
 
-Un module ne prend la main qu'une fois rempli : tant qu'aucun achat n'est
-saisi, le montant écrit à la main dans le budget est conservé. Ouvrir
+Le module Heures ne prend la main qu'une fois rempli : tant qu'aucun horaire
+n'est saisi, le montant écrit à la main dans le budget est conservé. Ouvrir
 l'application n'efface donc jamais un montant sans que vous l'ayez demandé.
 
 ## Plusieurs mois
@@ -213,7 +213,7 @@ Deux écarts assumés, à corriger d'un clic si besoin :
 ## Vérifier que les calculs sont justes
 
 Ouvrez `comptes.html#autotest` (ajoutez `#autotest` à la fin de l'adresse dans
-la barre du navigateur). Une page liste 97 vérifications : lecture des montants
+la barre du navigateur). Une page liste 103 vérifications : lecture des montants
 (virgule, point des milliers, négatifs), durées de garde, salaire brut/net,
 budget courses, totaux, lignes et revenus en pause, liaison entre le budget et
 les modules, duplication d'un mois, opérations sur les catégories, reprise des

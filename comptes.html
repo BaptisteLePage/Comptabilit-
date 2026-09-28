@@ -466,7 +466,7 @@ select.champ { cursor: pointer; }
 
 /* Un montant calculé par un module ne ressemble pas à un champ. */
 .valeur-auto {
-  appearance: none; cursor: pointer; width: 100%;
+  appearance: none; cursor: pointer; width: 100%; position: relative;
   display: flex; align-items: center; justify-content: flex-end; gap: 7px;
   height: 38px; padding: 6px 10px;
   border: 1px dashed var(--bord-champ); border-radius: var(--r-s);
@@ -474,9 +474,11 @@ select.champ { cursor: pointer; }
   font-variant-numeric: tabular-nums;
 }
 .valeur-auto:hover { border-style: solid; border-color: var(--accent); }
+/* Le jeton du module est posé sur le bord du cadre : le montant garde toute la largeur. */
 .valeur-auto__badge {
-  padding: 1px 7px; border-radius: 999px; background: var(--surface-3);
-  color: var(--encre-2); font-size: .72rem; font-weight: 600;
+  position: absolute; top: -9px; right: 8px;
+  padding: 0 6px; border-radius: 999px; background: var(--surface-3);
+  color: var(--encre-2); font-size: .68rem; font-weight: 600; line-height: 16px; white-space: nowrap;
 }
 
 /* Panneau « ⋯ » */
@@ -648,6 +650,7 @@ select.champ { cursor: pointer; }
   .ligne__montants { grid-area: montants; display: grid; grid-template-columns: 1fr 1fr auto; gap: 8px; align-items: end; margin-top: 4px; }
   .montant__etiquette { display: block; font-size: .74rem; font-weight: 600; letter-spacing: .05em; text-transform: uppercase; color: var(--encre-3); margin-bottom: 3px; }
   .ligne__ecart { align-self: center; padding-top: 16px; }
+  .montant .valeur-auto { margin-top: 8px; }   /* place pour le jeton du module, sous l'étiquette */
   .ligne-detail { margin: 2px 14px 12px; }
   .ligne-detail .champ, .ligne-detail .large .champ { min-width: 0; width: 100%; }
   .ligne-detail label { flex: 1 1 140px; }
@@ -1755,8 +1758,10 @@ function donneesDeDepart() {
    Deux lignes du budget ne se saisissent pas à la main : elles sont le reflet
    d'un module.
 
-     ligne « Courses » (lien = courses)  : prévu  -> budget confié au module
-                                           réel   <- total dépensé dans le module
+     ligne « Courses » (lien = courses)  : prévu = payé = budget confié au module
+                                           (l'enveloppe est comptée en entier dans
+                                           le budget ; les achats ne font que la
+                                           consommer, dans le module)
      ligne « Caracole » (lien = heures)  : réel   <- salaire net calculé
 
    La synchronisation a lieu avant chaque enregistrement et chaque affichage,
@@ -1778,19 +1783,19 @@ function budgetCourses(mois) {
   return eur(ligne ? ligne.estime : mois.budgetCourses);
 }
 
-/** Recopie les totaux des modules dans les lignes de budget correspondantes.
+/** Recopie les modules dans les lignes de budget correspondantes.
 
-   Un module ne prend la main qu'une fois rempli : tant qu'aucun achat n'est
-   saisi, le montant écrit à la main dans le budget est conservé. Sans cette
-   règle, ouvrir l'application effacerait des montants que personne n'a
-   demandé d'effacer. */
+   Courses : l'enveloppe entière compte comme dépensée dans le budget du mois,
+   quels que soient les achats déjà saisis. Elle ne change que si l'on modifie
+   le budget courses (ici ou dans le module : c'est le même nombre).
+
+   Heures : le module ne prend la main qu'une fois rempli ; tant qu'aucun
+   horaire n'est saisi, le montant écrit à la main dans le budget est conservé. */
 function synchroniseLiens(mois) {
   const ligneCourses = moduleActif('courses') ? ligneReliee(mois, 'courses') : null;
   if (ligneCourses) {
     mois.budgetCourses = eur(ligneCourses.estime);
-    if (mois.achats.length) {
-      ligneCourses.reel = recapCourses(mois.semaines, mois.achats, budgetCourses(mois)).depense;
-    }
+    ligneCourses.reel = eur(ligneCourses.estime);
   }
   const ligneHeures = moduleActif('heures') ? ligneReliee(mois, 'heures') : null;
   if (ligneHeures) {
@@ -1802,7 +1807,7 @@ function synchroniseLiens(mois) {
 /** Un module pilote-t-il déjà sa ligne de budget ? */
 function modulePilote(mois, lien) {
   if (!moduleActif(lien) || !ligneReliee(mois, lien)) return false;
-  return lien === 'courses' ? mois.achats.length > 0
+  return lien === 'courses' ? true
     : recapHeures(mois.creneaux, mois.tauxHoraire, mois.tauxCotisation).minutes > 0;
 }
 /* ========================================================================== */
@@ -2280,7 +2285,9 @@ function ligneBudget(l, sorte) {
         el('span', { class: 'montant__etiquette', texte: libelleReel }),
         el('button', {
           type: 'button', class: 'valeur-auto', 'data-aller': moduleLie,
-          title: 'Montant calculé automatiquement par le module ' + nomModule + ' — cliquer pour l’ouvrir',
+          title: moduleLie === 'courses'
+            ? 'Enveloppe courses comptée en entier (égale au prévu) — cliquer pour ouvrir le module et suivre les achats'
+            : 'Montant calculé automatiquement par le module ' + nomModule + ' — cliquer pour l’ouvrir',
           'aria-label': libelleReel + ' calculé par le module ' + nomModule + ', ouvrir le module',
         },
           el('span', { 'data-auto': l.id }),
@@ -2656,6 +2663,15 @@ function majLignes() {
 
 function contenuEcart(l) {
   if (!l.actif) return el('span', { title: 'En pause : cette ligne ne compte pas dans les totaux', texte: 'hors total' });
+  if (l.lien === 'courses' && modulePilote(etat.mois, 'courses')) {
+    // L'enveloppe compte en entier ; on montre seulement où en sont les achats.
+    const c = etat.recap.courses;
+    return el('span', {
+      class: c.restant >= 0 ? 'texte-bon' : 'texte-mauvais', 'data-suivi': 'e:' + l.id,
+      title: euros(c.depense) + ' d’achats sur ' + euros(c.budgetTotal) + '. L’enveloppe entière est déjà comptée dans le reste à vivre.',
+      texte: c.restant >= 0 ? 'reste ' + euros(c.restant) : 'dépassé ' + euros(-c.restant),
+    });
+  }
   const estime = eur(l.estime), reel = eur(l.reel);
   const ecart = l.type === 'depense' ? eur(estime - reel) : eur(reel - estime);
   if (Math.abs(ecart) < 0.005) return el('span', { title: 'Conforme au prévu', texte: '—' });
@@ -2720,7 +2736,9 @@ function dessineModules() {
         el('div', {}, el('div', { class: 'module__titre', texte: p.nomCourses }),
                       el('div', { class: 'module__sous-titre', texte: courses.semaines.length + ' semaines suivies' }))),
       jauge('Dépensé', courses.depense, courses.budgetTotal),
-      el('div', { class: 'module__detail', texte: detailLien(ligneCourses, 'courses', 'Courses', 'remplit la dépense') }),
+      el('div', { class: 'module__detail', texte: !ligneCourses
+        ? 'Aucune ligne reliée : choisissez « ' + libellesLiens().courses + ' » dans le ⋯ d’une ligne.'
+        : '↳ Enveloppe comptée en entier dans « ' + (ligneCourses.libelle || 'Courses') + ' » du budget' }),
       el('button', { type: 'button', class: 'bouton', 'data-aller': 'courses', texte: 'Ouvrir « ' + p.nomCourses + ' » →' })) : null,
     p.modules.heures ? el('article', { class: 'module' },
       el('header', { class: 'module__tete' },
@@ -3166,6 +3184,8 @@ function dessinePageCourses() {
 function majPageCourses() {
   const { courses } = etat.recap;
   const ligne = ligneReliee(etat.mois, 'courses');
+  // Le budget se modifie aussi depuis le budget du mois : le champ du module le suit.
+  valeurChampSiLibre('#budget-courses', montantSaisi(budgetCourses(etat.mois)));
   remplace($('#resume-courses'),
     el('div', { class: 'bandeau' },
       tuile('Dépensé', euros(courses.depense), 'sur ' + euros(courses.budgetTotal) + ' confiés', null, 'c-depense'),
@@ -3178,10 +3198,9 @@ function majPageCourses() {
       jauge('Budget du mois', courses.depense, courses.budgetTotal),
       el('p', { class: 'carte__sous-titre', style: 'margin-top:10px' },
         !ligne ? 'Aucune ligne de dépense n’est reliée : ce total ne remonte pas dans le budget.'
-          : 'Ce budget est le montant prévu de la dépense « ' + (ligne.libelle || 'Courses') + ' ». ' +
-            (modulePilote(etat.mois, 'courses')
-              ? 'Le total dépensé ici devient son montant payé.'
-              : 'Dès le premier achat saisi ici, le total dépensé deviendra son montant payé.'))));
+          : 'Ce budget est la dépense « ' + (ligne.libelle || 'Courses') + ' » du budget du mois : elle y est comptée en entier, ' +
+            'quels que soient vos achats. Le modifier ici le modifie dans le budget, et inversement. ' +
+            'Les achats ci-dessous ne font que consommer cette enveloppe.')));
   for (const semaine of courses.semaines) {
     remplace($('[data-zone-semaine="' + semaine.numero + '"]'), jauge('Dépensé', semaine.depense, semaine.budget));
   }
@@ -4526,7 +4545,9 @@ function verifie() {
   creeAchat({ semaine: 1, poste: 'Marché', libelle: 'Pain', montant: 12.30 });
   creeAchat({ semaine: 2, poste: 'Carrefour', libelle: 'Épicerie', montant: 47.70 });
   synchroniseLiens(mois);
-  teste('Le total des courses remonte dans la dépense', ligneCourses.reel, 60);
+  teste('Courses : l’enveloppe entière reste comptée comme payée, malgré les achats', ligneCourses.reel, 250);
+  teste('Courses : les achats ne changent pas le total des dépenses du budget',
+        recap(mois).budget.depenses.reel, (() => { const m = JSON.parse(JSON.stringify(mois)); m.achats = []; return recap(m).budget.depenses.reel; })());
   teste('Le restant courses tient compte du budget confié',
         recap(mois).courses.restant, 190);
   teste('Le salaire net remonte dans le revenu', ligneHeures.reel, 140.66);
@@ -4538,12 +4559,22 @@ function verifie() {
   teste('Une ligne déliée garde son montant saisi', ligneCourses.reel, 999);
   ligneCourses.lien = 'courses';
   synchroniseLiens(mois);
-  teste('Reliée à nouveau, elle reprend le total du module', ligneCourses.reel, 60);
+  teste('Reliée à nouveau, elle reprend l’enveloppe du module', ligneCourses.reel, 250);
 
   // Modifier le budget depuis le module Courses modifie la ligne de dépense (une seule source).
   ecrisMois(mois, 'budgetCourses', '320,50');
   teste('Budget courses saisi dans le module = prévu de la dépense', ligneCourses.estime, 320.5);
   teste('Et le module le relit', budgetCourses(mois), 320.5);
+  synchroniseLiens(mois);
+  teste('Et le payé de la dépense suit', ligneCourses.reel, 320.5);
+  ecrisLigne(ligneCourses, 'estime', '410');
+  synchroniseLiens(mois);
+  teste('Budget modifié dans le budget du mois = budget du module', budgetCourses(mois), 410);
+  teste('… et compté en entier', ligneCourses.reel, 410);
+  creeAchat({ semaine: 1, poste: 'Marché', libelle: 'Gros plein', montant: 500 });
+  synchroniseLiens(mois);
+  teste('Courses dépassées : le budget du mois garde l’enveloppe', ligneCourses.reel, 410);
+  teste('… et le module signale le dépassement', recap(mois).courses.restant, -150);
 
   // Un module ne pilote qu'une seule ligne.
   const autre = creeLigne({ type: 'depense', categorie: 'Quotidien', libelle: 'Marché' });
