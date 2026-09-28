@@ -6,9 +6,17 @@
 <title>Comptes</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><text y='13' font-size='14'>&#x1F4B6;</text></svg>">
 <!--
-  Comptes — suivi budgetaire mensuel.
+  Comptes - suivi budgetaire mensuel.
+
   Un seul fichier : ouvrez-le dans votre navigateur, rien a installer.
   Vos donnees restent dans ce navigateur et ne partent nulle part.
+
+  La page principale tient en une seule vue : ce qui rentre, ce qui sort,
+  ce qui reste. Les graphiques, les courses et les heures gardees sont
+  des pages secondaires.
+
+  Pour verifier les calculs : ouvrez ce fichier avec #autotest a la fin
+  de l'adresse.
 -->
 <style>
 /* ==========================================================================
@@ -20,68 +28,85 @@
 :root {
   color-scheme: light;
 
-  /* Surfaces et encres */
-  --plan:            #f9f9f7;
+  --plan:            #f4f4f1;
   --surface:         #fcfcfb;
-  --surface-creuse:  #f2f1ee;
+  --surface-2:       #f2f1ee;
+  --surface-3:       #e9e8e3;
   --encre:           #0b0b0b;
   --encre-2:         #52514e;
   --encre-3:         #898781;
   --filet:           #e1e0d9;
   --ligne-base:      #c3c2b7;
-  --bord:            rgba(11, 11, 11, .10);
+  --bord:            rgba(11, 11, 11, .09);
 
-  /* Séries (emplacements 1 et 2 de la palette catégorielle) */
-  --serie-1:         #2a78d6;
-  --serie-2:         #eb6834;
+  --serie-1:         #2a78d6;   /* dépenses fixes */
+  --serie-2:         #eb6834;   /* dépenses variables */
   --serie-1-clair:   #cde2fb;
 
-  /* États : toujours accompagnés d'une icône et d'un libellé */
   --bon:             #0ca30c;
   --bon-texte:       #006300;
   --alerte:          #fab219;
-  --grave:           #ec835a;
   --critique:        #d03b3b;
 
-  --rayon:           10px;
-  --rayon-petit:     6px;
+  --ombre-1: 0 1px 2px rgba(11, 11, 11, .04);
+  --ombre-2: 0 4px 16px rgba(11, 11, 11, .07);
+  --ombre-3: 0 10px 30px rgba(11, 11, 11, .10);
+
+  --r-xl: 16px;
+  --r-l:  12px;
+  --r-m:  9px;
+  --r-s:  6px;
+
   --police: system-ui, -apple-system, "Segoe UI", sans-serif;
+
+  /* Hauteurs mesurees au chargement : l'en-tete et la navigation peuvent
+     passer sur deux lignes selon la largeur de l'ecran. */
+  --haut-tete: 49px;
+  --haut-nav:  44px;
 }
 
 @media (prefers-color-scheme: dark) {
   :root:where(:not([data-theme="light"])) {
     color-scheme: dark;
-    --plan:           #0d0d0d;
-    --surface:        #1a1a19;
-    --surface-creuse: #232322;
-    --encre:          #ffffff;
-    --encre-2:        #c3c2b7;
-    --encre-3:        #898781;
-    --filet:          #2c2c2a;
-    --ligne-base:     #383835;
-    --bord:           rgba(255, 255, 255, .10);
-    --serie-1:        #3987e5;
-    --serie-2:        #d95926;
-    --serie-1-clair:  #184f95;
-    --bon-texte:      #0ca30c;
+    --plan:       #0d0d0d;
+    --surface:    #1a1a19;
+    --surface-2:  #232322;
+    --surface-3:  #2c2c2a;
+    --encre:      #ffffff;
+    --encre-2:    #c3c2b7;
+    --encre-3:    #898781;
+    --filet:      #2c2c2a;
+    --ligne-base: #383835;
+    --bord:       rgba(255, 255, 255, .10);
+    --serie-1:    #3987e5;
+    --serie-2:    #d95926;
+    --serie-1-clair: #184f95;
+    --bon-texte:  #0ca30c;
+    --ombre-1: 0 1px 2px rgba(0, 0, 0, .3);
+    --ombre-2: 0 4px 16px rgba(0, 0, 0, .35);
+    --ombre-3: 0 10px 30px rgba(0, 0, 0, .45);
   }
 }
 
 :root[data-theme="dark"] {
   color-scheme: dark;
-  --plan:           #0d0d0d;
-  --surface:        #1a1a19;
-  --surface-creuse: #232322;
-  --encre:          #ffffff;
-  --encre-2:        #c3c2b7;
-  --encre-3:        #898781;
-  --filet:          #2c2c2a;
-  --ligne-base:     #383835;
-  --bord:           rgba(255, 255, 255, .10);
-  --serie-1:        #3987e5;
-  --serie-2:        #d95926;
-  --serie-1-clair:  #184f95;
-  --bon-texte:      #0ca30c;
+  --plan:       #0d0d0d;
+  --surface:    #1a1a19;
+  --surface-2:  #232322;
+  --surface-3:  #2c2c2a;
+  --encre:      #ffffff;
+  --encre-2:    #c3c2b7;
+  --encre-3:    #898781;
+  --filet:      #2c2c2a;
+  --ligne-base: #383835;
+  --bord:       rgba(255, 255, 255, .10);
+  --serie-1:    #3987e5;
+  --serie-2:    #d95926;
+  --serie-1-clair: #184f95;
+  --bon-texte:  #0ca30c;
+  --ombre-1: 0 1px 2px rgba(0, 0, 0, .3);
+  --ombre-2: 0 4px 16px rgba(0, 0, 0, .35);
+  --ombre-3: 0 10px 30px rgba(0, 0, 0, .45);
 }
 
 * { box-sizing: border-box; }
@@ -96,360 +121,512 @@ body {
   -webkit-text-size-adjust: 100%;
 }
 
-h1, h2, h3 { margin: 0; font-weight: 600; letter-spacing: -.01em; }
-h1 { font-size: 1.05rem; }
-h2 { font-size: .95rem; }
+h1, h2, h3 { margin: 0; font-weight: 600; letter-spacing: -.012em; }
 
-.visuellement-cache {
+.cache {
   position: absolute; width: 1px; height: 1px; overflow: hidden;
   clip-path: inset(50%); white-space: nowrap;
 }
-
 .pousse { flex: 1 1 auto; }
+.chiffres { font-variant-numeric: tabular-nums; }
 
-/* ------------------------------------------------------------ Barre haute */
+/* ------------------------------------------------------------- En-tête --- */
 
-.barre {
-  position: sticky; top: 0; z-index: 30;
-  display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
-  padding: 10px 16px;
+.tete {
+  position: sticky; top: 0; z-index: 40;
+  display: flex; align-items: center; gap: 14px; flex-wrap: wrap;
+  padding: 10px 20px;
   background: var(--surface);
   border-bottom: 1px solid var(--filet);
 }
 
-.barre__titre { display: flex; align-items: center; gap: 8px; }
-
-.barre__logo {
+.tete__marque { display: flex; align-items: center; gap: 9px; }
+.tete__logo {
   display: grid; place-items: center;
-  width: 26px; height: 26px; border-radius: 8px;
-  background: var(--serie-1); color: #fff;
-  font-weight: 700; font-size: .9rem;
+  width: 28px; height: 28px; border-radius: 9px;
+  background: var(--serie-1); color: #fff; font-weight: 700; font-size: .95rem;
+}
+.tete__marque h1 { font-size: 1rem; }
+
+/* Sélecteur de mois : le repère temporel doit sauter aux yeux. */
+.mois {
+  display: flex; align-items: center; gap: 2px;
+  background: var(--surface-2); border: 1px solid var(--bord);
+  border-radius: 999px; padding: 2px;
+}
+.mois__fleche {
+  appearance: none; border: 0; background: none; cursor: pointer;
+  width: 28px; height: 28px; border-radius: 50%;
+  color: var(--encre-2); font-size: 1.1rem; line-height: 1;
+}
+.mois__fleche:hover { background: var(--surface-3); color: var(--encre); }
+.mois__choix {
+  appearance: none; border: 0; background: none; cursor: pointer;
+  padding: 3px 10px; font: inherit; font-size: .92rem; font-weight: 600;
+  color: var(--encre); text-align: center;
 }
 
-.barre__mois { display: flex; align-items: center; gap: 4px; }
-.barre__actions { display: flex; align-items: center; gap: 8px; margin-left: auto; }
+.tete__actions { display: flex; align-items: center; gap: 8px; margin-left: auto; }
 
-/* --------------------------------------------------------------- Contrôles */
+/* ------------------------------------------------------------ Navigation --- */
+
+.nav {
+  position: sticky; top: var(--haut-tete); z-index: 30;
+  display: flex; align-items: center; gap: 6px; flex-wrap: wrap;
+  padding: 7px 20px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--filet);
+}
+
+.nav__lien {
+  appearance: none; border: 1px solid transparent; background: none; cursor: pointer;
+  display: inline-flex; align-items: center; gap: 7px;
+  padding: 6px 13px; border-radius: 999px;
+  color: var(--encre-2); font: inherit; font-size: .875rem; white-space: nowrap;
+}
+.nav__lien:hover { background: var(--surface-2); color: var(--encre); }
+.nav__lien[aria-current="page"] {
+  background: var(--serie-1); border-color: transparent; color: #fff; font-weight: 600;
+}
+.nav__lien[aria-current="page"] .nav__jeton { background: rgba(255, 255, 255, .22); color: #fff; }
+
+/* Les modules sont volontairement mis à part du budget. */
+.nav__separateur {
+  width: 1px; height: 22px; margin: 0 6px; background: var(--filet);
+}
+.nav__groupe { display: flex; gap: 4px; flex-wrap: wrap; }
+.nav__groupe .nav__lien { font-size: .83rem; padding: 5px 11px; }
+.nav__jeton {
+  padding: 1px 7px; border-radius: 999px;
+  background: var(--surface-3); color: var(--encre-2);
+  font-size: .74rem; font-variant-numeric: tabular-nums;
+}
+
+main { max-width: 900px; margin: 0 auto; padding: 18px 16px 80px; }
+main.large { max-width: 1180px; }
+
+/* ------------------------------------------------------------- Contrôles --- */
 
 .bouton {
-  appearance: none;
-  padding: 7px 12px;
-  border: 1px solid var(--bord);
-  border-radius: var(--rayon-petit);
-  background: var(--surface);
-  color: var(--encre);
+  appearance: none; cursor: pointer;
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 7px 13px;
+  border: 1px solid var(--bord); border-radius: var(--r-s);
+  background: var(--surface); color: var(--encre);
   font: inherit; font-size: .875rem;
-  cursor: pointer;
   transition: background .12s ease, border-color .12s ease;
 }
-.bouton:hover { background: var(--surface-creuse); }
-.bouton:focus-visible,
-select:focus-visible, input:focus-visible, summary:focus-visible,
-[role="tab"]:focus-visible, .segmente button:focus-visible {
-  outline: 2px solid var(--serie-1); outline-offset: 2px;
-}
-
-.bouton--primaire {
-  background: var(--serie-1); border-color: transparent; color: #fff; font-weight: 500;
-}
-.bouton--primaire:hover { filter: brightness(1.08); background: var(--serie-1); }
-.bouton--icone { padding: 6px 10px; font-size: 1rem; line-height: 1; }
+.bouton:hover { background: var(--surface-2); }
+.bouton--primaire { background: var(--serie-1); border-color: transparent; color: #fff; font-weight: 500; }
+.bouton--primaire:hover { background: var(--serie-1); filter: brightness(1.08); }
 .bouton--fantome {
   border-color: transparent; background: none; color: var(--encre-2);
-  padding: 5px 8px; font-size: .8rem;
+  padding: 5px 9px; font-size: .82rem;
 }
-.bouton--fantome:hover { background: var(--surface-creuse); color: var(--encre); }
-.danger { color: var(--critique); }
+.bouton--fantome:hover { background: var(--surface-2); color: var(--encre); }
+.bouton--rond {
+  width: 30px; height: 30px; padding: 0; justify-content: center;
+  border-radius: 50%; border-color: transparent; background: none;
+  color: var(--encre-3); font-size: 1rem;
+}
+.bouton--rond:hover { background: var(--surface-2); color: var(--encre); }
+.bouton--rond.danger:hover { background: color-mix(in srgb, var(--critique) 14%, transparent); color: var(--critique); }
 
-select, input[type="text"], input[type="search"], input[type="month"] {
+:focus-visible { outline: 2px solid var(--serie-1); outline-offset: 2px; border-radius: 3px; }
+
+input[type="text"], input[type="search"], select {
   padding: 6px 9px;
-  border: 1px solid var(--bord);
-  border-radius: var(--rayon-petit);
-  background: var(--surface);
-  color: var(--encre);
+  border: 1px solid var(--bord); border-radius: var(--r-s);
+  background: var(--surface); color: var(--encre);
   font: inherit; font-size: .875rem;
 }
 input::placeholder { color: var(--encre-3); }
 
-.champ-recherche { min-width: 180px; }
-
-.champ-inline {
-  display: inline-flex; align-items: center; gap: 8px;
-  font-size: .82rem; color: var(--encre-2);
-}
-.champ-inline input { width: 94px; }
-
-.interrupteur-texte {
-  display: inline-flex; align-items: center; gap: 6px;
-  font-size: .82rem; color: var(--encre-2); cursor: pointer;
-}
-
-.segmente { display: inline-flex; border: 1px solid var(--bord); border-radius: var(--rayon-petit); overflow: hidden; }
-.segmente button {
-  appearance: none; border: 0; background: var(--surface); color: var(--encre-2);
-  padding: 6px 12px; font: inherit; font-size: .82rem; cursor: pointer;
-}
-.segmente button + button { border-left: 1px solid var(--bord); }
-.segmente button.actif { background: var(--serie-1); color: #fff; font-weight: 500; }
-
-/* Menu « ⋯ » */
-.menu { position: relative; }
-.menu > summary { list-style: none; display: inline-block; }
-.menu > summary::-webkit-details-marker { display: none; }
-.menu__contenu {
-  position: absolute; right: 0; top: calc(100% + 6px); z-index: 40;
-  min-width: 240px; padding: 6px;
-  background: var(--surface);
-  border: 1px solid var(--bord); border-radius: var(--rayon);
-  box-shadow: 0 12px 28px rgba(0, 0, 0, .14);
-}
-.menu__contenu button {
-  display: block; width: 100%; text-align: left;
-  padding: 8px 10px; border: 0; border-radius: var(--rayon-petit);
-  background: none; color: inherit; font: inherit; font-size: .875rem; cursor: pointer;
-}
-.menu__contenu button:hover { background: var(--surface-creuse); }
-.menu__contenu hr { border: 0; border-top: 1px solid var(--filet); margin: 5px 2px; }
-
-/* ---------------------------------------------------------------- Onglets */
-
-.onglets {
-  display: flex; gap: 2px; overflow-x: auto;
-  padding: 0 12px;
-  background: var(--surface);
-  border-bottom: 1px solid var(--filet);
-  position: sticky; top: 51px; z-index: 20;
-}
-.onglet {
-  appearance: none; border: 0; background: none;
-  padding: 11px 13px; margin-bottom: -1px;
-  border-bottom: 2px solid transparent;
-  color: var(--encre-2); font: inherit; font-size: .875rem; white-space: nowrap;
-  cursor: pointer;
-}
-.onglet:hover { color: var(--encre); }
-.onglet[aria-selected="true"] { color: var(--encre); font-weight: 600; border-bottom-color: var(--serie-1); }
-
-main { max-width: 1180px; margin: 0 auto; padding: 18px 16px 72px; }
-
-/* ----------------------------------------------------------- Mise en page */
-
-.carte {
-  background: var(--surface);
-  border: 1px solid var(--bord);
-  border-radius: var(--rayon);
-  padding: 14px 16px;
-}
-.carte__entete { margin-bottom: 10px; }
-.carte__sous-titre { margin: 2px 0 0; font-size: .78rem; color: var(--encre-3); }
-
-.grille-deux {
-  display: grid; gap: 14px; align-items: start;
-  grid-template-columns: minmax(0, 1.55fr) minmax(0, 1fr);
-}
-.pile { display: grid; gap: 14px; align-content: start; }
-
-/* ------------------------------------------------- Chiffre clé et tuiles */
-
-.heros {
-  display: flex; align-items: baseline; gap: 18px; flex-wrap: wrap;
-  padding: 4px 2px 16px;
-}
-.heros__bloc { display: grid; gap: 2px; }
-.heros__etiquette { font-size: .8rem; color: var(--encre-2); }
-.heros__valeur { font-size: 3rem; font-weight: 600; line-height: 1.05; letter-spacing: -.02em; }
-.heros__valeur--negatif { color: var(--critique); }
-.heros__note { font-size: .82rem; color: var(--encre-2); }
-
-.tuiles {
-  display: grid; gap: 12px; margin-bottom: 16px;
-  grid-template-columns: repeat(auto-fit, minmax(178px, 1fr));
-}
-.tuile {
-  background: var(--surface); border: 1px solid var(--bord);
-  border-radius: var(--rayon); padding: 12px 13px;
-}
-.tuile__etiquette { font-size: .78rem; color: var(--encre-2); }
-.tuile__valeur { margin-top: 3px; font-size: 1.45rem; font-weight: 600; letter-spacing: -.01em; }
-.tuile__delta { margin-top: 2px; font-size: .78rem; color: var(--encre-3); }
-.tuile__delta--bon { color: var(--bon-texte); }
-.tuile__delta--mauvais { color: var(--critique); }
-
-/* ------------------------------------------------------------ Graphique */
-
-.graphique { width: 100%; }
-.graphique svg { display: block; width: 100%; height: auto; }
-
-.legende {
-  display: flex; gap: 16px; flex-wrap: wrap;
-  margin: 2px 0 10px; font-size: .78rem; color: var(--encre-2);
-}
-.legende__cle { display: inline-flex; align-items: center; gap: 6px; }
-.legende__pastille { width: 11px; height: 11px; border-radius: 2px; background: var(--serie-1); }
-.legende__trait { width: 2px; height: 13px; background: var(--encre-2); }
-
-.tableau-jumeau { margin-top: 10px; font-size: .84rem; }
-.tableau-jumeau summary { cursor: pointer; color: var(--encre-2); }
-.tableau-jumeau table { width: 100%; border-collapse: collapse; margin-top: 8px; }
-.tableau-jumeau th, .tableau-jumeau td {
-  padding: 5px 6px; border-bottom: 1px solid var(--filet); text-align: right;
-  font-variant-numeric: tabular-nums;
-}
-.tableau-jumeau th:first-child, .tableau-jumeau td:first-child { text-align: left; font-variant-numeric: normal; }
-.tableau-jumeau th { color: var(--encre-2); font-weight: 500; }
-
-.infobulle {
-  position: fixed; z-index: 60; pointer-events: none;
-  min-width: 150px; padding: 8px 10px;
-  background: var(--surface); color: var(--encre);
-  border: 1px solid var(--bord); border-radius: var(--rayon-petit);
-  box-shadow: 0 8px 22px rgba(0, 0, 0, .16);
-  font-size: .8rem;
-}
-.infobulle__titre { font-weight: 600; margin-bottom: 4px; }
-.infobulle__ligne { display: flex; align-items: center; gap: 7px; justify-content: space-between; }
-.infobulle__valeur { font-weight: 600; font-variant-numeric: tabular-nums; }
-.infobulle__nom { color: var(--encre-2); display: inline-flex; align-items: center; gap: 6px; }
-
-/* --------------------------------------------------------------- Jauges */
-
-.jauge { display: grid; gap: 5px; }
-.jauge__entete { display: flex; justify-content: space-between; gap: 10px; font-size: .82rem; }
-.jauge__nom { color: var(--encre-2); }
-.jauge__chiffres { font-variant-numeric: tabular-nums; }
-.jauge__piste {
-  height: 9px; border-radius: 999px; background: var(--serie-1-clair); overflow: hidden;
-}
-.jauge__remplissage { height: 100%; border-radius: 999px; background: var(--serie-1); }
-.jauge__remplissage--alerte { background: var(--alerte); }
-.jauge__remplissage--critique { background: var(--critique); }
-.jauge__etat { font-size: .78rem; color: var(--encre-2); }
-.jauge__etat--alerte { color: var(--encre); }
-.jauge__etat--critique { color: var(--critique); }
-
-/* --------------------------------------------------------------- Tableaux */
-
-.outils {
-  display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
-  margin-bottom: 14px;
-}
-
-.groupe { margin-bottom: 18px; }
-.groupe__entete {
-  display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap;
-  padding: 6px 2px; margin-bottom: 2px;
-}
-.groupe__nom { font-size: .82rem; font-weight: 600; text-transform: uppercase; letter-spacing: .04em; }
-.groupe__total { font-size: .82rem; color: var(--encre-2); font-variant-numeric: tabular-nums; }
-
-table.lignes {
-  width: 100%; border-collapse: collapse;
-  background: var(--surface);
-  border: 1px solid var(--bord); border-radius: var(--rayon);
-  overflow: hidden;
-}
-table.lignes thead th {
-  padding: 8px 10px;
-  font-size: .72rem; font-weight: 500; text-transform: uppercase; letter-spacing: .05em;
-  color: var(--encre-3); text-align: left;
-  background: var(--surface-creuse);
-  border-bottom: 1px solid var(--filet);
-  white-space: nowrap;
-}
-table.lignes td { padding: 4px 6px; border-bottom: 1px solid var(--filet); vertical-align: middle; }
-table.lignes tr:last-child td { border-bottom: 0; }
-table.lignes tr:hover td { background: color-mix(in srgb, var(--surface-creuse) 55%, transparent); }
-table.lignes tr.en-pause td:not(.col-actif) { opacity: .55; }
-
-.col-nombre { text-align: right; }
-.col-nombre input { text-align: right; font-variant-numeric: tabular-nums; }
-.col-actif { width: 42px; text-align: center; }
-.col-suppr { width: 40px; text-align: center; }
-
-table.lignes input[type="text"], table.lignes select {
-  width: 100%; min-width: 0;
-  border-color: transparent; background: transparent;
-  padding: 5px 7px;
-}
-table.lignes input[type="text"]:hover, table.lignes select:hover { border-color: var(--bord); }
-table.lignes input[type="text"]:focus { border-color: var(--serie-1); background: var(--surface); }
-table.lignes .col-nombre input { width: 100px; }
-table.lignes .col-libelle input { font-weight: 500; }
-
-.ecart { font-size: .84rem; font-variant-numeric: tabular-nums; color: var(--encre-3); white-space: nowrap; }
-.ecart--bon { color: var(--bon-texte); }
-.ecart--mauvais { color: var(--critique); }
-
 .bascule {
-  appearance: none; margin: 0; cursor: pointer;
-  width: 30px; height: 17px; border-radius: 999px;
+  appearance: none; margin: 0; cursor: pointer; flex: none;
+  width: 28px; height: 16px; border-radius: 999px;
   background: var(--ligne-base); border: 0; position: relative;
   transition: background .14s ease;
 }
 .bascule::after {
   content: ""; position: absolute; top: 2px; left: 2px;
-  width: 13px; height: 13px; border-radius: 50%; background: #fff;
+  width: 12px; height: 12px; border-radius: 50%; background: #fff;
   transition: transform .14s ease;
 }
 .bascule:checked { background: var(--serie-1); }
-.bascule:checked::after { transform: translateX(13px); }
+.bascule:checked::after { transform: translateX(12px); }
 
-.pied-tableau { padding: 8px 4px 0; }
+.menu { position: relative; }
+.menu > summary { list-style: none; display: inline-block; }
+.menu > summary::-webkit-details-marker { display: none; }
+.menu__contenu {
+  position: absolute; right: 0; top: calc(100% + 6px); z-index: 50;
+  min-width: 250px; padding: 6px;
+  background: var(--surface); border: 1px solid var(--bord);
+  border-radius: var(--r-l); box-shadow: var(--ombre-3);
+}
+.menu__contenu button {
+  display: block; width: 100%; text-align: left;
+  padding: 8px 10px; border: 0; border-radius: var(--r-s);
+  background: none; color: inherit; font: inherit; font-size: .875rem; cursor: pointer;
+}
+.menu__contenu button:hover { background: var(--surface-2); }
+.menu__contenu hr { border: 0; border-top: 1px solid var(--filet); margin: 5px 2px; }
+.danger { color: var(--critique); }
 
-.vide {
-  padding: 26px 16px; text-align: center; color: var(--encre-2);
-  background: var(--surface); border: 1px dashed var(--bord); border-radius: var(--rayon);
+/* ====================================================== LE BILAN (héros) === */
+/*  La barre entière représente les revenus du mois. Ce qui est peint est
+    parti ; ce qui reste vide est ce dont on dispose encore.                  */
+
+.bilan {
+  position: sticky; top: calc(var(--haut-tete) + var(--haut-nav)); z-index: 20;
+  margin-bottom: 18px; padding: 16px 18px 14px;
+  background: var(--surface);
+  border: 1px solid var(--bord); border-radius: var(--r-xl);
+  box-shadow: var(--ombre-2);
 }
 
-/* ------------------------------------------------------ Courses / heures */
+.bilan__haut { display: flex; align-items: flex-end; gap: 16px; flex-wrap: wrap; }
+.bilan__etiquette {
+  font-size: .78rem; font-weight: 500; letter-spacing: .05em;
+  text-transform: uppercase; color: var(--encre-2);
+}
+.bilan__valeur {
+  display: block; margin-top: 1px;
+  font-size: 2.9rem; font-weight: 600; line-height: 1; letter-spacing: -.025em;
+}
+.bilan__valeur--negatif { color: var(--critique); }
+.bilan__cote { margin-left: auto; text-align: right; font-size: .84rem; color: var(--encre-2); }
+.bilan__cote b { color: var(--encre); font-variant-numeric: tabular-nums; }
+
+.bilan__piste {
+  display: flex; gap: 2px; overflow: hidden;
+  height: 15px; margin: 14px 0 9px;
+  border-radius: 999px;
+  background: var(--surface-3);
+}
+.bilan__part { height: 100%; min-width: 2px; }
+.bilan__part--fixes { background: var(--serie-1); }
+.bilan__part--variables { background: var(--serie-2); }
+.bilan__part--fin { border-radius: 0 4px 4px 0; }
+
+.bilan__legende {
+  display: flex; gap: 16px; flex-wrap: wrap;
+  font-size: .8rem; color: var(--encre-2);
+}
+.bilan__cle { display: inline-flex; align-items: center; gap: 7px; }
+.bilan__pastille { width: 11px; height: 11px; border-radius: 3px; flex: none; }
+.bilan__pastille--fixes { background: var(--serie-1); }
+.bilan__pastille--variables { background: var(--serie-2); }
+.bilan__pastille--reste { background: var(--surface-3); border: 1px solid var(--ligne-base); }
+.bilan__cle b { color: var(--encre); font-variant-numeric: tabular-nums; }
+
+.bilan__alerte {
+  display: flex; align-items: center; gap: 8px;
+  margin-top: 10px; padding: 8px 11px;
+  border-radius: var(--r-m);
+  background: color-mix(in srgb, var(--critique) 11%, var(--surface));
+  color: var(--critique); font-size: .84rem; font-weight: 500;
+}
+
+/* Version compacte quand on a fait défiler la page */
+.bilan.compact { padding: 10px 18px; }
+.bilan.compact .bilan__valeur { font-size: 1.7rem; }
+.bilan.compact .bilan__legende, .bilan.compact .bilan__cote { display: none; }
+.bilan.compact .bilan__piste { margin: 9px 0 0; height: 10px; }
+
+/* ============================================================== Les blocs === */
+
+.bloc {
+  margin-bottom: 16px;
+  background: var(--surface);
+  border: 1px solid var(--bord); border-radius: var(--r-xl);
+  box-shadow: var(--ombre-1);
+  overflow: hidden;
+}
+
+.bloc__tete {
+  display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+  padding: 13px 18px;
+  border-bottom: 1px solid var(--filet);
+}
+.bloc__titre { display: flex; align-items: baseline; gap: 10px; }
+.bloc__titre h2 { font-size: .95rem; }
+.bloc__total { font-size: 1.1rem; font-weight: 600; font-variant-numeric: tabular-nums; }
+.bloc__prevu { font-size: .8rem; color: var(--encre-3); font-variant-numeric: tabular-nums; }
+.bloc__corps > :last-child { border-bottom: 0; }
+
+/* --------------------------------------------------- Catégorie dépliable --- */
+
+.cat { border-bottom: 1px solid var(--filet); }
+.cat > summary {
+  display: grid; align-items: center; gap: 4px 12px; cursor: pointer;
+  grid-template-columns: 18px minmax(0, 1fr) 170px 152px;
+  padding: 10px 18px;
+  list-style: none;
+}
+.cat > summary::-webkit-details-marker { display: none; }
+.cat > summary:hover { background: var(--surface-2); }
+.cat__fleche { color: var(--encre-3); transition: transform .15s ease; font-size: .8rem; }
+.cat[open] > summary .cat__fleche { transform: rotate(90deg); }
+.cat__nom { font-weight: 600; font-size: .9rem; }
+.cat__compte { font-weight: 400; font-size: .78rem; color: var(--encre-3); margin-left: 6px; }
+
+/* Part du revenu absorbée par la catégorie : l'incidence, ligne par ligne. */
+.cat__part { display: grid; gap: 3px; }
+.cat__part-piste {
+  display: block; height: 5px; border-radius: 999px;
+  background: var(--surface-3); overflow: hidden;
+}
+.cat__part-jauge { display: block; height: 100%; border-radius: 999px; background: var(--serie-1); }
+.cat__part-texte { font-size: .72rem; color: var(--encre-3); }
+
+.cat__montants { text-align: right; font-variant-numeric: tabular-nums; }
+.cat__reel { font-weight: 600; font-size: .95rem; }
+.cat__prevu { font-size: .76rem; color: var(--encre-3); }
+
+.cat__corps { padding: 2px 0 10px; background: var(--surface-2); }
+.cat__pied { padding: 4px 18px 0; }
+
+/* ------------------------------------------------------------- Une ligne --- */
+
+.ligne {
+  display: grid; align-items: center; gap: 3px 10px;
+  grid-template-columns: 30px minmax(0, 1fr) 106px 106px 84px 30px;
+  grid-template-areas: "actif libelle prevu reel ecart suppr";
+  padding: 3px 18px 3px 14px;
+}
+.ligne:hover { background: color-mix(in srgb, var(--surface) 60%, transparent); }
+.ligne--pause > :not(.ligne__actif) { opacity: .5; }
+
+.ligne__actif { grid-area: actif; display: flex; justify-content: center; }
+.ligne__libelle { grid-area: libelle; display: flex; align-items: center; gap: 6px; min-width: 0; }
+.ligne__libelle input {
+  width: 100%; min-width: 0;
+  border-color: transparent; background: transparent; font-weight: 500;
+}
+.ligne__libelle input:hover { border-color: var(--bord); background: var(--surface); }
+.ligne__libelle input:focus { border-color: var(--serie-1); background: var(--surface); }
+
+.ligne__montants { display: contents; }
+.champ-montant { position: relative; }
+.champ-montant input {
+  width: 100%; text-align: right; font-variant-numeric: tabular-nums;
+  border-color: transparent; background: transparent;
+}
+.champ-montant input:hover { border-color: var(--bord); background: var(--surface); }
+.champ-montant input:focus { border-color: var(--serie-1); background: var(--surface); }
+.champ-montant input:read-only { color: var(--encre-2); cursor: default; }
+.champ-montant--prevu { grid-area: prevu; }
+.champ-montant--reel { grid-area: reel; }
+.champ-montant__etiquette { display: none; }
+
+.ligne__ecart {
+  grid-area: ecart; text-align: right; white-space: nowrap;
+  font-size: .82rem; font-variant-numeric: tabular-nums; color: var(--encre-3);
+}
+.ligne__ecart--bon { color: var(--bon-texte); }
+.ligne__ecart--mauvais { color: var(--critique); }
+.ligne__suppr { grid-area: suppr; }
+
+/* Jeton « ce montant vient d'un module » */
+.jeton-lien {
+  appearance: none; cursor: pointer;
+  display: inline-flex; align-items: center; gap: 4px; flex: none;
+  padding: 1px 8px; border: 1px solid var(--bord); border-radius: 999px;
+  background: var(--surface-3); color: var(--encre-2);
+  font: inherit; font-size: .72rem; white-space: nowrap;
+}
+.jeton-lien:hover { background: var(--serie-1); border-color: transparent; color: #fff; }
+
+.entete-colonnes {
+  display: grid; gap: 10px;
+  grid-template-columns: 30px minmax(0, 1fr) 106px 106px 84px 30px;
+  padding: 6px 18px 6px 14px;
+  font-size: .7rem; font-weight: 500; letter-spacing: .06em; text-transform: uppercase;
+  color: var(--encre-3);
+}
+.entete-colonnes span:nth-child(3),
+.entete-colonnes span:nth-child(4),
+.entete-colonnes span:nth-child(5) { text-align: right; }
+
+/* -------------------------------------------------------- Sous-sections --- */
+
+.sous-bloc { border-bottom: 1px solid var(--filet); }
+.sous-bloc__tete {
+  display: flex; align-items: baseline; gap: 10px;
+  padding: 9px 18px 3px;
+}
+.sous-bloc__nom {
+  font-size: .74rem; font-weight: 600; letter-spacing: .07em;
+  text-transform: uppercase; color: var(--encre-2);
+}
+.sous-bloc__total { font-size: .8rem; color: var(--encre-3); font-variant-numeric: tabular-nums; }
+
+/* ------------------------------------------------------------- Modules --- */
+
+.modules { display: grid; gap: 14px; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); }
+
+.module {
+  display: grid; gap: 10px; align-content: start;
+  padding: 16px 18px;
+  background: var(--surface);
+  border: 1px solid var(--bord); border-radius: var(--r-xl);
+  box-shadow: var(--ombre-1);
+}
+.module__tete { display: flex; align-items: center; gap: 10px; }
+.module__icone {
+  display: grid; place-items: center; flex: none;
+  width: 30px; height: 30px; border-radius: var(--r-m);
+  background: var(--surface-3); font-size: .95rem;
+}
+.module__titre { font-size: .92rem; font-weight: 600; }
+.module__sous-titre { font-size: .78rem; color: var(--encre-3); }
+.module__valeur { font-size: 1.6rem; font-weight: 600; letter-spacing: -.015em; }
+.module__detail { font-size: .8rem; color: var(--encre-2); }
+
+/* --------------------------------------------------------------- Jauges --- */
+
+.jauge { display: grid; gap: 5px; }
+.jauge__entete { display: flex; justify-content: space-between; gap: 10px; font-size: .82rem; }
+.jauge__nom { color: var(--encre-2); }
+.jauge__chiffres { font-variant-numeric: tabular-nums; }
+.jauge__piste { height: 9px; border-radius: 999px; background: var(--serie-1-clair); overflow: hidden; }
+.jauge__remplissage { height: 100%; border-radius: 999px; background: var(--serie-1); }
+.jauge__remplissage--alerte { background: var(--alerte); }
+.jauge__remplissage--critique { background: var(--critique); }
+.jauge__etat { font-size: .78rem; color: var(--encre-2); }
+.jauge__etat--critique { color: var(--critique); }
+
+/* ----------------------------------------------------- Pages secondaires --- */
+
+.carte {
+  margin-bottom: 16px; padding: 16px 18px;
+  background: var(--surface);
+  border: 1px solid var(--bord); border-radius: var(--r-xl);
+  box-shadow: var(--ombre-1);
+}
+.carte__tete { margin-bottom: 12px; }
+.carte__tete h2 { font-size: .95rem; }
+.carte__sous-titre { margin: 2px 0 0; font-size: .78rem; color: var(--encre-3); }
+
+.outils { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 16px; }
+.champ-inline { display: inline-flex; align-items: center; gap: 8px; font-size: .82rem; color: var(--encre-2); }
+.champ-inline input { width: 96px; text-align: right; font-variant-numeric: tabular-nums; }
+
+.graphique { width: 100%; }
+.graphique svg { display: block; width: 100%; height: auto; }
+
+.legende { display: flex; gap: 16px; flex-wrap: wrap; margin: 2px 0 10px; font-size: .78rem; color: var(--encre-2); }
+.legende__cle { display: inline-flex; align-items: center; gap: 6px; }
+.legende__pastille { width: 11px; height: 11px; border-radius: 3px; background: var(--serie-1); }
+.legende__trait { width: 2px; height: 13px; background: var(--encre-2); }
+
+.jumeau { margin-top: 12px; font-size: .84rem; }
+.jumeau summary { cursor: pointer; color: var(--encre-2); }
+.jumeau table { width: 100%; border-collapse: collapse; margin-top: 8px; }
+.jumeau th, .jumeau td {
+  padding: 5px 6px; border-bottom: 1px solid var(--filet);
+  text-align: right; font-variant-numeric: tabular-nums;
+}
+.jumeau th:first-child, .jumeau td:first-child { text-align: left; font-variant-numeric: normal; }
+.jumeau th { color: var(--encre-2); font-weight: 500; }
+
+.infobulle {
+  position: fixed; z-index: 60; pointer-events: none;
+  min-width: 150px; padding: 9px 11px;
+  background: var(--surface); color: var(--encre);
+  border: 1px solid var(--bord); border-radius: var(--r-m); box-shadow: var(--ombre-3);
+  font-size: .8rem;
+}
+.infobulle__titre { font-weight: 600; margin-bottom: 4px; }
+.infobulle__ligne { display: flex; align-items: center; gap: 8px; justify-content: space-between; }
+.infobulle__valeur { font-weight: 600; font-variant-numeric: tabular-nums; }
+.infobulle__nom { color: var(--encre-2); display: inline-flex; align-items: center; gap: 6px; }
+
+/* --------------------------------------------------------------- Courses --- */
 
 .semaines { display: grid; gap: 14px; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); }
 .semaines--larges { grid-template-columns: repeat(auto-fit, minmax(460px, 1fr)); }
-.semaine__entete { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
-.semaine__titre { font-size: .9rem; font-weight: 600; }
+.semaine__tete { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+.semaine__titre { font-size: .92rem; font-weight: 600; }
 
-.puces { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px; }
+.achat {
+  display: grid; align-items: center; gap: 8px;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr) 92px 30px;
+  padding: 2px 0;
+}
+.achat input { width: 100%; min-width: 0; border-color: transparent; background: transparent; }
+.achat input:hover { border-color: var(--bord); background: var(--surface); }
+.achat input:focus { border-color: var(--serie-1); background: var(--surface); }
+.achat__montant input { text-align: right; font-variant-numeric: tabular-nums; }
+.achat__entete {
+  font-size: .7rem; font-weight: 500; letter-spacing: .06em; text-transform: uppercase;
+  color: var(--encre-3); padding-bottom: 4px; border-bottom: 1px solid var(--filet); margin-bottom: 4px;
+}
+.achat__entete span:nth-child(3) { text-align: right; }
+
+.puces { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 10px; align-items: center; }
 .puce {
   appearance: none; cursor: pointer;
-  padding: 4px 9px; border: 1px solid var(--bord); border-radius: 999px;
+  padding: 4px 10px; border: 1px solid var(--bord); border-radius: 999px;
   background: var(--surface); color: var(--encre-2); font: inherit; font-size: .78rem;
 }
-.puce:hover { background: var(--surface-creuse); color: var(--encre); }
+.puce:hover { background: var(--serie-1); border-color: transparent; color: #fff; }
+.suggestions { width: 100%; }
+.suggestions > summary { cursor: pointer; font-size: .8rem; color: var(--encre-2); padding: 4px 2px; }
+.suggestions > summary:hover { color: var(--encre); }
 
-.resume-bandeau {
-  display: grid; gap: 12px; margin-bottom: 16px;
-  grid-template-columns: repeat(auto-fit, minmax(178px, 1fr));
+/* ---------------------------------------------------------------- Heures --- */
+
+.heures { width: 100%; border-collapse: collapse; table-layout: fixed; }
+.heures th {
+  padding: 5px 4px; font-size: .7rem; font-weight: 500; letter-spacing: .06em;
+  text-transform: uppercase; color: var(--encre-3); text-align: left;
+  border-bottom: 1px solid var(--filet);
 }
+.heures td { padding: 2px 3px; border-bottom: 1px solid var(--filet); }
+.heures tr:last-child td { border-bottom: 0; }
+.heures th:first-child, .heures td:first-child { width: 22%; }
+.heures th:last-child, .heures td:last-child { width: 15%; }
+.heures .jour { font-size: .82rem; color: var(--encre-2); white-space: nowrap; padding-left: 6px; }
+.heures .duree { font-size: .82rem; font-variant-numeric: tabular-nums; text-align: right; padding-right: 6px; white-space: nowrap; }
+.heures input {
+  width: 100%; min-width: 0; text-align: center; font-variant-numeric: tabular-nums;
+  border-color: transparent; background: transparent; padding: 5px 2px;
+}
+.heures input:hover { border-color: var(--bord); background: var(--surface); }
+.heures input:focus { border-color: var(--serie-1); background: var(--surface); }
+.heures .separateur { border-left: 1px solid var(--filet); }
 
-/* Largeurs maîtrisées : ces tableaux vivent dans des cartes étroites. */
-table.lignes--achats { table-layout: fixed; }
-table.lignes--achats th:nth-child(1), table.lignes--achats td:nth-child(1) { width: 30%; }
-table.lignes--achats th:nth-child(2), table.lignes--achats td:nth-child(2) { width: 36%; }
-table.lignes--achats th:nth-child(3), table.lignes--achats td:nth-child(3) { width: 26%; }
-table.lignes--achats th:nth-child(4), table.lignes--achats td:nth-child(4) { width: 8%; }
-table.lignes--achats .col-nombre input { width: 100%; }
+.bandeau { display: grid; gap: 12px; margin-bottom: 16px; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); }
+.tuile {
+  padding: 13px 14px; background: var(--surface);
+  border: 1px solid var(--bord); border-radius: var(--r-l); box-shadow: var(--ombre-1);
+}
+.tuile__etiquette { font-size: .78rem; color: var(--encre-2); }
+.tuile__valeur { margin-top: 3px; font-size: 1.4rem; font-weight: 600; letter-spacing: -.015em; }
+.tuile__note { margin-top: 2px; font-size: .78rem; color: var(--encre-3); }
+.tuile__note--bon { color: var(--bon-texte); }
+.tuile__note--mauvais { color: var(--critique); }
 
-table.heures { table-layout: fixed; }
-table.heures th, table.heures td { padding: 3px 4px; }
-table.heures th:first-child, table.heures td:first-child { width: 22%; }
-table.heures th:last-child, table.heures td:last-child { width: 14%; }
-table.heures input[type="text"] { width: 100%; min-width: 0; text-align: center; font-variant-numeric: tabular-nums; }
-table.heures .jour { font-size: .82rem; color: var(--encre-2); white-space: nowrap; padding-left: 8px; }
-table.heures .duree { font-size: .82rem; font-variant-numeric: tabular-nums; text-align: right; padding-right: 8px; white-space: nowrap; }
-table.heures .separateur { border-left: 1px solid var(--filet); }
+/* ------------------------------------------------------- Retours visuels --- */
 
-/* ------------------------------------------------------- Retours visuels */
+.vide {
+  padding: 22px 16px; text-align: center; color: var(--encre-2); font-size: .88rem;
+  background: var(--surface-2); border: 1px dashed var(--bord); border-radius: var(--r-l);
+  margin: 8px 18px;
+}
 
 .toasts {
   position: fixed; left: 50%; bottom: 20px; transform: translateX(-50%);
-  z-index: 80; display: grid; gap: 8px; width: min(440px, calc(100vw - 32px));
+  z-index: 80; display: grid; gap: 8px; width: min(460px, calc(100vw - 32px));
 }
 .toast {
   display: flex; align-items: center; gap: 12px;
-  padding: 10px 12px;
+  padding: 11px 13px;
   background: var(--surface); color: var(--encre);
-  border: 1px solid var(--bord); border-radius: var(--rayon);
-  box-shadow: 0 10px 26px rgba(0, 0, 0, .18);
+  border: 1px solid var(--bord); border-radius: var(--r-l); box-shadow: var(--ombre-3);
   font-size: .86rem;
 }
 .toast__texte { flex: 1 1 auto; }
@@ -457,87 +634,91 @@ table.heures .separateur { border-left: 1px solid var(--filet); }
 
 .sauvegarde {
   position: fixed; right: 14px; bottom: 14px; z-index: 70;
-  padding: 5px 10px; border-radius: 999px;
+  padding: 5px 11px; border-radius: 999px;
   background: var(--surface); border: 1px solid var(--bord);
   font-size: .76rem; color: var(--encre-2);
   opacity: 0; transition: opacity .2s ease; pointer-events: none;
 }
 .sauvegarde.visible { opacity: 1; }
 
-/* ---------------------------------------------------------- Petits écrans */
+.alerte {
+  margin: 0; padding: 10px 20px;
+  background: color-mix(in srgb, var(--critique) 12%, var(--surface));
+  border-bottom: 1px solid var(--critique);
+  font-size: .85rem;
+}
+.alerte strong { color: var(--critique); }
 
-@media (max-width: 900px) {
-  .grille-deux { grid-template-columns: 1fr; }
+/* Page d'auto-vérification */
+.verif { max-width: 780px; margin: 24px auto; padding: 0 16px; }
+.verif ul { list-style: none; padding: 0; margin: 12px 0 0; }
+.verif li { padding: 7px 10px; border-bottom: 1px solid var(--filet); font-size: .86rem; display: flex; gap: 10px; }
+.verif .ok { color: var(--bon-texte); }
+.verif .ko { color: var(--critique); font-weight: 600; }
+.verif__bilan { margin-top: 14px; font-weight: 600; }
+
+/* ---------------------------------------------------------- Petits écrans --- */
+
+@media (max-width: 620px) {
+  .bilan__cote {
+    margin-left: 0; width: 100%; text-align: left;
+    display: flex; gap: 14px; flex-wrap: wrap;
+  }
 }
 
-@media (max-width: 760px) {
-  .onglets { top: 92px; }
-  main { padding: 14px 12px 72px; }
-  .heros__valeur { font-size: 2.4rem; }
+@media (max-width: 860px) {
+  .cat > summary { grid-template-columns: 18px minmax(0, 1fr) 150px; }
+  .cat__part { display: none; }
+}
+
+@media (max-width: 720px) {
+  .tete { padding: 9px 14px; }
+  .nav { padding: 6px 14px; }
+  main { padding: 14px 12px 80px; }
+  .bilan__valeur { font-size: 2.3rem; }
   .semaines, .semaines--larges { grid-template-columns: 1fr; }
 
-  /* Rien ne doit dépasser en largeur : tout passe à la ligne. */
-  .barre { padding: 8px 12px; }
-  .barre__mois { flex: 1 1 auto; min-width: 0; }
-  .barre__mois select { flex: 1 1 auto; min-width: 0; max-width: 220px; }
-  .barre__actions { margin-left: 0; }
-  .outils > * { min-width: 0; }
-  .champ-recherche { flex: 1 1 100%; min-width: 0; }
-  .interrupteur-texte { flex: 1 1 100%; }
+  .entete-colonnes { display: none; }
 
-  /* Chaque ligne devient une fiche lisible au pouce. */
-  table.lignes, table.lignes tbody, table.lignes tr, table.lignes td { display: block; width: 100%; }
-  table.lignes, table.lignes--achats, table.heures { table-layout: auto; border: 0; background: none; }
-  table.lignes thead { display: none; }
-  table.lignes tr {
-    position: relative;
-    margin-bottom: 10px; padding: 8px 10px 8px 10px;
-    background: var(--surface); border: 1px solid var(--bord); border-radius: var(--rayon);
+  /* La ligne se replie : libellé au-dessus, montants dessous. */
+  .ligne {
+    grid-template-columns: 30px minmax(0, 1fr) 30px;
+    grid-template-areas:
+      "actif libelle suppr"
+      ".     montants montants";
+    padding: 7px 12px 8px 10px;
+    border-bottom: 1px solid var(--filet);
   }
-  /* Place réservée en haut à droite pour l'interrupteur et la suppression. */
-  table.lignes tr:has(.col-actif), table.lignes tr:has(.col-suppr) { padding-right: 84px; }
-  table.lignes tr:hover td { background: none; }
-  table.lignes td { border: 0; padding: 3px 0; width: auto; }
-  table.lignes td::before {
-    content: attr(data-etiquette);
-    display: inline-block; width: 90px; vertical-align: middle;
-    font-size: .74rem; color: var(--encre-3); text-transform: uppercase; letter-spacing: .04em;
+  .ligne__montants {
+    grid-area: montants; display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
   }
-  table.lignes td.col-libelle::before { display: none; }
-  table.lignes .col-nombre { text-align: left; }
-  table.lignes input[type="text"], table.lignes select {
-    width: calc(100% - 96px); max-width: none; border-color: var(--bord);
+  .champ-montant { flex: 0 0 auto; display: flex; align-items: center; gap: 5px; }
+  .champ-montant input { width: 92px; border-color: var(--bord); background: var(--surface); }
+  .champ-montant__etiquette {
+    display: inline; font-size: .7rem; letter-spacing: .05em;
+    text-transform: uppercase; color: var(--encre-3);
   }
-  table.lignes .col-nombre input { width: 120px; text-align: left; }
-  table.lignes td.col-libelle input { width: 100%; font-size: 1rem; }
-  table.lignes .col-actif, table.lignes .col-suppr {
-    position: absolute; top: 9px; z-index: 2; width: auto; padding: 0; text-align: right;
-  }
-  table.lignes .col-actif { right: 44px; }
-  table.lignes .col-suppr { right: 6px; }
-  table.lignes .col-actif::before, table.lignes .col-suppr::before { display: none; }
+  .ligne__ecart { text-align: left; }
 
-  /* Les heures restent un tableau : la grille jour/matin/après-midi y est essentielle. */
-  table.heures, table.heures tbody, table.heures tr { display: table; width: 100%; }
-  table.heures thead { display: table-header-group; }
-  table.heures td { display: table-cell; width: auto; padding: 3px 2px; }
-  table.heures td::before { display: none; }
-  table.heures tr { margin: 0; padding: 0; border: 0; border-radius: 0;
-                    border-bottom: 1px solid var(--filet); background: none; }
-  table.heures { font-size: .8rem; }
-  table.heures input[type="text"] { width: 100%; padding: 5px 2px; }
-  table.heures .jour { padding-left: 4px; }
-}
+  .achat {
+    grid-template-columns: minmax(0, 1fr) 88px 30px;
+    grid-template-areas: "poste montant suppr" "libelle libelle libelle";
+    padding: 6px 0; border-bottom: 1px solid var(--filet);
+  }
+  .achat__poste { grid-area: poste; }
+  .achat__libelle { grid-area: libelle; }
+  .achat__montant { grid-area: montant; }
+  .achat__suppr { grid-area: suppr; }
+  .achat__entete { display: none; }
+  .achat input { border-color: var(--bord); background: var(--surface); }
 
-@media (max-width: 380px) {
-  table.lignes td::before { display: block; width: auto; }
-  table.lignes input[type="text"], table.lignes select { width: 100%; }
-  table.lignes .col-nombre input { width: 100%; }
+  .heures { font-size: .8rem; }
 }
 
 @media print {
-  .barre__actions, .onglets, .outils, .toasts, .sauvegarde, .col-suppr { display: none !important; }
+  .tete__actions, .nav, .outils, .toasts, .sauvegarde, .ligne__suppr { display: none !important; }
   .vue[hidden] { display: block !important; }
+  .bilan, .tete { position: static; }
   body { background: #fff; }
 }
 
@@ -545,66 +726,53 @@ table.heures .separateur { border-left: 1px solid var(--filet); }
   * { transition: none !important; animation: none !important; }
 }
 
-/* Liste des lignes mises en pause, sur le tableau de bord */
-.liste-pause { margin: 0; padding-left: 18px; font-size: .84rem; color: var(--encre-2); }
-.liste-pause li { margin: 2px 0; }
-.liste-pause strong { font-variant-numeric: tabular-nums; color: var(--encre); }
-
-/* Suggestions d'achat repliables */
-.suggestions { width: 100%; }
-.suggestions > summary {
-  cursor: pointer; font-size: .8rem; color: var(--encre-2);
-  padding: 4px 2px; list-style-position: inside;
+/* Panneau « ⋯ » d'une ligne : catégorie, note, nature, lien, suppression */
+.ligne-detail {
+  display: flex; align-items: center; gap: 14px; flex-wrap: wrap;
+  margin: 2px 14px 10px 44px; padding: 11px 13px;
+  background: var(--surface);
+  border: 1px solid var(--bord); border-radius: var(--r-m);
 }
-.suggestions > summary:hover { color: var(--encre); }
-.suggestions .puces { margin-top: 4px; }
+.ligne-detail input, .ligne-detail select { background: var(--surface-2); }
+.ligne-detail .champ-inline { color: var(--encre-3); font-size: .76rem; }
+@media (max-width: 720px) { .ligne-detail { margin-left: 14px; } }
 
-/* Bandeau d'alerte si le navigateur refuse l'enregistrement automatique */
-.alerte {
-  margin: 0; padding: 10px 16px;
-  background: color-mix(in srgb, var(--critique) 12%, var(--surface));
-  border-bottom: 1px solid var(--critique);
-  font-size: .85rem; color: var(--encre);
+/* Pastille de nature : la couleur renvoie à la barre du bilan. */
+.jeton-nature {
+  appearance: none; cursor: pointer; flex: none; padding: 0;
+  width: 13px; height: 13px; border-radius: 4px; border: 0;
 }
-.alerte strong { color: var(--critique); }
+.jeton-nature--fixes { background: var(--serie-1); }
+.jeton-nature--variables { background: var(--serie-2); }
+.jeton-nature:hover { box-shadow: 0 0 0 3px color-mix(in srgb, currentColor 18%, transparent); }
 
-/* Page d'auto-verification */
-.verif { max-width: 760px; margin: 24px auto; padding: 0 16px; }
-.verif h2 { margin-bottom: 12px; }
-.verif ul { list-style: none; padding: 0; margin: 0; }
-.verif li {
-  padding: 7px 10px; border-bottom: 1px solid var(--filet);
-  font-size: .86rem; display: flex; gap: 10px;
-}
-.verif .ok { color: var(--bon-texte); }
-.verif .ko { color: var(--critique); font-weight: 600; }
-.verif__bilan { margin-top: 14px; font-weight: 600; }
+.cat__prevu { display: block; }
 </style>
 </head>
 <body>
-<noscript>
-  <p class="alerte">Cette application a besoin de JavaScript. Activez-le dans votre navigateur.</p>
-</noscript>
+<noscript><p class="alerte">Cette application a besoin de JavaScript. Activez-le dans votre navigateur.</p></noscript>
 
-
-<header class="barre">
-  <div class="barre__titre">
-    <span class="barre__logo" aria-hidden="true">€</span>
+<header class="tete">
+  <div class="tete__marque">
+    <span class="tete__logo" aria-hidden="true">€</span>
     <h1>Comptes</h1>
   </div>
 
-  <div class="barre__mois">
-    <label class="visuellement-cache" for="choix-mois">Mois affiché</label>
-    <select id="choix-mois"></select>
-    <button type="button" id="btn-mois-precedent" class="bouton bouton--icone" title="Mois précédent">‹</button>
-    <button type="button" id="btn-mois-suivant" class="bouton bouton--icone" title="Mois suivant">›</button>
+  <div class="mois">
+    <button type="button" class="mois__fleche" id="mois-precedent"
+            title="Mois précédent" aria-label="Mois précédent">‹</button>
+    <label class="cache" for="choix-mois">Mois affiché</label>
+    <select class="mois__choix" id="choix-mois"></select>
+    <button type="button" class="mois__fleche" id="mois-suivant"
+            title="Mois suivant" aria-label="Mois suivant">›</button>
   </div>
 
-  <div class="barre__actions">
-    <button type="button" id="btn-nouveau-mois" class="bouton bouton--primaire">+ Nouveau mois</button>
+  <div class="tete__actions">
     <details class="menu">
-      <summary class="bouton" title="Plus d'options">⋯</summary>
+      <summary class="bouton" title="Menu">⋯</summary>
       <div class="menu__contenu">
+        <button type="button" data-action="nouveau-mois">Créer un nouveau mois…</button>
+        <hr>
         <button type="button" data-action="export-csv">Exporter ce mois (CSV)</button>
         <button type="button" data-action="export-json">Sauvegarder tout (JSON)</button>
         <button type="button" data-action="import-json">Restaurer une sauvegarde…</button>
@@ -618,109 +786,81 @@ table.heures .separateur { border-left: 1px solid var(--filet); }
   </div>
 </header>
 
-<nav class="onglets" role="tablist" aria-label="Sections">
-  <button type="button" role="tab" class="onglet" data-vue="tableau" aria-selected="true">Tableau de bord</button>
-  <button type="button" role="tab" class="onglet" data-vue="depenses" aria-selected="false">Dépenses</button>
-  <button type="button" role="tab" class="onglet" data-vue="revenus" aria-selected="false">Revenus</button>
-  <button type="button" role="tab" class="onglet" data-vue="courses" aria-selected="false">Courses</button>
-  <button type="button" role="tab" class="onglet" data-vue="heures" aria-selected="false">Heures gardées</button>
+<nav class="nav" aria-label="Sections">
+  <button type="button" class="nav__lien" data-vue="budget" aria-current="page">Budget du mois</button>
+  <span class="nav__separateur" aria-hidden="true"></span>
+  <span class="nav__groupe">
+    <button type="button" class="nav__lien" data-vue="graphiques">Graphiques</button>
+    <button type="button" class="nav__lien" data-vue="courses">
+      Courses <span class="nav__jeton" id="jeton-courses"></span>
+    </button>
+    <button type="button" class="nav__lien" data-vue="heures">
+      Heures gardées <span class="nav__jeton" id="jeton-heures"></span>
+    </button>
+  </span>
 </nav>
 
 <main id="contenu">
 
-  <!-- ------------------------------------------------ Tableau de bord -->
-  <section class="vue" id="vue-tableau" role="tabpanel" aria-label="Tableau de bord">
-    <div class="heros" id="heros"></div>
-    <div class="tuiles" id="tuiles"></div>
-
-    <div class="grille-deux">
-      <article class="carte viz-root" id="carte-categories">
-        <header class="carte__entete">
-          <h2>Dépenses par catégorie</h2>
-          <p class="carte__sous-titre">Barre : dépensé · trait : prévu</p>
-        </header>
-        <div id="graphique-categories" class="graphique"></div>
-        <details class="tableau-jumeau">
-          <summary>Voir les chiffres</summary>
-          <div id="tableau-categories"></div>
-        </details>
-      </article>
-
-      <div class="pile">
-        <article class="carte" id="carte-courses-resume"></article>
-        <article class="carte" id="carte-heures-resume"></article>
-        <article class="carte" id="carte-pause"></article>
-      </div>
-    </div>
+  <!-- ============================================ LA PAGE PRINCIPALE ==== -->
+  <section class="vue" id="vue-budget">
+    <div class="bilan" id="bilan"></div>
+    <section class="bloc" id="bloc-revenus"></section>
+    <section class="bloc" id="bloc-depenses"></section>
+    <div class="modules" id="modules"></div>
   </section>
 
-  <!-- ------------------------------------------------------- Dépenses -->
-  <section class="vue" id="vue-depenses" role="tabpanel" aria-label="Dépenses" hidden>
+  <!-- ==================================================== GRAPHIQUES ==== -->
+  <section class="vue" id="vue-graphiques" hidden>
+    <article class="carte">
+      <header class="carte__tete">
+        <h2>Dépenses par catégorie</h2>
+        <p class="carte__sous-titre">Barre : dépensé · trait : prévu</p>
+      </header>
+      <div id="graphique-categories" class="graphique"></div>
+      <details class="jumeau"><summary>Voir les chiffres</summary>
+        <div id="tableau-categories"></div>
+      </details>
+    </article>
+
+    <article class="carte">
+      <header class="carte__tete">
+        <h2>Évolution mois par mois</h2>
+        <p class="carte__sous-titre">Ce qui rentre et ce qui sort, mois après mois</p>
+      </header>
+      <div id="graphique-evolution" class="graphique"></div>
+      <details class="jumeau"><summary>Voir les chiffres</summary>
+        <div id="tableau-evolution"></div>
+      </details>
+    </article>
+  </section>
+
+  <!-- ======================================================= COURSES ==== -->
+  <section class="vue" id="vue-courses" hidden>
     <div class="outils">
-      <div class="segmente" role="group" aria-label="Filtrer par nature">
-        <button type="button" data-filtre-nature="tout" class="actif">Tout</button>
-        <button type="button" data-filtre-nature="fixe">Fixes</button>
-        <button type="button" data-filtre-nature="variable">Variables</button>
-      </div>
-      <input type="search" id="recherche-depenses" class="champ-recherche"
-             placeholder="Rechercher une dépense…" aria-label="Rechercher une dépense">
-      <label class="interrupteur-texte">
-        <input type="checkbox" id="masquer-pause"> Masquer les lignes en pause
+      <label class="champ-inline">Budget confié aux courses
+        <input type="text" inputmode="decimal" id="budget-courses">
       </label>
       <span class="pousse"></span>
-      <button type="button" class="bouton bouton--primaire" data-ajouter="depense">+ Ajouter une dépense</button>
-    </div>
-    <div id="table-depenses"></div>
-  </section>
-
-  <!-- -------------------------------------------------------- Revenus -->
-  <section class="vue" id="vue-revenus" role="tabpanel" aria-label="Revenus" hidden>
-    <div class="outils">
-      <div class="segmente" role="group" aria-label="Filtrer par type">
-        <button type="button" data-filtre-revenu="tout" class="actif">Tout</button>
-        <button type="button" data-filtre-revenu="salaire">Salaires</button>
-        <button type="button" data-filtre-revenu="aide">Aides</button>
-      </div>
-      <span class="pousse"></span>
-      <button type="button" class="bouton" data-ajouter="aide">+ Ajouter une aide</button>
-      <button type="button" class="bouton bouton--primaire" data-ajouter="salaire">+ Ajouter un salaire</button>
-    </div>
-    <div id="table-revenus"></div>
-  </section>
-
-  <!-- -------------------------------------------------------- Courses -->
-  <section class="vue" id="vue-courses" role="tabpanel" aria-label="Courses" hidden>
-    <div class="outils">
-      <label class="champ-inline">Budget courses du mois
-        <input type="text" inputmode="decimal" id="budget-courses" class="montant">
-      </label>
-      <span class="pousse"></span>
-      <button type="button" class="bouton" id="btn-retirer-semaine">− Semaine</button>
-      <button type="button" class="bouton" id="btn-ajouter-semaine">+ Semaine</button>
-      <button type="button" class="bouton bouton--primaire" data-report="courses">
-        Reporter le total dans les dépenses
-      </button>
+      <button type="button" class="bouton" id="retirer-semaine">− Semaine</button>
+      <button type="button" class="bouton" id="ajouter-semaine">+ Semaine</button>
     </div>
     <div id="resume-courses"></div>
     <div id="semaines-courses" class="semaines"></div>
   </section>
 
-  <!-- --------------------------------------------------------- Heures -->
-  <section class="vue" id="vue-heures" role="tabpanel" aria-label="Heures gardées" hidden>
+  <!-- ======================================================== HEURES ==== -->
+  <section class="vue" id="vue-heures" hidden>
     <div class="outils">
       <label class="champ-inline">Taux horaire
-        <input type="text" inputmode="decimal" id="taux-horaire" class="montant">
+        <input type="text" inputmode="decimal" id="taux-horaire">
       </label>
       <label class="champ-inline">Cotisations (%)
-        <input type="text" inputmode="decimal" id="taux-cotisation" class="montant">
+        <input type="text" inputmode="decimal" id="taux-cotisation">
       </label>
-      <span class="pousse"></span>
-      <button type="button" class="bouton bouton--primaire" data-report="heures">
-        Reporter le net dans les revenus
-      </button>
     </div>
     <div id="resume-heures"></div>
-    <div id="semaines-heures" class="semaines"></div>
+    <div id="semaines-heures" class="semaines semaines--larges"></div>
   </section>
 
 </main>
@@ -730,19 +870,6 @@ table.heures .separateur { border-left: 1px solid var(--filet); }
 <div id="sauvegarde" class="sauvegarde" aria-live="polite"></div>
 
 <script>
-/* ==========================================================================
-   Comptes — application complète dans un seul fichier.
-
-   Organisation du script :
-     1. Réglages et données de départ
-     2. Calculs (purs : ils ne touchent ni à l'écran ni au stockage)
-     3. Stockage dans le navigateur
-     4. Modifications des données
-     5. Affichage
-     6. Interactions
-     7. Démarrage et auto-vérification
-   ========================================================================== */
-
 'use strict';
 
 /* ========================================================================== */
@@ -761,7 +888,6 @@ const BUDGET_SEMAINE_DEFAUT = 100;
 const SEMAINES_PAR_DEFAUT = 4;
 
 const JOURS = ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi', 'Dimanche'];
-const VUES = ['tableau', 'depenses', 'revenus', 'courses', 'heures'];
 const POSTES_COURANTS = ['Marché', 'Carrefour', 'Wevrac', 'Boulangerie', 'Pharmacie'];
 const ACHATS_COURANTS = ['Fruits/Légumes', 'Olives', 'Fromage', 'Viande', 'Poisson',
                          'Pain', 'Italien', 'Café', 'Poulet'];
@@ -1041,7 +1167,7 @@ function recapBudget(lignes) {
 function recap(mois) {
   return {
     budget: recapBudget(mois.lignes),
-    courses: recapCourses(mois.semaines, mois.achats, mois.budgetCourses),
+    courses: recapCourses(mois.semaines, mois.achats, budgetCourses(mois)),
     heures: recapHeures(mois.creneaux, mois.tauxHoraire, mois.tauxCotisation),
   };
 }
@@ -1255,8 +1381,9 @@ function moisActif() {
   return D.mois.find(m => m.id === D.moisActif) || trieMois(D.mois)[0];
 }
 
-/** Toute modification passe par ici : on enregistre puis on redessine. */
+/** Toute modification passe par ici : on synchronise, on enregistre, on redessine. */
 function applique(message) {
+  synchroniseLiens(moisActif());
   const enregistre = enregistreDonnees();
   dessineTout();
   if (message && enregistre) signaleSauvegarde(message);
@@ -1269,7 +1396,11 @@ function prochainRang(collection) {
 function majMois(champ, valeur) {
   const mois = moisActif();
   if (champ === 'note') mois.note = String(valeur || '');
-  else mois[champ] = nombre(valeur);
+  else if (champ === 'budgetCourses') {
+    // Le budget des courses appartient à la ligne de dépense : une seule source.
+    const ligne = ligneReliee(mois, 'courses');
+    if (ligne) ligne.estime = nombre(valeur); else mois.budgetCourses = nombre(valeur);
+  } else mois[champ] = nombre(valeur);
   applique('Enregistré');
 }
 
@@ -1375,24 +1506,55 @@ function retireSemaine(numero) {
   applique('Semaine supprimée');
 }
 
-/** Recopie un total calculé dans la ligne de budget qui lui correspond. */
-function reporte(cible) {
-  const mois = moisActif();
-  const totaux = recap(mois);
-  const montant = cible === 'courses' ? totaux.courses.depense : totaux.heures.net;
-  const ligne = mois.lignes.find(l => (l.lien || '') === cible);
-  if (!ligne) {
-    toast('Aucune ligne n’est reliée à ce total. Choisissez le lien « ' +
-          (cible === 'courses' ? 'Courses' : 'Heures gardées') +
-          ' » sur la ligne concernée (colonne Lien de l’onglet Revenus, ou la note de la dépense).',
-          { erreur: true, duree: 12000 });
-    return;
+/* -- Liaison entre le budget et les modules -------------------------------- *
+
+   Deux lignes du budget ne se saisissent pas à la main : elles sont le reflet
+   d'un module.
+
+     ligne « Courses » (lien = courses)  : prévu  -> budget confié au module
+                                           réel   <- total dépensé dans le module
+     ligne « Caracole » (lien = heures)  : réel   <- salaire net calculé
+
+   La synchronisation a lieu avant chaque enregistrement et chaque affichage,
+   si bien que les deux vues ne peuvent pas diverger.
+*/
+
+function ligneReliee(mois, lien) {
+  return mois.lignes.find(l => (l.lien || '') === lien) || null;
+}
+
+/** Budget confié aux courses : le montant prévu de la ligne de dépense reliée. */
+function budgetCourses(mois) {
+  const ligne = ligneReliee(mois, 'courses');
+  return eur(ligne ? ligne.estime : mois.budgetCourses);
+}
+
+/** Recopie les totaux des modules dans les lignes de budget correspondantes.
+
+   Un module ne prend la main qu'une fois rempli : tant qu'aucun achat n'est
+   saisi, le montant écrit à la main dans le budget est conservé. Sans cette
+   règle, ouvrir l'application effacerait des montants que personne n'a
+   demandé d'effacer. */
+function synchroniseLiens(mois) {
+  const ligneCourses = ligneReliee(mois, 'courses');
+  if (ligneCourses) {
+    mois.budgetCourses = eur(ligneCourses.estime);
+    if (mois.achats.length) {
+      ligneCourses.reel = recapCourses(mois.semaines, mois.achats, budgetCourses(mois)).depense;
+    }
   }
-  ligne.reel = montant;
-  applique();
-  toast(cible === 'courses'
-    ? 'Total des courses reporté sur « ' + (ligne.libelle || 'la ligne reliée') + ' ».'
-    : 'Salaire net reporté sur « ' + (ligne.libelle || 'la ligne reliée') + ' ».');
+  const ligneHeures = ligneReliee(mois, 'heures');
+  if (ligneHeures) {
+    const heures = recapHeures(mois.creneaux, mois.tauxHoraire, mois.tauxCotisation);
+    if (heures.minutes > 0) ligneHeures.reel = heures.net;
+  }
+}
+
+/** Un module pilote-t-il déjà sa ligne de budget ? */
+function modulePilote(mois, lien) {
+  if (!ligneReliee(mois, lien)) return false;
+  return lien === 'courses' ? mois.achats.length > 0
+    : recapHeures(mois.creneaux, mois.tauxHoraire, mois.tauxCotisation).minutes > 0;
 }
 
 /* ========================================================================== */
@@ -1402,14 +1564,22 @@ function reporte(cible) {
 const $  = (sel, racine = document) => racine.querySelector(sel);
 const $$ = (sel, racine = document) => Array.from(racine.querySelectorAll(sel));
 
+const VUES = ['budget', 'graphiques', 'courses', 'heures'];
+
 const etat = {
-  detail: null,
-  vue: 'tableau',
-  filtreNature: 'tout',
-  filtreRevenu: 'tout',
-  recherche: '',
-  masquerPause: false,
+  vue: 'budget',
+  mois: null,
+  recap: null,
+  creneaux: [],
+  categoriesFermees: new Set(),
+  detailsOuverts: new Set(),
 };
+
+/** replaceChildren insère « null » comme texte : on filtre avant. */
+function remplace(hote, ...enfants) {
+  hote.replaceChildren(
+    ...enfants.flat().filter(e => e !== null && e !== undefined && e !== false));
+}
 
 function el(balise, attributs = {}, ...enfants) {
   const noeud = document.createElement(balise);
@@ -1434,6 +1604,7 @@ const formatNombre = new Intl.NumberFormat('fr-FR',
 
 const euros = (v) => formatEuros.format(Number(v) || 0);
 const signe = (v) => (Number(v) > 0 ? '+' : '') + euros(v);
+const pourcent = (part) => Math.round(part * 100) + ' %';
 
 /** Montant tel qu'on le saisit : « 19,99 », et rien du tout si c'est zéro. */
 function montantSaisi(valeur) {
@@ -1505,7 +1676,7 @@ function restaureFocus(memoire) {
   if (!memoire) return;
   const champ = document.querySelector('[data-cle="' + CSS.escape(memoire.cle) + '"]');
   if (!champ) return;
-  champ.focus();
+  champ.focus({ preventScroll: true });
   if (memoire.debut !== null && typeof champ.setSelectionRange === 'function') {
     const position = Math.min(memoire.debut, champ.value.length);
     try { champ.setSelectionRange(position, position); } catch (e) { /* champ non textuel */ }
@@ -1517,22 +1688,22 @@ function restaureFocus(memoire) {
 function dessineTout() {
   const memoire = memoriseFocus();
   const mois = moisActif();
-  etat.detail = {
-    mois,
-    lignes: mois.lignes,
-    semaines: mois.semaines.slice().sort((a, b) => a.numero - b.numero),
-    achats: mois.achats,
-    creneaux: mois.creneaux.map(c => {
-      const minutes = dureeCreneau(c);
-      return Object.assign({}, c, { minutes, duree: minutes ? formatDuree(minutes) : '' });
-    }),
-    recap: recap(mois),
-    moisDisponibles: trieMois(D.mois),
-  };
+  synchroniseLiens(mois);
+  etat.mois = mois;
+  etat.recap = recap(mois);
+  etat.creneaux = mois.creneaux.map(c => {
+    const minutes = dureeCreneau(c);
+    return Object.assign({}, c, { minutes, duree: minutes ? formatDuree(minutes) : '' });
+  });
+
   dessineSelecteurMois();
-  dessineTableauDeBord();
-  dessineDepenses();
+  dessineJetonsNav();
+  dessineBilan();
   dessineRevenus();
+  dessineDepenses();
+  dessineModules();
+  dessineGraphiqueCategories();
+  dessineGraphiqueEvolution();
   dessineCourses();
   dessineHeures();
   restaureFocus(memoire);
@@ -1541,108 +1712,423 @@ function dessineTout() {
 function dessineSelecteurMois() {
   const choix = $('#choix-mois');
   choix.textContent = '';
-  for (const mois of etat.detail.moisDisponibles) {
+  for (const mois of trieMois(D.mois)) {
     choix.append(el('option', { value: mois.id, selected: mois.id === D.moisActif },
       libelleMois(mois.libelle)));
   }
 }
 
+function dessineJetonsNav() {
+  $('#jeton-courses').textContent = euros(etat.recap.courses.depense);
+  $('#jeton-heures').textContent = etat.recap.heures.duree;
+}
+
 function montreVue(nom) {
-  if (!VUES.includes(nom)) nom = 'tableau';
+  if (!VUES.includes(nom)) nom = 'budget';
   etat.vue = nom;
-  for (const onglet of $$('.onglet')) {
-    onglet.setAttribute('aria-selected', String(onglet.dataset.vue === nom));
+  for (const lien of $$('.nav__lien')) {
+    if (lien.dataset.vue === nom) lien.setAttribute('aria-current', 'page');
+    else lien.removeAttribute('aria-current');
   }
   for (const vue of $$('.vue')) vue.hidden = vue.id !== 'vue-' + nom;
-  if (nom === 'tableau') dessineGraphiqueCategories();
+  $('#contenu').classList.toggle('large', nom !== 'budget');
+  if (nom === 'graphiques') { dessineGraphiqueCategories(); dessineGraphiqueEvolution(); }
   if (location.hash.slice(1) !== nom) history.replaceState(null, '', '#' + nom);
   try { localStorage.setItem('comptes.vue', nom); } catch (e) { /* ignoré */ }
 }
 
-/* -- Tableau de bord ------------------------------------------------------ */
+/* ======================================================= LE BILAN (héros) ===
+   La barre entière vaut les revenus du mois. Ce qui est peint est parti,
+   ce qui reste vide est ce dont on dispose encore : c'est là que se lit
+   l'incidence des dépenses sur les revenus.
+   ========================================================================== */
 
-function tuile(etiquette, valeur, note, classeNote) {
-  return el('div', { class: 'tuile' },
-    el('div', { class: 'tuile__etiquette', texte: etiquette }),
-    el('div', { class: 'tuile__valeur', texte: valeur }),
-    note ? el('div', { class: 'tuile__delta ' + (classeNote || ''), texte: note }) : null);
-}
+function dessineBilan() {
+  const b = etat.recap.budget;
+  const revenus = b.revenus.reel;
+  const fixes = b.depensesFixes.reel;
+  const variables = b.depensesVariables.reel;
+  const depenses = b.depenses.reel;
+  const reste = b.restant.reel;
+  const depassement = reste < 0;
 
-function dessineTableauDeBord() {
-  const { budget, courses, heures } = etat.detail.recap;
-  const restant = budget.restant.reel;
+  // Largeurs en pourcentage des revenus ; en cas de dépassement la barre est pleine.
+  let partFixes = 0, partVariables = 0;
+  if (revenus > 0) {
+    partFixes = (fixes / revenus) * 100;
+    partVariables = (variables / revenus) * 100;
+    const totale = partFixes + partVariables;
+    if (totale > 100) { partFixes = partFixes * 100 / totale; partVariables = partVariables * 100 / totale; }
+  } else if (depenses > 0) {
+    partFixes = (fixes / depenses) * 100;
+    partVariables = (variables / depenses) * 100;
+  }
 
-  $('#heros').replaceChildren(
-    el('div', { class: 'heros__bloc' },
-      el('div', { class: 'heros__etiquette', texte: 'Restant à vivre ce mois' }),
-      el('div', {
-        class: 'heros__valeur' + (restant < 0 ? ' heros__valeur--negatif' : ''),
-        texte: euros(restant),
-      }),
-      el('div', {
-        class: 'heros__note',
-        texte: 'Prévu : ' + euros(budget.restant.estime) + ' · ' +
-               (restant < 0 ? 'Découvert' : 'Disponible') +
-               ' au regard des montants réels saisis',
-      })));
+  const piste = el('div', {
+    class: 'bilan__piste', role: 'img',
+    'aria-label': 'Sur ' + euros(revenus) + ' encaissés, ' + euros(fixes) +
+                  ' de charges fixes et ' + euros(variables) + ' de dépenses variables' +
+                  (depassement ? ', budget dépassé de ' + euros(-reste)
+                               : ', il reste ' + euros(reste)),
+  });
+  if (partFixes > 0) {
+    piste.append(el('div', {
+      class: 'bilan__part bilan__part--fixes' + (partVariables <= 0 && !depassement ? ' bilan__part--fin' : ''),
+      style: 'width:' + partFixes + '%',
+    }));
+  }
+  if (partVariables > 0) {
+    piste.append(el('div', {
+      class: 'bilan__part bilan__part--variables' + (depassement ? '' : ' bilan__part--fin'),
+      style: 'width:' + partVariables + '%',
+    }));
+  }
 
-  const surplus = budget.surplus.reel;
-  $('#tuiles').replaceChildren(
-    tuile('Revenus encaissés', euros(budget.revenus.reel),
-          'Prévu ' + euros(budget.revenus.estime)),
-    tuile('Dépenses réglées', euros(budget.depenses.reel),
-          'Prévu ' + euros(budget.depenses.estime)),
-    tuile('Écart sur les dépenses', signe(surplus),
-          surplus >= 0 ? 'Sous le budget prévu' : 'Au-dessus du budget prévu',
-          surplus >= 0 ? 'tuile__delta--bon' : 'tuile__delta--mauvais'),
-    tuile('Charges fixes', euros(budget.depensesFixes.reel),
-          'Variables ' + euros(budget.depensesVariables.reel)),
-    tuile('Coût net de la garde', euros(budget.gardeNette.reel),
-          'Garde ' + euros(budget.garde.reel) + ' − CAF ' + euros(budget.caf.reel)));
+  const cle = (classe, nom, montant) => el('span', { class: 'bilan__cle' },
+    el('i', { class: 'bilan__pastille bilan__pastille--' + classe, 'aria-hidden': 'true' }),
+    nom, ' ', el('b', { texte: euros(montant) }));
 
-  dessineGraphiqueCategories();
-  dessineTableauCategories();
-
-  $('#carte-courses-resume').replaceChildren(
-    el('header', { class: 'carte__entete' },
-      el('h2', { texte: 'Budget courses' }),
-      el('p', { class: 'carte__sous-titre',
-                texte: euros(courses.depense) + ' dépensés sur ' + euros(courses.budgetTotal) })),
-    jauge('Consommé', courses.depense, courses.budgetTotal),
-    el('div', { class: 'pied-tableau' },
-      el('button', { class: 'bouton bouton--fantome', texte: 'Détailler les courses →',
-                     onclick: () => montreVue('courses') })));
-
-  $('#carte-heures-resume').replaceChildren(
-    el('header', { class: 'carte__entete' },
-      el('h2', { texte: 'Heures gardées' }),
-      el('p', { class: 'carte__sous-titre',
-                texte: heures.duree + ' à ' + formatNombre.format(heures.tauxHoraire) + ' €/h' })),
-    el('div', { class: 'tuile__valeur', texte: euros(heures.net) }),
-    el('div', { class: 'tuile__delta',
-                texte: 'Net · brut ' + euros(heures.brut) +
-                       ' − cotisations ' + euros(heures.cotisation) }),
-    el('div', { class: 'pied-tableau' },
-      el('button', { class: 'bouton bouton--fantome', texte: 'Détailler les heures →',
-                     onclick: () => montreVue('heures') })));
-
-  const enPause = budget.enPause;
-  $('#carte-pause').replaceChildren(
-    el('header', { class: 'carte__entete' },
-      el('h2', { texte: 'Lignes en pause' }),
-      el('p', { class: 'carte__sous-titre',
-                texte: enPause.length
-                  ? euros(budget.economieEnPause) + ' par mois non dépensés'
-                  : 'Tout est actif ce mois-ci' })),
-    enPause.length
-      ? el('ul', { class: 'liste-pause' },
-          enPause.slice(0, 6).map(l => el('li', {},
-            el('span', { texte: l.libelle || l.categorie }), ' — ',
-            el('strong', { texte: euros(l.estime) }))))
+  remplace($('#bilan'),
+    el('div', { class: 'bilan__haut' },
+      el('div', {},
+        el('span', { class: 'bilan__etiquette', texte: depassement ? 'Découvert' : 'Reste à vivre' }),
+        el('strong', { class: 'bilan__valeur' + (depassement ? ' bilan__valeur--negatif' : ''),
+                       texte: euros(reste) })),
+      el('div', { class: 'bilan__cote' },
+        el('div', {}, 'Encaissé ', el('b', { texte: euros(revenus) })),
+        el('div', {}, 'Dépensé ', el('b', { texte: euros(depenses) })),
+        el('div', {}, 'Prévu ', el('b', { texte: euros(b.restant.estime) })))),
+    piste,
+    el('div', { class: 'bilan__legende' },
+      cle('fixes', 'Charges fixes', fixes),
+      cle('variables', 'Dépenses variables', variables),
+      cle('reste', depassement ? 'Dépassement' : 'Reste', Math.abs(reste))),
+    depassement
+      ? el('div', { class: 'bilan__alerte' }, '✕ ',
+          'Vos dépenses dépassent vos revenus de ' + euros(-reste) + ' ce mois-ci.')
       : null);
 }
 
-/* -- Graphique ------------------------------------------------------------ */
+/* ============================================================ UNE LIGNE ===
+   Colonnes visibles : interrupteur · nature · libellé · prévu · réel · écart.
+   Le reste (catégorie, note, lien, suppression) est derrière le bouton « ⋯ ».
+   ========================================================================== */
+
+function champMontant(entite, id, champ, valeur, etiquette, options = {}) {
+  return el('label', { class: 'champ-montant champ-montant--' + options.place },
+    el('span', { class: 'champ-montant__etiquette', texte: options.court || etiquette }),
+    el('input', {
+      type: 'text', inputmode: 'decimal', value: montantSaisi(valeur), placeholder: '0,00',
+      readonly: options.verrouille || null,
+      title: options.titre || null,
+      'aria-label': etiquette,
+      'data-cle': entite + '-' + id + '-' + champ,
+      'data-entite': entite, 'data-id': id, 'data-champ': champ,
+    }));
+}
+
+function ligneBudget(l, options = {}) {
+  const estime = l.actif ? Number(l.estime) : 0;
+  // Dépense : dépenser moins que prévu est bon. Revenu : encaisser plus est bon.
+  const ecart = l.type === 'depense' ? estime - Number(l.reel) : Number(l.reel) - estime;
+  const lien = l.lien || '';
+  const moduleLie = lien === 'courses' ? 'courses' : (lien === 'heures' ? 'heures' : null);
+
+  const libelle = el('div', { class: 'ligne__libelle' });
+  if (options.nature) {
+    const estFixe = l.nature === 'fixe';
+    libelle.append(el('button', {
+      type: 'button',
+      class: 'jeton-nature jeton-nature--' + (estFixe ? 'fixes' : 'variables'),
+      title: (estFixe ? 'Charge fixe' : 'Dépense variable') + ' — cliquer pour basculer',
+      'aria-label': (estFixe ? 'Charge fixe' : 'Dépense variable') + ', cliquer pour basculer',
+      'data-bascule-nature': l.id,
+    }));
+  }
+  libelle.append(el('input', {
+    type: 'text', value: l.libelle, placeholder: options.placeholder || 'Libellé',
+    'aria-label': 'Libellé', 'data-cle': 'ligne-' + l.id + '-libelle',
+    'data-entite': 'ligne', 'data-id': l.id, 'data-champ': 'libelle',
+  }));
+  if (moduleLie) {
+    libelle.append(el('button', {
+      type: 'button', class: 'jeton-lien', 'data-aller': moduleLie,
+      title: 'Montant calculé dans le module ' +
+             (moduleLie === 'courses' ? 'Courses' : 'Heures gardées') + ' — cliquer pour l’ouvrir',
+    }, '↗ ', moduleLie === 'courses' ? 'Courses' : 'Heures'));
+  }
+
+  const ligne = el('div', {
+    class: 'ligne' + (l.actif ? '' : ' ligne--pause'), 'data-ligne': l.id,
+  },
+    el('div', { class: 'ligne__actif' },
+      el('input', {
+        type: 'checkbox', class: 'bascule', checked: !!l.actif,
+        title: l.actif ? 'Compté dans les totaux' : 'En pause : non compté',
+        'aria-label': 'Compter « ' + (l.libelle || 'cette ligne') + ' » dans les totaux',
+        'data-cle': 'ligne-' + l.id + '-actif',
+        'data-entite': 'ligne', 'data-id': l.id, 'data-champ': 'actif',
+      })),
+    libelle,
+    el('div', { class: 'ligne__montants' },
+      champMontant('ligne', l.id, 'estime', l.estime, 'Montant prévu',
+        { place: 'prevu', court: 'Prévu' }),
+      champMontant('ligne', l.id, 'reel', l.reel, 'Montant réel',
+        { place: 'reel', court: 'Réel', verrouille: !!moduleLie,
+          titre: moduleLie ? 'Calculé automatiquement par le module ' +
+                 (moduleLie === 'courses' ? 'Courses' : 'Heures gardées') : null }),
+      el('span', {
+        class: 'ligne__ecart' +
+          (ecart > 0.004 ? ' ligne__ecart--bon' : (ecart < -0.004 ? ' ligne__ecart--mauvais' : '')),
+        title: 'Écart entre le prévu et le réel',
+        texte: ecart === 0 ? '—' : signe(ecart),
+      })),
+    el('div', { class: 'ligne__suppr' },
+      el('button', {
+        type: 'button', class: 'bouton bouton--rond', texte: '⋯',
+        title: 'Catégorie, note, suppression…',
+        'aria-expanded': String(etat.detailsOuverts.has(l.id)),
+        'data-detail': l.id,
+      })));
+
+  if (!etat.detailsOuverts.has(l.id)) return [ligne];
+  return [ligne, detailLigne(l, options)];
+}
+
+function detailLigne(l, options) {
+  const champ = (nom, etiquette, valeur, attributs = {}) =>
+    el('label', { class: 'champ-inline' }, etiquette,
+      el('input', Object.assign({
+        type: 'text', value: valeur || '', 'aria-label': etiquette,
+        'data-cle': 'ligne-' + l.id + '-' + nom,
+        'data-entite': 'ligne', 'data-id': l.id, 'data-champ': nom,
+      }, attributs)));
+
+  return el('div', { class: 'ligne-detail' },
+    options.categorie === false ? null
+      : champ('categorie', 'Catégorie', l.categorie,
+              { list: 'liste-categories', style: 'width:170px;text-align:left' }),
+    champ('note', 'Note', l.note, { style: 'width:220px;text-align:left' }),
+    el('label', { class: 'champ-inline' }, 'Nature',
+      el('select', {
+        'data-cle': 'ligne-' + l.id + '-nature', 'aria-label': 'Nature',
+        'data-entite': 'ligne', 'data-id': l.id, 'data-champ': 'nature',
+      }, [['fixe', 'Fixe'], ['variable', 'Variable']].map(([v, t]) =>
+        el('option', { value: v, selected: l.nature === v }, t)))),
+    options.type ? el('label', { class: 'champ-inline' }, 'Type',
+      el('select', {
+        'data-cle': 'ligne-' + l.id + '-type', 'aria-label': 'Type',
+        'data-entite': 'ligne', 'data-id': l.id, 'data-champ': 'type',
+      }, [['salaire', 'Salaire'], ['aide', 'Aide']].map(([v, t]) =>
+        el('option', { value: v, selected: l.type === v }, t)))) : null,
+    el('label', { class: 'champ-inline' }, 'Relié à',
+      el('select', {
+        'data-cle': 'ligne-' + l.id + '-lien', 'aria-label': 'Module relié',
+        'data-entite': 'ligne', 'data-id': l.id, 'data-champ': 'lien',
+      }, Object.entries(LIENS).map(([v, t]) =>
+        el('option', { value: v, selected: (l.lien || '') === v }, t)))),
+    el('span', { class: 'pousse' }),
+    el('button', {
+      type: 'button', class: 'bouton bouton--fantome danger', texte: '✕ Supprimer',
+      'data-supprimer': 'ligne', 'data-id': l.id,
+    }));
+}
+
+/* ========================================================== CE QUI RENTRE === */
+
+function dessineRevenus() {
+  const b = etat.recap.budget;
+  const lignes = etat.mois.lignes.filter(l => l.type !== 'depense');
+
+  const corps = el('div', { class: 'bloc__corps' });
+  const sections = [
+    ['salaire', 'Salaires', b.salaires],
+    ['aide', 'Aides', b.aides],
+  ];
+
+  for (const [type, nom, totaux] of sections) {
+    const membres = lignes.filter(l => l.type === type);
+    const sousBloc = el('section', { class: 'sous-bloc' },
+      el('div', { class: 'sous-bloc__tete' },
+        el('span', { class: 'sous-bloc__nom', texte: nom }),
+        el('span', { class: 'sous-bloc__total',
+                     texte: euros(totaux.reel) + ' encaissés · ' + euros(totaux.estime) + ' prévus' })));
+    if (membres.length) {
+      for (const l of membres) sousBloc.append(...ligneBudget(l, { type: true, categorie: false,
+                                                                  placeholder: 'Source du revenu' }));
+    } else {
+      sousBloc.append(el('div', { class: 'vide', texte: 'Aucune ligne.' }));
+    }
+    sousBloc.append(el('div', { class: 'cat__pied' },
+      el('button', { type: 'button', class: 'bouton bouton--fantome',
+                     texte: '+ Ajouter', 'data-ajouter': type })));
+    corps.append(sousBloc);
+  }
+
+  remplace($('#bloc-revenus'),
+    el('header', { class: 'bloc__tete' },
+      el('div', { class: 'bloc__titre' },
+        el('h2', { texte: 'Ce qui rentre' }),
+        el('span', { class: 'bloc__total', texte: euros(b.revenus.reel) }),
+        el('span', { class: 'bloc__prevu', texte: 'prévu ' + euros(b.revenus.estime) })),
+      el('span', { class: 'pousse' })),
+    el('div', { class: 'entete-colonnes' },
+      el('span', {}), el('span', { texte: 'Libellé' }),
+      el('span', { texte: 'Prévu' }), el('span', { texte: 'Réel' }),
+      el('span', { texte: 'Écart' }), el('span', {})),
+    corps);
+}
+
+/* =========================================================== CE QUI SORT === */
+
+function dessineDepenses() {
+  const b = etat.recap.budget;
+  const revenus = b.revenus.reel;
+  const parCategorie = new Map();
+  for (const l of etat.mois.lignes) {
+    if (l.type !== 'depense') continue;
+    const cle = (l.categorie || '').trim() || 'Sans catégorie';
+    if (!parCategorie.has(cle)) parCategorie.set(cle, []);
+    parCategorie.get(cle).push(l);
+  }
+  // Les catégories les plus lourdes d'abord : c'est ce qui pèse qu'on veut voir.
+  const ordre = b.parCategorie.map(c => c.categorie)
+    .filter(c => parCategorie.has(c))
+    .concat(Array.from(parCategorie.keys()).filter(c => !b.parCategorie.some(x => x.categorie === c)));
+
+  const corps = el('div', { class: 'bloc__corps' });
+  corps.append(el('datalist', { id: 'liste-categories' },
+    Array.from(parCategorie.keys()).sort((a, x) => a.localeCompare(x, 'fr'))
+      .map(c => el('option', { value: c }))));
+
+  if (!ordre.length) {
+    corps.append(el('div', { class: 'vide',
+      texte: 'Aucune dépense pour l’instant. Utilisez « + Dépense ».' }));
+  }
+
+  for (const nom of ordre) {
+    const membres = parCategorie.get(nom);
+    const totalReel = eur(membres.reduce((s, l) => s + Number(l.reel), 0));
+    const totalPrevu = eur(membres.reduce((s, l) => s + (l.actif ? Number(l.estime) : 0), 0));
+    const part = revenus > 0 ? Math.min(1, totalReel / revenus) : 0;
+    const ouverte = !etat.categoriesFermees.has(nom);
+
+    const details = el('details', { class: 'cat', open: ouverte, 'data-categorie': nom });
+    details.append(el('summary', {},
+      el('span', { class: 'cat__fleche', 'aria-hidden': 'true', texte: '▶' }),
+      el('span', {},
+        el('span', { class: 'cat__nom', texte: nom }),
+        el('span', { class: 'cat__compte',
+                     texte: membres.length + (membres.length > 1 ? ' lignes' : ' ligne') })),
+      el('span', { class: 'cat__part' },
+        el('span', { class: 'cat__part-piste' },
+          el('span', { class: 'cat__part-jauge', style: 'width:' + (part * 100) + '%' })),
+        el('span', { class: 'cat__part-texte',
+                     texte: revenus > 0 ? pourcent(part) + ' de vos revenus' : '—' })),
+      el('span', { class: 'cat__montants' },
+        el('span', { class: 'cat__reel', texte: euros(totalReel) }),
+        el('span', { class: 'cat__prevu', texte: 'sur ' + euros(totalPrevu) + ' prévus' }))));
+
+    const contenu = el('div', { class: 'cat__corps' });
+    for (const l of membres) contenu.append(...ligneBudget(l, { nature: true }));
+    contenu.append(el('div', { class: 'cat__pied' },
+      el('button', { type: 'button', class: 'bouton bouton--fantome',
+                     texte: '+ Ajouter dans « ' + nom + ' »',
+                     'data-ajouter': 'depense', 'data-categorie': nom })));
+    details.append(contenu);
+    corps.append(details);
+  }
+
+  const toutesOuvertes = ordre.every(n => !etat.categoriesFermees.has(n));
+  remplace($('#bloc-depenses'),
+    el('header', { class: 'bloc__tete' },
+      el('div', { class: 'bloc__titre' },
+        el('h2', { texte: 'Ce qui sort' }),
+        el('span', { class: 'bloc__total', texte: euros(b.depenses.reel) }),
+        el('span', { class: 'bloc__prevu', texte: 'prévu ' + euros(b.depenses.estime) })),
+      el('span', { class: 'pousse' }),
+      el('button', { type: 'button', class: 'bouton bouton--fantome',
+                     texte: toutesOuvertes ? 'Tout replier' : 'Tout déplier',
+                     'data-plier': toutesOuvertes ? 'fermer' : 'ouvrir' }),
+      el('button', { type: 'button', class: 'bouton bouton--primaire',
+                     texte: '+ Dépense', 'data-ajouter': 'depense' })),
+    el('div', { class: 'entete-colonnes' },
+      el('span', {}), el('span', { texte: 'Libellé' }),
+      el('span', { texte: 'Prévu' }), el('span', { texte: 'Réel' }),
+      el('span', { texte: 'Écart' }), el('span', {})),
+    corps);
+}
+
+/* ============================================================== MODULES === */
+
+function dessineModules() {
+  const { courses, heures } = etat.recap;
+  const ligneCourses = ligneReliee(etat.mois, 'courses');
+  const ligneHeures = ligneReliee(etat.mois, 'heures');
+
+  remplace($('#modules'),
+    el('article', { class: 'module' },
+      el('header', { class: 'module__tete' },
+        el('span', { class: 'module__icone', 'aria-hidden': 'true', texte: '🛒' }),
+        el('div', {},
+          el('div', { class: 'module__titre', texte: 'Courses' }),
+          el('div', { class: 'module__sous-titre',
+                      texte: courses.semaines.length + ' semaines suivies' }))),
+      jauge('Dépensé', courses.depense, courses.budgetTotal),
+      el('div', { class: 'module__detail' },
+        !ligneCourses
+          ? 'Aucune ligne de dépense reliée. Choisissez « Courses » dans le ⋯ d’une dépense.'
+          : modulePilote(etat.mois, 'courses')
+            ? '↳ alimente la ligne « ' + (ligneCourses.libelle || 'Courses') + ' » de vos dépenses'
+            : '↳ alimentera « ' + (ligneCourses.libelle || 'Courses') +
+              ' » dès le premier achat saisi ici'),
+      el('button', { type: 'button', class: 'bouton', 'data-aller': 'courses',
+                     texte: 'Ouvrir le suivi des courses →' })),
+
+    el('article', { class: 'module' },
+      el('header', { class: 'module__tete' },
+        el('span', { class: 'module__icone', 'aria-hidden': 'true', texte: '⏱' }),
+        el('div', {},
+          el('div', { class: 'module__titre', texte: 'Heures gardées' }),
+          el('div', { class: 'module__sous-titre',
+                      texte: heures.duree + ' à ' + formatNombre.format(heures.tauxHoraire) + ' €/h' }))),
+      el('div', { class: 'module__valeur', texte: euros(heures.net) }),
+      el('div', { class: 'module__detail',
+                  texte: 'Salaire net · brut ' + euros(heures.brut) +
+                         ' − cotisations ' + euros(heures.cotisation) }),
+      el('div', { class: 'module__detail' },
+        !ligneHeures
+          ? 'Aucun revenu relié. Choisissez « Heures gardées » dans le ⋯ d’un revenu.'
+          : modulePilote(etat.mois, 'heures')
+            ? '↳ alimente le revenu « ' + (ligneHeures.libelle || 'Caracole') + ' »'
+            : '↳ alimentera « ' + (ligneHeures.libelle || 'Caracole') +
+              ' » dès le premier horaire saisi ici'),
+      el('button', { type: 'button', class: 'bouton', 'data-aller': 'heures',
+                     texte: 'Ouvrir le relevé d’heures →' })));
+}
+
+function jauge(nom, valeur, budget) {
+  const part = budget > 0 ? valeur / budget : 0;
+  const pct = Math.min(100, Math.max(0, part * 100));
+  let mod = '', icone = '✓', message = 'Dans le budget';
+  if (part > 1) { mod = '--critique'; icone = '✕'; message = 'Budget dépassé'; }
+  else if (part >= 0.85) { mod = '--alerte'; icone = '⚠'; message = 'Budget presque atteint'; }
+
+  return el('div', { class: 'jauge' },
+    el('div', { class: 'jauge__entete' },
+      el('span', { class: 'jauge__nom', texte: nom }),
+      el('span', { class: 'jauge__chiffres', texte: euros(valeur) + ' / ' + euros(budget) })),
+    el('div', {
+      class: 'jauge__piste', role: 'meter', 'aria-valuenow': Math.round(valeur),
+      'aria-valuemin': '0', 'aria-valuemax': Math.round(budget) || 0,
+      'aria-label': nom + ' : ' + euros(valeur) + ' sur ' + euros(budget),
+    }, el('div', { class: 'jauge__remplissage jauge__remplissage' + mod,
+                   style: 'width:' + pct + '%' })),
+    el('div', { class: 'jauge__etat jauge__etat' + mod,
+                texte: icone + ' ' + message + ' · reste ' + euros(budget - valeur) }));
+}
+
+/* ========================================================== GRAPHIQUES === */
 
 /** Échelle terminant sur un chiffre rond, avec des graduations lisibles. */
 function graduationsJolies(maxi, cible = 4) {
@@ -1684,10 +2170,31 @@ function tronque(texte, largeurDisponible) {
   return texte.length > maxi ? texte.slice(0, maxi - 1) + '…' : texte;
 }
 
+function ligneInfobulle(nom, valeur, couleur) {
+  return el('div', { class: 'infobulle__ligne' },
+    el('span', { class: 'infobulle__nom' },
+      couleur ? el('span', { class: 'legende__pastille', style: 'background:' + couleur })
+              : el('span', { class: 'legende__trait' }),
+      nom),
+    el('span', { class: 'infobulle__valeur', texte: valeur }));
+}
+
+function placeInfobulle(evenement, ancre) {
+  const boite = $('#infobulle');
+  boite.hidden = false;
+  const rect = ancre ? ancre.getBoundingClientRect() : null;
+  const gauche = evenement ? evenement.clientX + 14 : rect.left + 20;
+  const haut = evenement ? evenement.clientY + 14 : rect.top;
+  boite.style.left = Math.min(gauche, window.innerWidth - boite.offsetWidth - 12) + 'px';
+  boite.style.top = Math.min(haut, window.innerHeight - boite.offsetHeight - 12) + 'px';
+}
+
+function cacheInfobulle() { $('#infobulle').hidden = true; }
+
 function dessineGraphiqueCategories() {
   const hote = $('#graphique-categories');
-  if (!hote || !etat.detail) return;
-  const donnees = etat.detail.recap.budget.parCategorie.filter(c => c.reel > 0 || c.estime > 0);
+  if (!hote || !etat.recap) return;
+  const donnees = etat.recap.budget.parCategorie.filter(c => c.reel > 0 || c.estime > 0);
 
   hote.textContent = '';
   if (!donnees.length) {
@@ -1699,8 +2206,8 @@ function dessineGraphiqueCategories() {
     el('span', { class: 'legende__cle' }, el('span', { class: 'legende__pastille' }), 'Dépensé'),
     el('span', { class: 'legende__cle' }, el('span', { class: 'legende__trait' }), 'Prévu')));
 
-  const largeur = Math.max(300, hote.clientWidth || 520);
-  const gauche = Math.min(150, Math.max(88, Math.round(largeur * 0.3)));
+  const largeur = Math.max(300, hote.clientWidth || 700);
+  const gauche = Math.min(160, Math.max(88, Math.round(largeur * 0.24)));
   const droite = 96;
   const hautBande = 30, epaisseur = 18, hautPlot = 10, basAxe = 28;
   const hauteurTrace = donnees.length * hautBande;
@@ -1714,7 +2221,6 @@ function dessineGraphiqueCategories() {
     role: 'img', 'aria-label': 'Dépenses réelles et prévues par catégorie',
   });
 
-  // Grille : filets pleins, jamais en pointillés.
   for (const valeur of echelle.valeurs) {
     racine.append(svg('line', {
       x1: x(valeur), x2: x(valeur), y1: hautPlot, y2: hautPlot + hauteurTrace,
@@ -1753,316 +2259,206 @@ function dessineGraphiqueCategories() {
         fill: 'var(--encre-2)', 'font-size': 11.5, 'font-family': 'inherit',
       }, euros(categorie.reel).replace(/,00/, '')));
     }
-
     if (categorie.estime > 0) {
-      // Repère du prévu : un trait, jamais une seconde barre.
       groupe.append(svg('line', {
         x1: x(categorie.estime), x2: x(categorie.estime),
         y1: yBarre - 3, y2: yBarre + epaisseur + 3,
         stroke: 'var(--encre-2)', 'stroke-width': 2, 'stroke-linecap': 'round',
       }));
     }
-
-    // Cible de survol : toute la bande, bien plus large que la marque.
     groupe.append(svg('rect', { x: 0, y, width: largeur, height: hautBande, fill: 'transparent' }));
 
-    const montre = (evenement) => montreInfobulle(evenement, categorie, ecart);
+    const montre = (evenement) => {
+      remplace($('#infobulle'),
+        el('div', { class: 'infobulle__titre', texte: categorie.categorie }),
+        ligneInfobulle('Dépensé', euros(categorie.reel), 'var(--serie-1)'),
+        ligneInfobulle('Prévu', euros(categorie.estime), null),
+        ligneInfobulle(ecart >= 0 ? 'Reste' : 'Dépassement', euros(Math.abs(ecart)), null));
+      placeInfobulle(evenement, groupe);
+    };
     groupe.addEventListener('pointerenter', montre);
     groupe.addEventListener('pointermove', montre);
-    groupe.addEventListener('focus', () => montreInfobulle(null, categorie, ecart, groupe));
+    groupe.addEventListener('focus', () => montre(null));
     groupe.addEventListener('pointerleave', cacheInfobulle);
     groupe.addEventListener('blur', cacheInfobulle);
     racine.append(groupe);
   });
 
   hote.append(racine);
-}
-
-function ligneInfobulle(nom, valeur, couleur) {
-  return el('div', { class: 'infobulle__ligne' },
-    el('span', { class: 'infobulle__nom' },
-      couleur ? el('span', { class: 'legende__pastille', style: 'background:' + couleur })
-              : el('span', { class: 'legende__trait' }),
-      nom),
-    el('span', { class: 'infobulle__valeur', texte: valeur }));
-}
-
-function montreInfobulle(evenement, categorie, ecart, ancre) {
-  const boite = $('#infobulle');
-  boite.replaceChildren(
-    el('div', { class: 'infobulle__titre', texte: categorie.categorie }),
-    ligneInfobulle('Dépensé', euros(categorie.reel), 'var(--serie-1)'),
-    ligneInfobulle('Prévu', euros(categorie.estime), null),
-    ligneInfobulle(ecart >= 0 ? 'Reste' : 'Dépassement', euros(Math.abs(ecart)), null));
-  boite.hidden = false;
-  const rect = ancre ? ancre.getBoundingClientRect() : null;
-  const gauche = evenement ? evenement.clientX + 14 : rect.left + 20;
-  const haut = evenement ? evenement.clientY + 14 : rect.top;
-  boite.style.left = Math.min(gauche, window.innerWidth - boite.offsetWidth - 12) + 'px';
-  boite.style.top = Math.min(haut, window.innerHeight - boite.offsetHeight - 12) + 'px';
-}
-
-function cacheInfobulle() { $('#infobulle').hidden = true; }
-
-function dessineTableauCategories() {
-  const donnees = etat.detail.recap.budget.parCategorie;
-  $('#tableau-categories').replaceChildren(
+  remplace($('#tableau-categories'),
     el('table', {},
       el('thead', {}, el('tr', {},
         el('th', { texte: 'Catégorie' }), el('th', { texte: 'Prévu' }),
         el('th', { texte: 'Dépensé' }), el('th', { texte: 'Écart' }))),
-      el('tbody', {}, donnees.map(c => el('tr', {},
+      el('tbody', {}, etat.recap.budget.parCategorie.map(c => el('tr', {},
         el('td', { texte: c.categorie }),
         el('td', { texte: euros(c.estime) }),
         el('td', { texte: euros(c.reel) }),
         el('td', { texte: signe(c.estime - c.reel) }))))));
 }
 
-function jauge(nom, valeur, budget) {
-  const part = budget > 0 ? valeur / budget : 0;
-  const pourcent = Math.min(100, Math.max(0, part * 100));
-  let modificateur = '', icone = '✓', message = 'Dans le budget';
-  if (part > 1) { modificateur = '--critique'; icone = '✕'; message = 'Budget dépassé'; }
-  else if (part >= 0.85) { modificateur = '--alerte'; icone = '⚠'; message = 'Budget presque atteint'; }
+/** Courbes des revenus et des dépenses, mois après mois. */
+function dessineGraphiqueEvolution() {
+  const hote = $('#graphique-evolution');
+  if (!hote) return;
+  const mois = trieMois(D.mois).slice().reverse()
+    .map(m => ({ libelle: m.libelle, recap: recapBudget(m.lignes) }));
 
-  return el('div', { class: 'jauge' },
-    el('div', { class: 'jauge__entete' },
-      el('span', { class: 'jauge__nom', texte: nom }),
-      el('span', { class: 'jauge__chiffres', texte: euros(valeur) + ' / ' + euros(budget) })),
-    el('div', {
-      class: 'jauge__piste', role: 'meter', 'aria-valuenow': Math.round(valeur),
-      'aria-valuemin': '0', 'aria-valuemax': Math.round(budget) || 0,
-      'aria-label': nom + ' : ' + euros(valeur) + ' sur ' + euros(budget),
-    }, el('div', { class: 'jauge__remplissage jauge__remplissage' + modificateur,
-                   style: 'width:' + pourcent + '%' })),
-    el('div', { class: 'jauge__etat jauge__etat' + modificateur,
-                texte: icone + ' ' + message + ' · reste ' + euros(budget - valeur) }));
-}
-
-/* -- Tableaux modifiables ------------------------------------------------- */
-
-function champTexte(entite, id, champ, valeur, options = {}) {
-  return el('input', {
-    type: 'text', value: valeur === null || valeur === undefined ? '' : valeur,
-    class: options.classe || null,
-    placeholder: options.placeholder || null,
-    list: options.liste || null,
-    inputmode: options.inputmode || null,
-    'aria-label': options.etiquette || champ,
-    'data-cle': entite + '-' + id + '-' + champ,
-    'data-entite': entite, 'data-id': id, 'data-champ': champ,
-  });
-}
-
-function champMontant(entite, id, champ, valeur, etiquette) {
-  return champTexte(entite, id, champ, montantSaisi(valeur),
-    { classe: 'montant', inputmode: 'decimal', placeholder: '0,00', etiquette });
-}
-
-function selecteur(entite, id, champ, valeur, choix, etiquette) {
-  return el('select', {
-    'data-cle': entite + '-' + id + '-' + champ, 'aria-label': etiquette || champ,
-    'data-entite': entite, 'data-id': id, 'data-champ': champ,
-  }, choix.map(([cle, libelle]) =>
-    el('option', { value: cle, selected: String(cle) === String(valeur || '') }, libelle)));
-}
-
-function celluleEcart(ligne) {
-  const estime = ligne.actif ? Number(ligne.estime) : 0;
-  const ecart = estime - Number(ligne.reel);
-  const classe = ecart > 0.004 ? 'ecart--bon' : (ecart < -0.004 ? 'ecart--mauvais' : '');
-  return el('span', { class: 'ecart ' + classe, texte: ecart === 0 ? '—' : signe(ecart) });
-}
-
-function listeCategories(pourDepenses) {
-  const vues = new Set(etat.detail.lignes
-    .filter(l => (pourDepenses ? l.type === 'depense' : l.type !== 'depense'))
-    .map(l => l.categorie).filter(Boolean));
-  return Array.from(vues).sort((a, b) => a.localeCompare(b, 'fr'));
-}
-
-function boutonSupprimer(entite, id, description) {
-  return el('button', {
-    class: 'bouton bouton--fantome', texte: '✕',
-    title: 'Supprimer ' + description, 'aria-label': 'Supprimer ' + description,
-    'data-supprimer': entite, 'data-id': id,
-  });
-}
-
-function ligneTableau(ligne, colonnes) {
-  const tr = el('tr', { class: ligne.actif ? '' : 'en-pause', 'data-ligne': ligne.id });
-  for (const colonne of colonnes) tr.append(colonne(ligne));
-  return tr;
-}
-
-/* -- Dépenses ------------------------------------------------------------- */
-
-function dessineDepenses() {
-  const recherche = etat.recherche.trim().toLowerCase();
-  const lignes = etat.detail.lignes.filter(l =>
-    l.type === 'depense'
-    && (etat.filtreNature === 'tout' || l.nature === etat.filtreNature)
-    && (!etat.masquerPause || l.actif)
-    && (!recherche || l.libelle.toLowerCase().includes(recherche)
-                   || l.categorie.toLowerCase().includes(recherche)));
-
-  const hote = $('#table-depenses');
   hote.textContent = '';
-  $('#recherche-depenses').value = etat.recherche;
-  $('#masquer-pause').checked = etat.masquerPause;
+  $('#tableau-evolution').textContent = '';
 
-  if (!lignes.length) {
-    hote.append(el('div', { class: 'vide' },
-      etat.detail.lignes.some(l => l.type === 'depense')
-        ? 'Aucune dépense ne correspond à ce filtre.'
-        : 'Aucune dépense pour l’instant. Utilisez « + Ajouter une dépense ».'));
+  if (mois.length < 2) {
+    hote.append(el('p', { class: 'vide',
+      texte: 'Il faut au moins deux mois pour voir une évolution. ' +
+             'Créez le mois suivant depuis le menu ⋯.' }));
     return;
   }
 
-  hote.append(el('datalist', { id: 'categories-depenses' },
-    listeCategories(true).map(c => el('option', { value: c }))));
+  hote.append(el('div', { class: 'legende' },
+    el('span', { class: 'legende__cle' },
+      el('span', { class: 'legende__pastille', style: 'background:var(--serie-1)' }), 'Encaissé'),
+    el('span', { class: 'legende__cle' },
+      el('span', { class: 'legende__pastille', style: 'background:var(--serie-2)' }), 'Dépensé')));
 
-  const groupes = new Map();
-  for (const ligne of lignes) {
-    const cle = ligne.categorie || 'Sans catégorie';
-    if (!groupes.has(cle)) groupes.set(cle, []);
-    groupes.get(cle).push(ligne);
+  const largeur = Math.max(320, hote.clientWidth || 700);
+  const haut = 14, bas = 34, gauche = 64, droite = 16;
+  const hauteurTrace = 190;
+  const hauteur = haut + hauteurTrace + bas;
+  const maxi = Math.max(...mois.flatMap(m => [m.recap.revenus.reel, m.recap.depenses.reel]), 1);
+  const echelle = graduationsJolies(maxi);
+  const x = (i) => gauche + (mois.length === 1 ? (largeur - gauche - droite) / 2
+    : (i / (mois.length - 1)) * (largeur - gauche - droite));
+  const y = (v) => haut + hauteurTrace - (Math.max(0, v) / echelle.haut) * hauteurTrace;
+
+  const racine = svg('svg', {
+    viewBox: '0 0 ' + largeur + ' ' + hauteur, width: largeur, height: hauteur,
+    role: 'img', 'aria-label': 'Évolution des revenus et des dépenses mois par mois',
+  });
+
+  for (const valeur of echelle.valeurs) {
+    racine.append(svg('line', {
+      x1: gauche, x2: largeur - droite, y1: y(valeur), y2: y(valeur),
+      stroke: valeur === 0 ? 'var(--ligne-base)' : 'var(--filet)', 'stroke-width': 1,
+    }));
+    racine.append(svg('text', {
+      x: gauche - 8, y: y(valeur) + 4, 'text-anchor': 'end',
+      fill: 'var(--encre-3)', 'font-size': 11, 'font-family': 'inherit',
+    }, formatEuros.format(valeur).replace(/,00/, '')));
   }
 
-  for (const [categorie, membres] of groupes) {
-    const totalPrevu = membres.reduce((s, l) => s + (l.actif ? Number(l.estime) : 0), 0);
-    const totalReel = membres.reduce((s, l) => s + Number(l.reel), 0);
+  mois.forEach((m, i) => {
+    racine.append(svg('text', {
+      x: x(i), y: haut + hauteurTrace + 18, 'text-anchor': 'middle',
+      fill: 'var(--encre-3)', 'font-size': 11, 'font-family': 'inherit',
+    }, libelleMois(m.libelle).split(' ')[0].slice(0, 4) + '.'));
+  });
 
-    hote.append(el('section', { class: 'groupe' },
-      el('header', { class: 'groupe__entete' },
-        el('span', { class: 'groupe__nom', texte: categorie }),
-        el('span', { class: 'groupe__total',
-                     texte: euros(totalReel) + ' dépensés · ' + euros(totalPrevu) + ' prévus' }),
-        el('span', { class: 'pousse' }),
-        el('button', { class: 'bouton bouton--fantome', texte: '+ Ligne',
-                       'data-ajouter': 'depense', 'data-categorie': categorie })),
-      el('table', { class: 'lignes' },
-        el('thead', {}, el('tr', {},
-          el('th', { texte: 'Actif' }), el('th', { texte: 'Libellé' }),
-          el('th', { texte: 'Catégorie' }), el('th', { texte: 'Nature' }),
-          el('th', { class: 'col-nombre', texte: 'Prévu' }),
-          el('th', { class: 'col-nombre', texte: 'Réel' }),
-          el('th', { class: 'col-nombre', texte: 'Écart' }),
-          el('th', { texte: 'Note' }), el('th', { texte: '' }))),
-        el('tbody', {}, membres.map(ligne => ligneTableau(ligne, [
-          l => el('td', { class: 'col-actif', 'data-etiquette': 'Actif' },
-            el('input', {
-              type: 'checkbox', class: 'bascule', checked: !!l.actif,
-              title: l.actif ? 'Compté dans les totaux' : 'En pause : non compté',
-              'aria-label': 'Compter « ' + l.libelle + ' » dans les totaux',
-              'data-cle': 'ligne-' + l.id + '-actif',
-              'data-entite': 'ligne', 'data-id': l.id, 'data-champ': 'actif',
-            })),
-          l => el('td', { class: 'col-libelle', 'data-etiquette': 'Libellé' },
-            champTexte('ligne', l.id, 'libelle', l.libelle,
-              { placeholder: 'Nom de la dépense', etiquette: 'Libellé' })),
-          l => el('td', { 'data-etiquette': 'Catégorie' },
-            champTexte('ligne', l.id, 'categorie', l.categorie,
-              { liste: 'categories-depenses', placeholder: 'Catégorie', etiquette: 'Catégorie' })),
-          l => el('td', { 'data-etiquette': 'Nature' },
-            selecteur('ligne', l.id, 'nature', l.nature,
-              [['fixe', 'Fixe'], ['variable', 'Variable']], 'Nature')),
-          l => el('td', { class: 'col-nombre', 'data-etiquette': 'Prévu' },
-            champMontant('ligne', l.id, 'estime', l.estime, 'Montant prévu')),
-          l => el('td', { class: 'col-nombre', 'data-etiquette': 'Réel' },
-            champMontant('ligne', l.id, 'reel', l.reel, 'Montant réel')),
-          l => el('td', { class: 'col-nombre', 'data-etiquette': 'Écart' }, celluleEcart(l)),
-          l => el('td', { 'data-etiquette': 'Note' },
-            champTexte('ligne', l.id, 'note', l.note, { placeholder: '—', etiquette: 'Note' })),
-          l => el('td', { class: 'col-suppr' },
-            boutonSupprimer('ligne', l.id, 'la dépense ' + (l.libelle || 'sans nom'))),
-        ]))))));
+  const series = [
+    { cle: 'revenus', couleur: 'var(--serie-1)', valeurs: mois.map(m => m.recap.revenus.reel) },
+    { cle: 'depenses', couleur: 'var(--serie-2)', valeurs: mois.map(m => m.recap.depenses.reel) },
+  ];
+  for (const serie of series) {
+    racine.append(svg('polyline', {
+      points: serie.valeurs.map((v, i) => x(i) + ',' + y(v)).join(' '),
+      fill: 'none', stroke: serie.couleur, 'stroke-width': 2,
+      'stroke-linejoin': 'round', 'stroke-linecap': 'round',
+    }));
+    serie.valeurs.forEach((v, i) => {
+      // Anneau de 2 px en couleur de fond : les points restent lisibles quand ils se croisent.
+      racine.append(svg('circle', {
+        cx: x(i), cy: y(v), r: 4.5, fill: serie.couleur,
+        stroke: 'var(--surface)', 'stroke-width': 2,
+      }));
+    });
   }
+
+  // Valeur au dernier point seulement : jamais un nombre sur chaque point.
+  for (const serie of series) {
+    const dernier = serie.valeurs.length - 1;
+    racine.append(svg('text', {
+      x: x(dernier) - 6, y: y(serie.valeurs[dernier]) - 10, 'text-anchor': 'end',
+      fill: 'var(--encre-2)', 'font-size': 11.5, 'font-family': 'inherit',
+    }, euros(serie.valeurs[dernier]).replace(/,00/, '')));
+  }
+
+  mois.forEach((m, i) => {
+    const demi = (largeur - gauche - droite) / Math.max(1, (mois.length - 1) * 2);
+    const zone = svg('rect', {
+      x: x(i) - demi, y: haut, width: demi * 2, height: hauteurTrace,
+      fill: 'transparent', tabindex: 0, role: 'group',
+      'aria-label': libelleMois(m.libelle) + ' : encaissé ' + euros(m.recap.revenus.reel) +
+                    ', dépensé ' + euros(m.recap.depenses.reel),
+    });
+    const montre = (evenement) => {
+      remplace($('#infobulle'),
+        el('div', { class: 'infobulle__titre', texte: libelleMois(m.libelle) }),
+        ligneInfobulle('Encaissé', euros(m.recap.revenus.reel), 'var(--serie-1)'),
+        ligneInfobulle('Dépensé', euros(m.recap.depenses.reel), 'var(--serie-2)'),
+        ligneInfobulle('Reste', euros(m.recap.restant.reel), null));
+      placeInfobulle(evenement, zone);
+    };
+    zone.addEventListener('pointerenter', montre);
+    zone.addEventListener('pointermove', montre);
+    zone.addEventListener('focus', () => montre(null));
+    zone.addEventListener('pointerleave', cacheInfobulle);
+    zone.addEventListener('blur', cacheInfobulle);
+    racine.append(zone);
+  });
+
+  hote.append(racine);
+  remplace($('#tableau-evolution'),
+    el('table', {},
+      el('thead', {}, el('tr', {},
+        el('th', { texte: 'Mois' }), el('th', { texte: 'Encaissé' }),
+        el('th', { texte: 'Dépensé' }), el('th', { texte: 'Reste' }))),
+      el('tbody', {}, mois.map(m => el('tr', {},
+        el('td', { texte: libelleMois(m.libelle) }),
+        el('td', { texte: euros(m.recap.revenus.reel) }),
+        el('td', { texte: euros(m.recap.depenses.reel) }),
+        el('td', { texte: euros(m.recap.restant.reel) }))))));
 }
 
-/* -- Revenus -------------------------------------------------------------- */
+/* ============================================================= COURSES === */
 
-function dessineRevenus() {
-  const lignes = etat.detail.lignes.filter(l =>
-    l.type !== 'depense' && (etat.filtreRevenu === 'tout' || l.type === etat.filtreRevenu));
-
-  const hote = $('#table-revenus');
-  hote.textContent = '';
-
-  if (!lignes.length) {
-    hote.append(el('div', { class: 'vide', texte: 'Aucun revenu enregistré pour ce mois.' }));
-    return;
-  }
-
-  hote.append(el('datalist', { id: 'categories-revenus' },
-    listeCategories(false).map(c => el('option', { value: c }))));
-
-  const ordre = [['salaire', 'fixe'], ['salaire', 'variable'],
-                 ['aide', 'fixe'], ['aide', 'variable']];
-  const noms = { 'salaire-fixe': 'Salaires fixes', 'salaire-variable': 'Salaires variables',
-                 'aide-fixe': 'Aides fixes', 'aide-variable': 'Aides variables' };
-
-  for (const [type, nature] of ordre) {
-    const membres = lignes.filter(l => l.type === type && l.nature === nature);
-    if (!membres.length) continue;
-    const totalPrevu = membres.reduce((s, l) => s + (l.actif ? Number(l.estime) : 0), 0);
-    const totalReel = membres.reduce((s, l) => s + Number(l.reel), 0);
-
-    hote.append(el('section', { class: 'groupe' },
-      el('header', { class: 'groupe__entete' },
-        el('span', { class: 'groupe__nom', texte: noms[type + '-' + nature] }),
-        el('span', { class: 'groupe__total',
-                     texte: euros(totalReel) + ' encaissés · ' + euros(totalPrevu) + ' prévus' }),
-        el('span', { class: 'pousse' }),
-        el('button', { class: 'bouton bouton--fantome', texte: '+ Ligne',
-                       'data-ajouter': type, 'data-nature': nature })),
-      el('table', { class: 'lignes' },
-        el('thead', {}, el('tr', {},
-          el('th', { texte: 'Libellé' }), el('th', { texte: 'Type' }),
-          el('th', { texte: 'Nature' }),
-          el('th', { class: 'col-nombre', texte: 'Prévu' }),
-          el('th', { class: 'col-nombre', texte: 'Réel' }),
-          el('th', { class: 'col-nombre', texte: 'Écart' }),
-          el('th', { texte: 'Lien' }), el('th', { texte: '' }))),
-        el('tbody', {}, membres.map(ligne => ligneTableau(ligne, [
-          l => el('td', { class: 'col-libelle', 'data-etiquette': 'Libellé' },
-            champTexte('ligne', l.id, 'libelle', l.libelle,
-              { placeholder: 'Source du revenu', etiquette: 'Libellé' })),
-          l => el('td', { 'data-etiquette': 'Type' },
-            selecteur('ligne', l.id, 'type', l.type,
-              [['salaire', 'Salaire'], ['aide', 'Aide']], 'Type')),
-          l => el('td', { 'data-etiquette': 'Nature' },
-            selecteur('ligne', l.id, 'nature', l.nature,
-              [['fixe', 'Fixe'], ['variable', 'Variable']], 'Nature')),
-          l => el('td', { class: 'col-nombre', 'data-etiquette': 'Prévu' },
-            champMontant('ligne', l.id, 'estime', l.estime, 'Montant prévu')),
-          l => el('td', { class: 'col-nombre', 'data-etiquette': 'Réel' },
-            champMontant('ligne', l.id, 'reel', l.reel, 'Montant réel')),
-          l => el('td', { class: 'col-nombre', 'data-etiquette': 'Écart' }, celluleEcart(l)),
-          l => el('td', { 'data-etiquette': 'Lien' },
-            selecteur('ligne', l.id, 'lien', l.lien || '',
-              Object.entries(LIENS), 'Total automatique relié à cette ligne')),
-          l => el('td', { class: 'col-suppr' },
-            boutonSupprimer('ligne', l.id, 'le revenu ' + (l.libelle || 'sans nom'))),
-        ]))))));
-  }
+function tuile(etiquette, valeur, note, classeNote) {
+  return el('div', { class: 'tuile' },
+    el('div', { class: 'tuile__etiquette', texte: etiquette }),
+    el('div', { class: 'tuile__valeur', texte: valeur }),
+    note ? el('div', { class: 'tuile__note ' + (classeNote || ''), texte: note }) : null);
 }
 
-/* -- Courses -------------------------------------------------------------- */
+function champAchat(achat, champ, etiquette, classe, options = {}) {
+  return el('div', { class: classe },
+    el('input', {
+      type: 'text', value: options.montant ? montantSaisi(achat[champ]) : (achat[champ] || ''),
+      placeholder: options.placeholder || null, list: options.liste || null,
+      inputmode: options.montant ? 'decimal' : null,
+      'aria-label': etiquette,
+      'data-cle': 'achat-' + achat.id + '-' + champ,
+      'data-entite': 'achat', 'data-id': achat.id, 'data-champ': champ,
+    }));
+}
 
 function dessineCourses() {
-  const { courses } = etat.detail.recap;
-  $('#budget-courses').value = montantSaisi(etat.detail.mois.budgetCourses);
+  const { courses } = etat.recap;
+  const ligne = ligneReliee(etat.mois, 'courses');
+  $('#budget-courses').value = montantSaisi(courses.budgetTotal);
 
-  $('#resume-courses').replaceChildren(
-    el('div', { class: 'resume-bandeau' },
-      tuile('Dépensé', euros(courses.depense), 'sur ' + euros(courses.budgetTotal) + ' prévus'),
+  remplace($('#resume-courses'),
+    el('div', { class: 'bandeau' },
+      tuile('Dépensé', euros(courses.depense), 'sur ' + euros(courses.budgetTotal) + ' confiés'),
       tuile('Restant', euros(courses.restant),
             courses.restant >= 0 ? 'Encore disponible' : 'Dépassement',
-            courses.restant >= 0 ? 'tuile__delta--bon' : 'tuile__delta--mauvais'),
-      tuile('Semaines suivies', String(courses.semaines.length),
-            'Budget cumulé ' + euros(courses.budgetSemaines))),
-    el('div', { class: 'carte' }, jauge('Budget du mois', courses.depense, courses.budgetTotal)));
+            courses.restant >= 0 ? 'tuile__note--bon' : 'tuile__note--mauvais'),
+      tuile('Semaines', String(courses.semaines.length),
+            'Budgets hebdomadaires ' + euros(courses.budgetSemaines))),
+    el('div', { class: 'carte' },
+      jauge('Budget du mois', courses.depense, courses.budgetTotal),
+      el('p', { class: 'carte__sous-titre', style: 'margin-top:10px' },
+        ligne
+          ? 'Ce budget est le montant prévu de la ligne « ' + (ligne.libelle || 'Courses') +
+            ' » de vos dépenses, et le total dépensé y revient automatiquement.'
+          : 'Aucune ligne de dépense n’est reliée : ce total ne remonte pas dans le budget.')));
 
   const hote = $('#semaines-courses');
   hote.textContent = '';
@@ -2072,59 +2468,63 @@ function dessineCourses() {
     ACHATS_COURANTS.map(a => el('option', { value: a }))));
 
   for (const semaine of courses.semaines) {
-    const achats = etat.detail.achats.filter(a => a.semaine === semaine.numero);
+    const achats = etat.mois.achats.filter(a => a.semaine === semaine.numero);
 
-    const corps = achats.length
-      ? el('table', { class: 'lignes lignes--achats' },
-          el('thead', {}, el('tr', {},
-            el('th', { texte: 'Poste' }), el('th', { texte: 'Achat' }),
-            el('th', { class: 'col-nombre', texte: 'Montant' }), el('th', { texte: '' }))),
-          el('tbody', {}, achats.map(achat => el('tr', {}, [
-            el('td', { 'data-etiquette': 'Poste' },
-              champTexte('achat', achat.id, 'poste', achat.poste,
-                { liste: 'postes-courses', placeholder: 'Marché…', etiquette: 'Poste' })),
-            el('td', { class: 'col-libelle', 'data-etiquette': 'Achat' },
-              champTexte('achat', achat.id, 'libelle', achat.libelle,
-                { liste: 'achats-courses', placeholder: 'Article', etiquette: 'Achat' })),
-            el('td', { class: 'col-nombre', 'data-etiquette': 'Montant' },
-              champMontant('achat', achat.id, 'montant', achat.montant, 'Montant')),
-            el('td', { class: 'col-suppr' },
-              boutonSupprimer('achat', achat.id, 'l’achat ' + (achat.libelle || 'sans nom'))),
-          ]))))
-      : el('div', { class: 'vide', texte: 'Rien pour cette semaine.' });
+    const liste = el('div', {});
+    if (achats.length) {
+      liste.append(el('div', { class: 'achat achat__entete' },
+        el('span', { texte: 'Poste' }), el('span', { texte: 'Achat' }),
+        el('span', { texte: 'Montant' }), el('span', {})));
+      for (const achat of achats) {
+        liste.append(el('div', { class: 'achat' },
+          champAchat(achat, 'poste', 'Poste', 'achat__poste',
+            { liste: 'postes-courses', placeholder: 'Marché…' }),
+          champAchat(achat, 'libelle', 'Achat', 'achat__libelle',
+            { liste: 'achats-courses', placeholder: 'Article' }),
+          champAchat(achat, 'montant', 'Montant', 'achat__montant', { montant: true }),
+          el('div', { class: 'achat__suppr' },
+            el('button', {
+              type: 'button', class: 'bouton bouton--rond danger', texte: '✕',
+              title: 'Supprimer ' + (achat.libelle || 'cet achat'),
+              'data-supprimer': 'achat', 'data-id': achat.id,
+            }))));
+      }
+    } else {
+      liste.append(el('div', { class: 'vide', style: 'margin:8px 0',
+                               texte: 'Rien pour cette semaine.' }));
+    }
 
     hote.append(el('article', { class: 'carte' },
-      el('header', { class: 'semaine__entete' },
+      el('header', { class: 'semaine__tete' },
         el('span', { class: 'semaine__titre', texte: 'Semaine ' + semaine.numero }),
         el('span', { class: 'pousse' }),
         el('label', { class: 'champ-inline' }, 'Budget',
           el('input', {
-            type: 'text', inputmode: 'decimal', class: 'montant',
-            value: montantSaisi(semaine.budget),
+            type: 'text', inputmode: 'decimal', value: montantSaisi(semaine.budget),
             'aria-label': 'Budget de la semaine ' + semaine.numero,
             'data-cle': 'semaine-' + semaine.numero + '-budget',
             'data-entite': 'semaine', 'data-id': semaine.numero, 'data-champ': 'budget',
           }))),
       jauge('Dépensé', semaine.depense, semaine.budget),
-      el('div', { style: 'height:10px' }),
-      corps,
+      el('div', { style: 'height:12px' }),
+      liste,
       el('div', { class: 'puces' },
-        el('button', { class: 'bouton bouton--fantome', texte: '+ Ajouter un achat',
-                       'data-ajouter-achat': semaine.numero }),
+        el('button', { type: 'button', class: 'bouton bouton--fantome',
+                       texte: '+ Ajouter un achat', 'data-ajouter-achat': semaine.numero }),
         el('details', { class: 'suggestions' },
           el('summary', { texte: 'Ajout rapide' }),
           el('div', { class: 'puces' },
             ACHATS_COURANTS.map(nom => el('button', {
-              class: 'puce', texte: nom, 'data-ajouter-achat': semaine.numero,
-              'data-libelle': nom, 'data-poste': 'Marché',
+              type: 'button', class: 'puce', texte: nom,
+              'data-ajouter-achat': semaine.numero, 'data-libelle': nom, 'data-poste': 'Marché',
             })))))));
   }
 }
 
-/* -- Heures --------------------------------------------------------------- */
+/* ============================================================== HEURES === */
 
 function celluleHeure(creneau, champ, etiquette, separateur) {
-  return el('td', { class: separateur ? 'separateur' : null, 'data-etiquette': etiquette },
+  return el('td', { class: separateur ? 'separateur' : null },
     el('input', {
       type: 'text', inputmode: 'numeric', value: creneau[champ] || '', placeholder: '--:--',
       'aria-label': etiquette,
@@ -2134,45 +2534,48 @@ function celluleHeure(creneau, champ, etiquette, separateur) {
 }
 
 function dessineHeures() {
-  const { heures } = etat.detail.recap;
-  $('#taux-horaire').value = montantSaisi(etat.detail.mois.tauxHoraire);
-  $('#taux-cotisation').value = montantSaisi(etat.detail.mois.tauxCotisation);
+  const { heures } = etat.recap;
+  const ligne = ligneReliee(etat.mois, 'heures');
+  $('#taux-horaire').value = montantSaisi(etat.mois.tauxHoraire);
+  $('#taux-cotisation').value = montantSaisi(etat.mois.tauxCotisation);
 
-  $('#resume-heures').replaceChildren(
-    el('div', { class: 'resume-bandeau' },
+  remplace($('#resume-heures'),
+    el('div', { class: 'bandeau' },
       tuile('Heures gardées', heures.duree,
             heures.parSemaine.length + ' semaine(s) renseignée(s)'),
       tuile('Salaire brut', euros(heures.brut),
             heures.duree + ' × ' + formatNombre.format(heures.tauxHoraire) + ' €'),
       tuile('Cotisations', euros(heures.cotisation),
             formatNombre.format(heures.tauxCotisation) + ' % du brut'),
-      tuile('Salaire net', euros(heures.net), 'Brut moins cotisations')));
+      tuile('Salaire net', euros(heures.net),
+            ligne ? 'Reporté sur « ' + (ligne.libelle || 'Caracole') + ' »'
+                  : 'Aucun revenu relié',
+            ligne ? 'tuile__note--bon' : null)));
 
   const parSemaine = new Map();
-  for (const creneau of etat.detail.creneaux) {
+  for (const creneau of etat.creneaux) {
     if (!parSemaine.has(creneau.semaine)) parSemaine.set(creneau.semaine, []);
     parSemaine.get(creneau.semaine).push(creneau);
   }
 
   const hote = $('#semaines-heures');
   hote.textContent = '';
-  hote.classList.add('semaines--larges');
 
   for (const numero of Array.from(parSemaine.keys()).sort((a, b) => a - b)) {
     const creneaux = parSemaine.get(numero).sort((a, b) => a.jour - b.jour);
     const minutes = creneaux.reduce((s, c) => s + c.minutes, 0);
 
     hote.append(el('article', { class: 'carte' },
-      el('header', { class: 'semaine__entete' },
+      el('header', { class: 'semaine__tete' },
         el('span', { class: 'semaine__titre', texte: 'Semaine ' + numero }),
         el('span', { class: 'pousse' }),
-        el('span', { class: 'groupe__total', texte: minutes ? formatDuree(minutes) : '—' })),
-      el('table', { class: 'lignes heures' },
+        el('span', { class: 'chiffres', texte: minutes ? formatDuree(minutes) : '—' })),
+      el('table', { class: 'heures' },
         el('thead', {}, el('tr', {},
           el('th', { texte: 'Jour' }),
           el('th', { texte: 'Matin' }), el('th', { texte: '' }),
           el('th', { class: 'separateur', texte: 'Après-midi' }), el('th', { texte: '' }),
-          el('th', { class: 'col-nombre', texte: 'Durée' }))),
+          el('th', { style: 'text-align:right', texte: 'Durée' }))),
         el('tbody', {}, creneaux.map(creneau => el('tr', {}, [
           el('td', { class: 'jour', texte: JOURS[creneau.jour] }),
           celluleHeure(creneau, 'matinDebut', JOURS[creneau.jour] + ' matin, début'),
@@ -2191,12 +2594,7 @@ function dessineHeures() {
 document.addEventListener('change', (evenement) => {
   const cible = evenement.target;
 
-  if (cible.id === 'choix-mois') {
-    D.moisActif = Number(cible.value);
-    applique();
-    return;
-  }
-  if (cible.id === 'masquer-pause') { etat.masquerPause = cible.checked; dessineDepenses(); return; }
+  if (cible.id === 'choix-mois') { D.moisActif = Number(cible.value); applique(); return; }
   if (cible.id === 'fichier-import') { importeFichier(cible.files[0]); return; }
 
   const champsMois = { 'budget-courses': 'budgetCourses', 'taux-horaire': 'tauxHoraire',
@@ -2217,22 +2615,34 @@ document.addEventListener('input', (evenement) => {
   const cible = evenement.target;
   if (cible.dataset.entite !== 'ligne') return;
   if (cible.dataset.champ !== 'estime' && cible.dataset.champ !== 'reel') return;
-  const tr = cible.closest('tr');
-  const cellule = tr && tr.querySelector('.ecart');
+  const ligne = cible.closest('.ligne');
+  const cellule = ligne && ligne.querySelector('.ligne__ecart');
   if (!cellule) return;
   const lit = (nom) => {
-    const champ = tr.querySelector('[data-champ="' + nom + '"]');
+    const champ = ligne.querySelector('[data-champ="' + nom + '"]');
     return nombre(champ ? champ.value : 0);
   };
-  const bascule = tr.querySelector('[data-champ="actif"]');
+  const bascule = ligne.querySelector('[data-champ="actif"]');
   const ecart = (!bascule || bascule.checked ? lit('estime') : 0) - lit('reel');
   cellule.textContent = ecart === 0 ? '—' : signe(ecart);
-  cellule.className = 'ecart ' +
-    (ecart > 0.004 ? 'ecart--bon' : (ecart < -0.004 ? 'ecart--mauvais' : ''));
+  cellule.className = 'ligne__ecart' +
+    (ecart > 0.004 ? ' ligne__ecart--bon' : (ecart < -0.004 ? ' ligne__ecart--mauvais' : ''));
 });
 
 document.addEventListener('click', (evenement) => {
-  const cible = evenement.target.closest('button, [data-vue]');
+  // Les catégories se replient nous-mêmes, pour retenir leur état d'un mois à l'autre.
+  const sommaire = evenement.target.closest('.cat > summary');
+  if (sommaire) {
+    evenement.preventDefault();
+    const nom = sommaire.parentElement.dataset.categorie;
+    if (etat.categoriesFermees.has(nom)) etat.categoriesFermees.delete(nom);
+    else etat.categoriesFermees.add(nom);
+    enregistrePreferences();
+    dessineDepenses();
+    return;
+  }
+
+  const cible = evenement.target.closest('button');
   if (!cible) {
     if (!evenement.target.closest('.menu')) {
       $$('.menu[open]').forEach(m => m.removeAttribute('open'));
@@ -2240,44 +2650,48 @@ document.addEventListener('click', (evenement) => {
     return;
   }
 
-  if (cible.dataset.vue) { montreVue(cible.dataset.vue); return; }
+  if (cible.dataset.vue) { montreVue(cible.dataset.vue); window.scrollTo({ top: 0 }); return; }
+  if (cible.dataset.aller) { montreVue(cible.dataset.aller); window.scrollTo({ top: 0 }); return; }
+  if (cible.dataset.action) { actionMenu(cible.dataset.action); return; }
+  if (cible.dataset.ajouter) { ajouteLigne(cible); return; }
+  if (cible.dataset.ajouterAchat) { ajouteAchat(cible); return; }
+  if (cible.dataset.supprimer) { demandeSuppression(cible); return; }
 
-  if (cible.dataset.filtreNature) {
-    etat.filtreNature = cible.dataset.filtreNature;
-    $$('[data-filtre-nature]').forEach(b => b.classList.toggle('actif', b === cible));
+  if (cible.dataset.detail) {
+    const id = Number(cible.dataset.detail);
+    if (etat.detailsOuverts.has(id)) etat.detailsOuverts.delete(id);
+    else etat.detailsOuverts.add(id);
+    dessineTout();
+    return;
+  }
+
+  if (cible.dataset.basculeNature) {
+    const ligne = etat.mois.lignes.find(l => l.id === Number(cible.dataset.basculeNature));
+    if (ligne) majLigne(ligne.id, 'nature', ligne.nature === 'fixe' ? 'variable' : 'fixe');
+    return;
+  }
+
+  if (cible.dataset.plier) {
+    const fermer = cible.dataset.plier === 'fermer';
+    etat.categoriesFermees = new Set(fermer
+      ? $$('.cat').map(d => d.dataset.categorie)
+      : []);
+    enregistrePreferences();
     dessineDepenses();
     return;
   }
-  if (cible.dataset.filtreRevenu) {
-    etat.filtreRevenu = cible.dataset.filtreRevenu;
-    $$('[data-filtre-revenu]').forEach(b => b.classList.toggle('actif', b === cible));
-    dessineRevenus();
-    return;
-  }
 
-  if (cible.dataset.ajouter) return ajouteLigne(cible);
-  if (cible.dataset.ajouterAchat) return ajouteAchat(cible);
-  if (cible.dataset.supprimer) return demandeSuppression(cible);
-  if (cible.dataset.report) return reporte(cible.dataset.report);
-  if (cible.dataset.action) return actionMenu(cible.dataset.action);
-
-  if (cible.id === 'btn-nouveau-mois') return nouveauMois();
-  if (cible.id === 'btn-mois-precedent') return changeMoisRelatif(-1);
-  if (cible.id === 'btn-mois-suivant') return changeMoisRelatif(1);
-  if (cible.id === 'btn-ajouter-semaine') return ajouteSemaine();
-  if (cible.id === 'btn-retirer-semaine') {
-    const semaines = etat.detail.semaines;
+  if (cible.id === 'mois-precedent') { changeMoisRelatif(-1); return; }
+  if (cible.id === 'mois-suivant') { changeMoisRelatif(1); return; }
+  if (cible.id === 'ajouter-semaine') { ajouteSemaine(); return; }
+  if (cible.id === 'retirer-semaine') {
+    const semaines = etat.recap.courses.semaines;
     const derniere = semaines[semaines.length - 1];
     if (!derniere) return;
     if (!confirm('Supprimer la semaine ' + derniere.numero +
                  ' et tout ce qu’elle contient ?')) return;
-    return retireSemaine(derniere.numero);
+    retireSemaine(derniere.numero);
   }
-});
-
-$('#recherche-depenses').addEventListener('input', (evenement) => {
-  etat.recherche = evenement.target.value;
-  dessineDepenses();
 });
 
 /* Entrée valide la saisie ; Échap annule la modification en cours. */
@@ -2292,11 +2706,28 @@ window.addEventListener('hashchange', () => {
   if (nom && nom !== 'autotest') montreVue(nom);
 });
 
+/** Publie les hauteurs réelles de l'en-tête et de la navigation : sur un écran
+    étroit elles passent sur deux lignes, et le bilan doit rester dessous. */
+function ajusteAncrages() {
+  const racine = document.documentElement;
+  const tete = $('.tete'), nav = $('.nav');
+  if (tete) racine.style.setProperty('--haut-tete', tete.offsetHeight + 'px');
+  if (nav) racine.style.setProperty('--haut-nav', nav.offsetHeight + 'px');
+}
+
+/* Le bilan se compacte quand on descend, sans jamais quitter l'écran. */
+window.addEventListener('scroll', () => {
+  const bilan = $('#bilan');
+  if (bilan) bilan.classList.toggle('compact', window.scrollY > 70);
+}, { passive: true });
+
 let minuteurRedimension = null;
 window.addEventListener('resize', () => {
   clearTimeout(minuteurRedimension);
+  ajusteAncrages();
   minuteurRedimension = setTimeout(() => {
-    if (etat.vue === 'tableau') dessineGraphiqueCategories();
+    ajusteAncrages();
+    if (etat.vue === 'graphiques') { dessineGraphiqueCategories(); dessineGraphiqueEvolution(); }
   }, 180);
 });
 
@@ -2304,15 +2735,18 @@ window.addEventListener('resize', () => {
 
 function ajouteLigne(bouton) {
   const type = bouton.dataset.ajouter;
-  let nature = bouton.dataset.nature || (type === 'depense' ? etat.filtreNature : 'variable');
-  if (nature === 'tout') nature = 'variable';
+  const categorie = bouton.dataset.categorie || '';
   const ligne = creeLigne({
-    type, nature,
-    categorie: bouton.dataset.categorie ||
-      (type === 'depense' ? '' : (type === 'aide' ? 'Aide' : 'Salaire')),
+    type,
+    nature: type === 'depense' ? 'variable' : 'fixe',
+    categorie: categorie || (type === 'depense' ? 'Sans catégorie'
+                                                : (type === 'aide' ? 'Aide' : 'Salaire')),
   });
+  // Une ligne neuve s'ouvre sur son panneau : la catégorie est à portée de main.
+  if (!categorie) etat.detailsOuverts.add(ligne.id);
+  etat.categoriesFermees.delete(ligne.categorie);
   applique('Ligne ajoutée');
-  montreVue(type === 'depense' ? 'depenses' : 'revenus');
+  montreVue('budget');
   const champ = document.querySelector('[data-cle="ligne-' + ligne.id + '-libelle"]');
   if (champ) { champ.focus(); champ.scrollIntoView({ block: 'center', behavior: 'smooth' }); }
 }
@@ -2335,8 +2769,9 @@ function demandeSuppression(bouton) {
   const id = Number(bouton.dataset.id);
   const supprime = entite === 'ligne' ? supprimeLigne(id) : supprimeAchat(id);
   if (!supprime) return;
+  etat.detailsOuverts.delete(id);
   applique();
-  toast('Ligne supprimée.', {
+  toast('« ' + (supprime.libelle || 'Ligne sans nom') + ' » supprimée.', {
     action: {
       libelle: 'Annuler',
       faire: () => {
@@ -2348,7 +2783,7 @@ function demandeSuppression(bouton) {
 }
 
 function nouveauMois() {
-  const propose = decaleMois(etat.detail.mois.libelle, 1);
+  const propose = decaleMois(etat.mois.libelle, 1);
   const saisi = prompt(
     'Quel mois créer ? (format AAAA-MM)\n\n' +
     'Les lignes récurrentes du mois affiché sont recopiées, ' +
@@ -2365,7 +2800,7 @@ function nouveauMois() {
 }
 
 function changeMoisRelatif(pas) {
-  const cible = decaleMois(etat.detail.mois.libelle, pas);
+  const cible = decaleMois(etat.mois.libelle, pas);
   const existant = D.mois.find(m => m.libelle === cible);
   if (existant) { D.moisActif = existant.id; applique(); return; }
   if (!confirm(libelleMois(cible) + ' n’existe pas encore. ' +
@@ -2388,12 +2823,11 @@ function telecharge(nomFichier, contenu, typeMime) {
   setTimeout(() => URL.revokeObjectURL(lien.href), 2000);
 }
 
-function virgule(valeur) {
-  return eur(valeur).toFixed(2).replace('.', ',');
-}
+function virgule(valeur) { return eur(valeur).toFixed(2).replace('.', ','); }
 
 /** CSV au format français : séparateur « ; », virgule décimale, BOM pour Excel. */
 function construitCsv(mois) {
+  synchroniseLiens(mois);
   const totaux = recap(mois);
   const lignes = [];
   const ajoute = (cellules) => lignes.push(cellules.map(c => {
@@ -2413,7 +2847,7 @@ function construitCsv(mois) {
           virgule(totaux.budget.depenses.estime), virgule(totaux.budget.depenses.reel)]);
   ajoute(['TOTAL REVENUS', '', '', '',
           virgule(totaux.budget.revenus.estime), virgule(totaux.budget.revenus.reel)]);
-  ajoute(['RESTANT', '', '', '',
+  ajoute(['RESTE À VIVRE', '', '', '',
           virgule(totaux.budget.restant.estime), virgule(totaux.budget.restant.reel)]);
   ajoute([]);
   ajoute(['Courses — semaine', 'Poste', 'Libellé', 'Montant']);
@@ -2431,15 +2865,15 @@ function construitCsv(mois) {
 function actionMenu(action) {
   $$('.menu[open]').forEach(m => m.removeAttribute('open'));
 
+  if (action === 'nouveau-mois') { nouveauMois(); return; }
   if (action === 'export-csv') {
-    const mois = moisActif();
-    telecharge('comptes-' + mois.libelle + '.csv', construitCsv(mois),
+    telecharge('comptes-' + etat.mois.libelle + '.csv', construitCsv(etat.mois),
                'text/csv;charset=utf-8');
     return;
   }
   if (action === 'export-json') {
-    const nom = 'comptes-sauvegarde-' + new Date().toISOString().slice(0, 10) + '.json';
-    telecharge(nom, JSON.stringify(Object.assign({ application: 'comptes' }, D), null, 2),
+    telecharge('comptes-sauvegarde-' + new Date().toISOString().slice(0, 10) + '.json',
+               JSON.stringify(Object.assign({ application: 'comptes' }, D), null, 2),
                'application/json');
     toast('Sauvegarde téléchargée. Rangez ce fichier : il contient tous vos mois.');
     return;
@@ -2451,7 +2885,7 @@ function actionMenu(action) {
       toast('C’est le seul mois : il ne peut pas être supprimé.', { erreur: true });
       return;
     }
-    if (!confirm('Supprimer définitivement ' + libelleMois(etat.detail.mois.libelle) +
+    if (!confirm('Supprimer définitivement ' + libelleMois(etat.mois.libelle) +
                  ' et toutes ses données ?')) return;
     D.mois = D.mois.filter(m => m.id !== D.moisActif);
     D.moisActif = trieMois(D.mois)[0].id;
@@ -2488,7 +2922,7 @@ async function importeFichier(fichier) {
   }
 }
 
-/* -- Thème ---------------------------------------------------------------- */
+/* -- Thème et préférences ------------------------------------------------- */
 
 function changeTheme() {
   const suite = { auto: 'light', light: 'dark', dark: 'auto' };
@@ -2499,7 +2933,17 @@ function appliqueTheme(theme) {
   document.documentElement.dataset.theme = theme;
   $('#etat-theme').textContent = { auto: 'auto', light: 'clair', dark: 'sombre' }[theme];
   try { localStorage.setItem('comptes.theme', theme); } catch (e) { /* ignoré */ }
-  if (etat.detail) dessineGraphiqueCategories();
+  if (etat.recap && etat.vue === 'graphiques') {
+    dessineGraphiqueCategories();
+    dessineGraphiqueEvolution();
+  }
+}
+
+function enregistrePreferences() {
+  try {
+    localStorage.setItem('comptes.categoriesFermees',
+      JSON.stringify(Array.from(etat.categoriesFermees)));
+  } catch (e) { /* ignoré */ }
 }
 
 /* ========================================================================== */
@@ -2509,32 +2953,33 @@ function appliqueTheme(theme) {
 function demarre() {
   stockageDisponible = testeStockage();
 
-  let theme = 'auto', vue = 'tableau';
+  let theme = 'auto', vue = 'budget';
   try {
     theme = localStorage.getItem('comptes.theme') || 'auto';
-    vue = localStorage.getItem('comptes.vue') || 'tableau';
+    vue = localStorage.getItem('comptes.vue') || 'budget';
+    const fermees = JSON.parse(localStorage.getItem('comptes.categoriesFermees') || '[]');
+    if (Array.isArray(fermees)) etat.categoriesFermees = new Set(fermees);
   } catch (e) { /* stockage indisponible */ }
   appliqueTheme(theme);
 
   D = lisDonnees();
-  if (!D) {
-    donneesDeDepart();
-    enregistreDonnees();
-  }
+  if (!D) { donneesDeDepart(); synchroniseLiens(moisActif()); enregistreDonnees(); }
   if (!stockageDisponible) montreAlerteStockage();
 
   dessineTout();
   montreVue(location.hash.slice(1) || vue);
+  ajusteAncrages();
+  // Les polices peuvent finir de charger après le premier rendu.
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(ajusteAncrages);
 }
 
-/* -- Auto-vérification : ouvrir le fichier avec #autotest -- */
+/* -- Auto-vérification : ouvrir le fichier avec #autotest ------------------ */
 
 function verifie() {
   const resultats = [];
-  const teste = (nom, obtenu, attendu) => {
-    const memeChose = JSON.stringify(obtenu) === JSON.stringify(attendu);
-    resultats.push({ nom, memeChose, obtenu, attendu });
-  };
+  const teste = (nom, obtenu, attendu) => resultats.push({
+    nom, memeChose: JSON.stringify(obtenu) === JSON.stringify(attendu), obtenu, attendu,
+  });
 
   teste('Montant « 19,99 »', nombre('19,99'), 19.99);
   teste('Montant « 1 234,56 »', nombre('1 234,56'), 1234.56);
@@ -2591,8 +3036,10 @@ function verifie() {
   teste('Ligne en pause hors des totaux', b.depenses.estime, 570);
   teste('Économie des pauses', b.economieEnPause, 12);
   teste('Dépenses réelles', b.depenses.reel, 550);
+  teste('Charges fixes', b.depensesFixes.reel, 550);
+  teste('Dépenses variables', b.depensesVariables.reel, 0);
   teste('Revenus réels', b.revenus.reel, 2060);
-  teste('Restant', b.restant.reel, 1510);
+  teste('Reste à vivre', b.restant.reel, 1510);
   teste('Écart sur les dépenses', b.surplus.reel, 20);
   teste('Coût net de la garde', b.gardeNette.reel, 170);
   teste('Revenus absents des catégories',
@@ -2601,7 +3048,7 @@ function verifie() {
         recapBudget([{ type: 'autre', nature: 'fixe', estime: 99, reel: 99, actif: true }])
           .depenses.reel, 0);
 
-  // Duplication d'un mois : lignes reprises, montants réels remis à zéro.
+  // Duplication d'un mois.
   D = { version: 1, prochainId: 1, moisActif: null, mois: [] };
   const source = creeMois('2026-01');
   source.lignes.push({ id: D.prochainId++, type: 'depense', nature: 'fixe', categorie: 'A',
@@ -2616,8 +3063,36 @@ function verifie() {
   teste('Un mois créé deux fois n’est pas dupliqué', creeMois('2026-01').id, source.id);
   teste('Créneaux créés', copie.creneaux.length, 28);
 
+  // Liaison entre le budget et les modules.
+  donneesDeDepart();
+  const mois = moisActif();
+  const ligneCourses = ligneReliee(mois, 'courses');
+  const ligneHeures = ligneReliee(mois, 'heures');
+  teste('Une ligne de dépense est reliée aux courses', !!ligneCourses, true);
+  teste('Un revenu est relié aux heures', !!ligneHeures, true);
+
+  ligneCourses.estime = 250;
+  teste('Le budget des courses suit la ligne de dépense', budgetCourses(mois), 250);
+  creeAchat({ semaine: 1, poste: 'Marché', libelle: 'Pain', montant: 12.30 });
+  creeAchat({ semaine: 2, poste: 'Carrefour', libelle: 'Épicerie', montant: 47.70 });
+  synchroniseLiens(mois);
+  teste('Le total des courses remonte dans la dépense', ligneCourses.reel, 60);
+  teste('Le restant courses tient compte du budget confié',
+        recap(mois).courses.restant, 190);
+  teste('Le salaire net remonte dans le revenu', ligneHeures.reel, 140.66);
+
+  // Une ligne déliée cesse d'être pilotée par son module.
+  ligneCourses.lien = '';
+  ligneCourses.reel = 999;
+  synchroniseLiens(mois);
+  teste('Une ligne déliée garde son montant saisi', ligneCourses.reel, 999);
+  ligneCourses.lien = 'courses';
+  synchroniseLiens(mois);
+  teste('Reliée à nouveau, elle reprend le total du module', ligneCourses.reel, 60);
+
   // Aller-retour export / import.
   donneesDeDepart();
+  synchroniseLiens(moisActif());
   const avant = recap(moisActif());
   const relu = validees(JSON.parse(JSON.stringify(D)));
   const apres = recap(relu.mois.find(m => m.id === relu.moisActif));
@@ -2638,7 +3113,7 @@ function verifie() {
               texte: rates.length
                 ? rates.length + ' vérification(s) en échec sur ' + resultats.length
                 : resultats.length + ' vérifications passées.' }),
-    el('p', {}, el('a', { href: '#tableau', onclick: () => location.reload() },
+    el('p', {}, el('a', { href: '#budget', onclick: () => location.reload() },
                    '← Revenir à l’application'))));
   document.title = (rates.length ? 'ECHECS=' + rates.length : 'TOUT OK') +
                    ' (' + resultats.length + ' verifications)';
