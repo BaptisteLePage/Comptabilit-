@@ -21,116 +21,111 @@
 <style>
 /* ==========================================================================
    Comptes — feuille de style
-   Palette et règles graphiques issues du système de visualisation validé :
-   marques fines, grilles en filet, écarts de 2 px en couleur de fond.
+   Principes : ce qui se modifie a l'air d'un champ ; ce qui se calcule a l'air
+   d'un résultat ; un chiffre qui change s'illumine un instant.
+   Palette issue du système de visualisation validé (bleu / orange, contrôlés
+   pour les daltonismes, en clair comme en sombre).
    ========================================================================== */
 
 :root {
   color-scheme: light;
 
-  --plan:            #f4f4f1;
-  --surface:         #fcfcfb;
-  --surface-2:       #f2f1ee;
-  --surface-3:       #e9e8e3;
-  --encre:           #0b0b0b;
-  --encre-2:         #52514e;
-  --encre-3:         #898781;
-  --filet:           #e1e0d9;
-  --ligne-base:      #c3c2b7;
-  --bord:            rgba(11, 11, 11, .09);
+  --plan:        #f3f3f0;
+  --surface:     #fcfcfb;
+  --surface-2:   #f3f2ef;
+  --surface-3:   #e8e7e1;
+  --encre:       #0b0b0b;
+  --encre-2:     #45443f;   /* texte secondaire, 9:1 sur la surface */
+  --encre-3:     #6f6d67;   /* texte discret, 5:1 : lisible même petit */
+  --filet:       #e3e2db;
+  --ligne-base:  #c3c2b7;
+  --bord:        rgba(11, 11, 11, .10);
 
-  --serie-1:         #2a78d6;   /* dépenses fixes */
-  --serie-2:         #eb6834;   /* dépenses variables */
-  --serie-1-clair:   #cde2fb;
+  --fond-champ:  #ffffff;
+  --bord-champ:  #cdccc4;
 
-  --bon:             #0ca30c;
-  --bon-texte:       #006300;
-  --alerte:          #fab219;
-  --critique:        #d03b3b;
+  --serie-1:     #2a78d6;   /* charges fixes */
+  --serie-2:     #eb6834;   /* dépenses variables */
+  --serie-1-clair: #cde2fb;
+  --accent:      #2a78d6;
 
-  --ombre-1: 0 1px 2px rgba(11, 11, 11, .04);
-  --ombre-2: 0 4px 16px rgba(11, 11, 11, .07);
-  --ombre-3: 0 10px 30px rgba(11, 11, 11, .10);
+  --bon:         #0ca30c;
+  --bon-texte:   #006300;
+  --alerte:      #fab219;
+  --critique:    #c72f2f;
 
-  --r-xl: 16px;
-  --r-l:  12px;
-  --r-m:  9px;
-  --r-s:  6px;
+  --ombre-1: 0 1px 2px rgba(11, 11, 11, .05);
+  --ombre-2: 0 6px 20px rgba(11, 11, 11, .08);
+  --ombre-3: 0 12px 32px rgba(11, 11, 11, .12);
 
+  --r-xl: 16px; --r-l: 12px; --r-m: 9px; --r-s: 7px;
   --police: system-ui, -apple-system, "Segoe UI", sans-serif;
 
-  /* Hauteurs mesurees au chargement : l'en-tete et la navigation peuvent
-     passer sur deux lignes selon la largeur de l'ecran. */
-  --haut-tete: 49px;
-  --haut-nav:  44px;
+  --haut-tete: 53px;
+  --haut-nav:  46px;
 }
 
 @media (prefers-color-scheme: dark) {
   :root:where(:not([data-theme="light"])) {
     color-scheme: dark;
-    --plan:       #0d0d0d;
-    --surface:    #1a1a19;
-    --surface-2:  #232322;
-    --surface-3:  #2c2c2a;
-    --encre:      #ffffff;
-    --encre-2:    #c3c2b7;
-    --encre-3:    #898781;
-    --filet:      #2c2c2a;
-    --ligne-base: #383835;
-    --bord:       rgba(255, 255, 255, .10);
-    --serie-1:    #3987e5;
-    --serie-2:    #d95926;
-    --serie-1-clair: #184f95;
-    --bon-texte:  #0ca30c;
-    --ombre-1: 0 1px 2px rgba(0, 0, 0, .3);
-    --ombre-2: 0 4px 16px rgba(0, 0, 0, .35);
-    --ombre-3: 0 10px 30px rgba(0, 0, 0, .45);
+    --plan: #0d0d0d; --surface: #1a1a19; --surface-2: #222221; --surface-3: #2e2e2c;
+    --encre: #ffffff; --encre-2: #d2d1c8; --encre-3: #a3a198;
+    --filet: #2e2e2c; --ligne-base: #45453f; --bord: rgba(255, 255, 255, .11);
+    --fond-champ: #111110; --bord-champ: #4a4a45;
+    --serie-1: #3987e5; --serie-2: #d95926; --serie-1-clair: #184f95; --accent: #3987e5;
+    --bon-texte: #2fbf2f; --critique: #ef6a6a;
+    --ombre-1: 0 1px 2px rgba(0, 0, 0, .35);
+    --ombre-2: 0 6px 20px rgba(0, 0, 0, .4);
+    --ombre-3: 0 12px 32px rgba(0, 0, 0, .5);
   }
 }
-
 :root[data-theme="dark"] {
   color-scheme: dark;
-  --plan:       #0d0d0d;
-  --surface:    #1a1a19;
-  --surface-2:  #232322;
-  --surface-3:  #2c2c2a;
-  --encre:      #ffffff;
-  --encre-2:    #c3c2b7;
-  --encre-3:    #898781;
-  --filet:      #2c2c2a;
-  --ligne-base: #383835;
-  --bord:       rgba(255, 255, 255, .10);
-  --serie-1:    #3987e5;
-  --serie-2:    #d95926;
-  --serie-1-clair: #184f95;
-  --bon-texte:  #0ca30c;
-  --ombre-1: 0 1px 2px rgba(0, 0, 0, .3);
-  --ombre-2: 0 4px 16px rgba(0, 0, 0, .35);
-  --ombre-3: 0 10px 30px rgba(0, 0, 0, .45);
+  --plan: #0d0d0d; --surface: #1a1a19; --surface-2: #222221; --surface-3: #2e2e2c;
+  --encre: #ffffff; --encre-2: #d2d1c8; --encre-3: #a3a198;
+  --filet: #2e2e2c; --ligne-base: #45453f; --bord: rgba(255, 255, 255, .11);
+  --fond-champ: #111110; --bord-champ: #4a4a45;
+  --serie-1: #3987e5; --serie-2: #d95926; --serie-1-clair: #184f95; --accent: #3987e5;
+  --bon-texte: #2fbf2f; --critique: #ef6a6a;
+  --ombre-1: 0 1px 2px rgba(0, 0, 0, .35);
+  --ombre-2: 0 6px 20px rgba(0, 0, 0, .4);
+  --ombre-3: 0 12px 32px rgba(0, 0, 0, .5);
 }
 
 * { box-sizing: border-box; }
+
+/* Quand le navigateur amène un champ à l'écran (clavier, lien), il le place sous
+   l'en-tête, la navigation et le mini-bilan, jamais caché derrière. */
+html { scroll-padding-top: calc(var(--haut-tete) + var(--haut-nav) + 72px); }
 
 body {
   margin: 0;
   background: var(--plan);
   color: var(--encre);
   font-family: var(--police);
-  font-size: 15px;
+  font-size: 16px;
   line-height: 1.5;
   -webkit-text-size-adjust: 100%;
 }
 
-h1, h2, h3 { margin: 0; font-weight: 600; letter-spacing: -.012em; }
-
-.cache {
-  position: absolute; width: 1px; height: 1px; overflow: hidden;
-  clip-path: inset(50%); white-space: nowrap;
-}
+h1, h2, h3 { margin: 0; font-weight: 650; letter-spacing: -.012em; }
+.cache { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 .pousse { flex: 1 1 auto; }
 .chiffres { font-variant-numeric: tabular-nums; }
+:focus-visible { outline: 3px solid color-mix(in srgb, var(--accent) 55%, transparent); outline-offset: 2px; }
 
-/* ------------------------------------------------------------- En-tête --- */
+/* Un chiffre qui vient de changer s'illumine un instant : on voit l'effet de sa saisie. */
+@keyframes eclat {
+  0%   { background-color: color-mix(in srgb, var(--accent) 30%, transparent); }
+  100% { background-color: transparent; }
+}
+.eclat { animation: eclat 1.2s ease-out; border-radius: 6px; }
+@keyframes arrivee {
+  0%   { background-color: color-mix(in srgb, var(--accent) 22%, var(--surface)); }
+  100% { background-color: transparent; }
+}
+
+/* ---------------------------------------------------------------- En-tête --- */
 
 .tete {
   position: sticky; top: 0; z-index: 40;
@@ -139,33 +134,29 @@ h1, h2, h3 { margin: 0; font-weight: 600; letter-spacing: -.012em; }
   background: var(--surface);
   border-bottom: 1px solid var(--filet);
 }
-
-.tete__marque { display: flex; align-items: center; gap: 9px; }
+.tete__marque { display: flex; align-items: center; gap: 10px; }
 .tete__logo {
-  display: grid; place-items: center;
-  width: 28px; height: 28px; border-radius: 9px;
-  background: var(--serie-1); color: #fff; font-weight: 700; font-size: .95rem;
+  display: grid; place-items: center; width: 30px; height: 30px; border-radius: 9px;
+  background: var(--accent); color: #fff; font-weight: 700;
 }
-.tete__marque h1 { font-size: 1rem; }
+.tete__marque h1 { font-size: 1.05rem; }
 
-/* Sélecteur de mois : le repère temporel doit sauter aux yeux. */
 .mois {
   display: flex; align-items: center; gap: 2px;
   background: var(--surface-2); border: 1px solid var(--bord);
-  border-radius: 999px; padding: 2px;
+  border-radius: 999px; padding: 3px;
 }
 .mois__fleche {
   appearance: none; border: 0; background: none; cursor: pointer;
-  width: 28px; height: 28px; border-radius: 50%;
-  color: var(--encre-2); font-size: 1.1rem; line-height: 1;
+  width: 30px; height: 30px; border-radius: 50%;
+  color: var(--encre-2); font-size: 1.2rem; line-height: 1;
 }
 .mois__fleche:hover { background: var(--surface-3); color: var(--encre); }
 .mois__choix {
   appearance: none; border: 0; background: none; cursor: pointer;
-  padding: 3px 10px; font: inherit; font-size: .92rem; font-weight: 600;
+  padding: 3px 10px; font: inherit; font-size: 1rem; font-weight: 650;
   color: var(--encre); text-align: center;
 }
-
 .tete__actions { display: flex; align-items: center; gap: 8px; margin-left: auto; }
 
 /* ------------------------------------------------------------ Navigation --- */
@@ -177,576 +168,497 @@ h1, h2, h3 { margin: 0; font-weight: 600; letter-spacing: -.012em; }
   background: var(--surface);
   border-bottom: 1px solid var(--filet);
 }
-
 .nav__lien {
-  appearance: none; border: 1px solid transparent; background: none; cursor: pointer;
+  appearance: none; border: 0; background: none; cursor: pointer;
   display: inline-flex; align-items: center; gap: 7px;
-  padding: 6px 13px; border-radius: 999px;
-  color: var(--encre-2); font: inherit; font-size: .875rem; white-space: nowrap;
+  padding: 7px 14px; border-radius: 999px;
+  color: var(--encre-2); font: inherit; font-size: .92rem; white-space: nowrap;
 }
 .nav__lien:hover { background: var(--surface-2); color: var(--encre); }
-.nav__lien[aria-current="page"] {
-  background: var(--serie-1); border-color: transparent; color: #fff; font-weight: 600;
-}
+.nav__lien[aria-current="page"] { background: var(--accent); color: #fff; font-weight: 600; }
 .nav__lien[aria-current="page"] .nav__jeton { background: rgba(255, 255, 255, .22); color: #fff; }
-
-/* Les modules sont volontairement mis à part du budget. */
-.nav__separateur {
-  width: 1px; height: 22px; margin: 0 6px; background: var(--filet);
-}
+.nav__separateur { width: 1px; height: 22px; margin: 0 6px; background: var(--filet); }
 .nav__groupe { display: flex; gap: 4px; flex-wrap: wrap; }
-.nav__groupe .nav__lien { font-size: .83rem; padding: 5px 11px; }
 .nav__jeton {
-  padding: 1px 7px; border-radius: 999px;
-  background: var(--surface-3); color: var(--encre-2);
-  font-size: .74rem; font-variant-numeric: tabular-nums;
+  padding: 1px 8px; border-radius: 999px; background: var(--surface-3); color: var(--encre-2);
+  font-size: .78rem; font-variant-numeric: tabular-nums;
 }
 
-main { max-width: 900px; margin: 0 auto; padding: 18px 16px 80px; }
+main { max-width: 940px; margin: 0 auto; padding: 20px 16px 90px; }
 main.large { max-width: 1180px; }
 
-/* ------------------------------------------------------------- Contrôles --- */
+/* --------------------------------------------------------------- Contrôles --- */
 
 .bouton {
   appearance: none; cursor: pointer;
-  display: inline-flex; align-items: center; gap: 6px;
-  padding: 7px 13px;
-  border: 1px solid var(--bord); border-radius: var(--r-s);
+  display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+  min-height: 36px; padding: 6px 14px;
+  border: 1px solid var(--bord-champ); border-radius: var(--r-s);
   background: var(--surface); color: var(--encre);
-  font: inherit; font-size: .875rem;
-  transition: background .12s ease, border-color .12s ease;
+  font: inherit; font-size: .9rem; font-weight: 500;
 }
 .bouton:hover { background: var(--surface-2); }
-.bouton--primaire { background: var(--serie-1); border-color: transparent; color: #fff; font-weight: 500; }
-.bouton--primaire:hover { background: var(--serie-1); filter: brightness(1.08); }
-.bouton--fantome {
-  border-color: transparent; background: none; color: var(--encre-2);
-  padding: 5px 9px; font-size: .82rem;
-}
-.bouton--fantome:hover { background: var(--surface-2); color: var(--encre); }
-.bouton--rond {
-  width: 30px; height: 30px; padding: 0; justify-content: center;
-  border-radius: 50%; border-color: transparent; background: none;
-  color: var(--encre-3); font-size: 1rem;
-}
-.bouton--rond:hover { background: var(--surface-2); color: var(--encre); }
-.bouton--rond.danger:hover { background: color-mix(in srgb, var(--critique) 14%, transparent); color: var(--critique); }
+.bouton--primaire { background: var(--accent); border-color: transparent; color: #fff; }
+.bouton--primaire:hover { background: var(--accent); filter: brightness(1.08); }
+.bouton--discret { border-color: transparent; background: none; color: var(--encre-2); }
+.bouton--discret:hover { background: var(--surface-2); color: var(--encre); }
+.bouton--icone { width: 36px; padding: 0; font-size: 1.1rem; }
+.danger { color: var(--critique); }
 
-:focus-visible { outline: 2px solid var(--serie-1); outline-offset: 2px; border-radius: 3px; }
-
-input[type="text"], input[type="search"], select {
-  padding: 6px 9px;
-  border: 1px solid var(--bord); border-radius: var(--r-s);
-  background: var(--surface); color: var(--encre);
-  font: inherit; font-size: .875rem;
+/* Un champ modifiable ressemble toujours à un champ. */
+.champ {
+  width: 100%; min-width: 0; height: 38px; padding: 6px 10px;
+  border: 1px solid var(--bord-champ); border-radius: var(--r-s);
+  background: var(--fond-champ); color: var(--encre);
+  font: inherit; font-size: 1rem;
 }
-input::placeholder { color: var(--encre-3); }
+.champ:hover { border-color: var(--encre-3); }
+.champ:focus { outline: none; border-color: var(--accent);
+               box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 22%, transparent); }
+.champ::placeholder { color: var(--encre-3); opacity: .8; }
+.champ--nombre { text-align: right; font-variant-numeric: tabular-nums; }
+select.champ { cursor: pointer; }
+
+.champ-euro, .champ-pourcent { position: relative; display: block; }
+.champ-euro .champ, .champ-pourcent .champ { padding-right: 26px; }
+.champ-euro::after, .champ-pourcent::after {
+  position: absolute; right: 10px; top: 50%; transform: translateY(-50%);
+  color: var(--encre-3); font-size: .9rem; pointer-events: none;
+}
+.champ-euro::after { content: "€"; }
+.champ-pourcent::after { content: "%"; }
+
+.champ-inline { display: inline-flex; align-items: center; gap: 10px; font-size: .92rem; color: var(--encre-2); }
+.champ-inline .champ-euro, .champ-inline .champ-pourcent { width: 118px; }
 
 .bascule {
   appearance: none; margin: 0; cursor: pointer; flex: none;
-  width: 28px; height: 16px; border-radius: 999px;
+  width: 38px; height: 22px; border-radius: 999px;
   background: var(--ligne-base); border: 0; position: relative;
-  transition: background .14s ease;
+  transition: background .15s ease;
 }
 .bascule::after {
-  content: ""; position: absolute; top: 2px; left: 2px;
-  width: 12px; height: 12px; border-radius: 50%; background: #fff;
-  transition: transform .14s ease;
+  content: ""; position: absolute; top: 3px; left: 3px;
+  width: 16px; height: 16px; border-radius: 50%; background: #fff;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, .25); transition: transform .15s ease;
 }
-.bascule:checked { background: var(--serie-1); }
-.bascule:checked::after { transform: translateX(12px); }
+.bascule:checked { background: var(--accent); }
+.bascule:checked::after { transform: translateX(16px); }
 
 .menu { position: relative; }
-.menu > summary { list-style: none; display: inline-block; }
+.menu > summary { list-style: none; }
 .menu > summary::-webkit-details-marker { display: none; }
 .menu__contenu {
   position: absolute; right: 0; top: calc(100% + 6px); z-index: 50;
-  min-width: 250px; padding: 6px;
+  min-width: 260px; padding: 6px;
   background: var(--surface); border: 1px solid var(--bord);
   border-radius: var(--r-l); box-shadow: var(--ombre-3);
 }
 .menu__contenu button {
-  display: block; width: 100%; text-align: left;
-  padding: 8px 10px; border: 0; border-radius: var(--r-s);
-  background: none; color: inherit; font: inherit; font-size: .875rem; cursor: pointer;
+  display: block; width: 100%; text-align: left; padding: 9px 11px; border: 0;
+  border-radius: var(--r-s); background: none; color: inherit; font: inherit; font-size: .92rem; cursor: pointer;
 }
 .menu__contenu button:hover { background: var(--surface-2); }
 .menu__contenu hr { border: 0; border-top: 1px solid var(--filet); margin: 5px 2px; }
-.danger { color: var(--critique); }
 
-/* ====================================================== LE BILAN (héros) === */
-/*  La barre entière représente les revenus du mois. Ce qui est peint est
-    parti ; ce qui reste vide est ce dont on dispose encore.                  */
+/* ============================================================== LE BILAN === */
 
 .bilan {
-  position: sticky; top: calc(var(--haut-tete) + var(--haut-nav)); z-index: 20;
-  margin-bottom: 18px; padding: 16px 18px 14px;
+  position: relative;
+  margin-bottom: 20px; padding: 18px 20px 16px;
   background: var(--surface);
   border: 1px solid var(--bord); border-radius: var(--r-xl);
   box-shadow: var(--ombre-2);
 }
-
-.bilan__haut { display: flex; align-items: flex-end; gap: 16px; flex-wrap: wrap; }
-.bilan__etiquette {
-  font-size: .78rem; font-weight: 500; letter-spacing: .05em;
-  text-transform: uppercase; color: var(--encre-2);
-}
+.bilan__haut { display: flex; align-items: flex-end; gap: 12px 24px; flex-wrap: wrap; }
+.bilan__etiquette { font-size: .82rem; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--encre-2); }
 .bilan__valeur {
-  display: block; margin-top: 1px;
-  font-size: 2.9rem; font-weight: 600; line-height: 1; letter-spacing: -.025em;
+  display: inline-block; margin-top: 2px; padding: 0 4px; margin-left: -4px;
+  font-size: 3rem; font-weight: 700; line-height: 1.05; letter-spacing: -.03em;
 }
 .bilan__valeur--negatif { color: var(--critique); }
-.bilan__cote { margin-left: auto; text-align: right; font-size: .84rem; color: var(--encre-2); }
-.bilan__cote b { color: var(--encre); font-variant-numeric: tabular-nums; }
+
+/* L'équation dit en toutes lettres d'où vient le chiffre. */
+.bilan__equation {
+  display: flex; align-items: baseline; gap: 6px 10px; flex-wrap: wrap;
+  margin-left: auto; font-size: .95rem; color: var(--encre-2);
+}
+.bilan__equation b { color: var(--encre); font-variant-numeric: tabular-nums; padding: 0 3px; }
+.bilan__operateur { color: var(--encre-3); font-weight: 600; }
 
 .bilan__piste {
-  display: flex; gap: 2px; overflow: hidden;
-  height: 15px; margin: 14px 0 9px;
-  border-radius: 999px;
-  background: var(--surface-3);
+  display: flex; gap: 2px; overflow: hidden; height: 18px; margin: 16px 0 10px;
+  border-radius: 999px; background: var(--surface-3);
 }
-.bilan__part { height: 100%; min-width: 2px; }
+.bilan__part { height: 100%; min-width: 2px; transition: width .35s ease; }
 .bilan__part--fixes { background: var(--serie-1); }
 .bilan__part--variables { background: var(--serie-2); }
 .bilan__part--fin { border-radius: 0 4px 4px 0; }
 
-.bilan__legende {
-  display: flex; gap: 16px; flex-wrap: wrap;
-  font-size: .8rem; color: var(--encre-2);
-}
-.bilan__cle { display: inline-flex; align-items: center; gap: 7px; }
-.bilan__pastille { width: 11px; height: 11px; border-radius: 3px; flex: none; }
-.bilan__pastille--fixes { background: var(--serie-1); }
-.bilan__pastille--variables { background: var(--serie-2); }
-.bilan__pastille--reste { background: var(--surface-3); border: 1px solid var(--ligne-base); }
-.bilan__cle b { color: var(--encre); font-variant-numeric: tabular-nums; }
+.bilan__legende { display: flex; gap: 8px 20px; flex-wrap: wrap; font-size: .9rem; color: var(--encre-2); }
+.bilan__cle { display: inline-flex; align-items: center; gap: 8px; }
+.bilan__cle b { color: var(--encre); font-variant-numeric: tabular-nums; padding: 0 2px; }
+.bilan__cle small { color: var(--encre-3); font-size: .82rem; }
+.pastille { width: 12px; height: 12px; border-radius: 3px; flex: none; display: inline-block; }
+.pastille--fixes { background: var(--serie-1); }
+.pastille--variables { background: var(--serie-2); }
+.pastille--reste { background: var(--surface-3); border: 1px solid var(--ligne-base); }
 
+.bilan__prevu {
+  margin-top: 12px; padding-top: 11px; border-top: 1px solid var(--filet);
+  font-size: .88rem; color: var(--encre-2);
+}
+.bilan__prevu b { color: var(--encre); font-variant-numeric: tabular-nums; }
 .bilan__alerte {
-  display: flex; align-items: center; gap: 8px;
-  margin-top: 10px; padding: 8px 11px;
-  border-radius: var(--r-m);
-  background: color-mix(in srgb, var(--critique) 11%, var(--surface));
-  color: var(--critique); font-size: .84rem; font-weight: 500;
+  display: flex; align-items: center; gap: 8px; margin-top: 12px; padding: 9px 12px;
+  border-radius: var(--r-m); background: color-mix(in srgb, var(--critique) 12%, var(--surface));
+  color: var(--critique); font-size: .9rem; font-weight: 600;
 }
 
-/* Version compacte quand on a fait défiler la page */
-.bilan.compact { padding: 10px 18px; }
-.bilan.compact .bilan__valeur { font-size: 1.7rem; }
-.bilan.compact .bilan__legende, .bilan.compact .bilan__cote { display: none; }
-.bilan.compact .bilan__piste { margin: 9px 0 0; height: 10px; }
+/* Mini-bilan : une bande pleine largeur juste sous la navigation.
+   En position fixe il ne prend aucune place (la page ne peut pas sauter) ;
+   sur les pages Courses et Heures il est posé dans la page (classe .pose). */
+.bilan-mini {
+  position: fixed; z-index: 25; left: 0; right: 0;
+  top: calc(var(--haut-tete) + var(--haut-nav));
+  background: var(--surface); border-bottom: 1px solid var(--filet); box-shadow: var(--ombre-2);
+  opacity: 0; visibility: hidden; transform: translateY(-6px);
+  transition: opacity .18s ease, transform .18s ease, visibility .18s;
+}
+.bilan-mini.visible { opacity: 1; visibility: visible; transform: none; }
+.bilan-mini.pose { position: sticky; box-shadow: none; transition: none; }
+.bilan-mini__int {
+  display: flex; align-items: center; gap: 6px 16px;
+  max-width: 940px; margin: 0 auto; padding: 8px 20px;
+}
+.bilan-mini.pose .bilan-mini__int { max-width: 1180px; }
+.bilan-mini__etiquette { font-size: .8rem; font-weight: 600; letter-spacing: .05em; text-transform: uppercase; color: var(--encre-2); white-space: nowrap; }
+.bilan-mini__valeur { font-size: 1.3rem; font-weight: 700; font-variant-numeric: tabular-nums; padding: 0 3px; white-space: nowrap; }
+.bilan-mini__valeur--negatif { color: var(--critique); }
+.bilan-mini .bilan__piste { flex: 1 1 120px; height: 10px; margin: 0; }
+.bilan-mini__calcul { font-size: .86rem; color: var(--encre-2); font-variant-numeric: tabular-nums; white-space: nowrap; }
 
-/* ============================================================== Les blocs === */
+/* ============================================================= LES BLOCS === */
 
 .bloc {
-  margin-bottom: 16px;
-  background: var(--surface);
+  margin-bottom: 20px; background: var(--surface);
   border: 1px solid var(--bord); border-radius: var(--r-xl);
-  box-shadow: var(--ombre-1);
-  overflow: hidden;
+  box-shadow: var(--ombre-1); overflow: hidden;
 }
-
 .bloc__tete {
-  display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
-  padding: 13px 18px;
+  display: flex; align-items: center; gap: 10px 14px; flex-wrap: wrap;
+  padding: 16px 20px; border-bottom: 1px solid var(--filet);
+}
+.bloc__titre { display: flex; align-items: baseline; gap: 6px 12px; flex-wrap: wrap; }
+.bloc__titre h2 { font-size: 1.15rem; }
+.bloc__chiffre { font-size: 1.3rem; font-weight: 700; font-variant-numeric: tabular-nums; padding: 0 3px; }
+.bloc__sous { font-size: .88rem; color: var(--encre-3); font-variant-numeric: tabular-nums; }
+
+.bloc__aide {
+  display: flex; gap: 6px 18px; flex-wrap: wrap; align-items: center;
+  padding: 9px 20px; background: var(--surface-2); border-bottom: 1px solid var(--filet);
+  font-size: .84rem; color: var(--encre-2);
+}
+.bloc__aide span { display: inline-flex; align-items: center; gap: 6px; }
+.texte-bon { color: var(--bon-texte); font-weight: 600; }
+.texte-mauvais { color: var(--critique); font-weight: 600; }
+
+/* ------------------------------------------------ Formulaire d'ajout --- */
+
+.ajout {
+  display: flex; flex-wrap: wrap; align-items: flex-end; gap: 12px;
+  padding: 16px 20px; background: color-mix(in srgb, var(--accent) 6%, var(--surface));
   border-bottom: 1px solid var(--filet);
 }
-.bloc__titre { display: flex; align-items: baseline; gap: 10px; }
-.bloc__titre h2 { font-size: .95rem; }
-.bloc__total { font-size: 1.1rem; font-weight: 600; font-variant-numeric: tabular-nums; }
-.bloc__prevu { font-size: .8rem; color: var(--encre-3); font-variant-numeric: tabular-nums; }
-.bloc__corps > :last-child { border-bottom: 0; }
+.ajout[hidden] { display: none; }
+.ajout__titre { width: 100%; margin: 0; font-weight: 650; }
+.ajout__champ { display: grid; gap: 4px; font-size: .84rem; color: var(--encre-2); flex: 1 1 130px; }
+.ajout__champ--large { flex: 2 1 220px; }
+.ajout__actions { display: flex; gap: 8px; margin-left: auto; }
 
-/* --------------------------------------------------- Catégorie dépliable --- */
+/* ------------------------------------------------ Groupes repliables --- */
 
-.cat { border-bottom: 1px solid var(--filet); }
-.cat > summary {
-  display: grid; align-items: center; gap: 4px 12px; cursor: pointer;
-  grid-template-columns: 18px minmax(0, 1fr) 170px 152px;
-  padding: 10px 18px;
-  list-style: none;
+.groupe { border-bottom: 1px solid var(--filet); }
+.groupe:last-child { border-bottom: 0; }
+.groupe > summary {
+  display: grid; align-items: center; gap: 4px 16px; cursor: pointer; list-style: none;
+  grid-template-columns: 30px minmax(0, 1fr) 180px 200px;
+  min-height: 64px; padding: 10px 20px;
+  user-select: none;
 }
-.cat > summary::-webkit-details-marker { display: none; }
-.cat > summary:hover { background: var(--surface-2); }
-.cat__fleche { color: var(--encre-3); transition: transform .15s ease; font-size: .8rem; }
-.cat[open] > summary .cat__fleche { transform: rotate(90deg); }
-.cat__nom { font-weight: 600; font-size: .9rem; }
-.cat__compte { font-weight: 400; font-size: .78rem; color: var(--encre-3); margin-left: 6px; }
+.groupe > summary::-webkit-details-marker { display: none; }
+.groupe > summary:hover { background: var(--surface-2); }
+.groupe[open] > summary { background: var(--surface-2); border-bottom: 1px solid var(--filet); }
 
-/* Part du revenu absorbée par la catégorie : l'incidence, ligne par ligne. */
-.cat__part { display: grid; gap: 3px; }
-.cat__part-piste {
-  display: block; height: 5px; border-radius: 999px;
-  background: var(--surface-3); overflow: hidden;
+.groupe__chevron {
+  display: grid; place-items: center; width: 28px; height: 28px; border-radius: 50%;
+  background: var(--surface-3); color: var(--encre-2); font-size: .8rem;
+  transition: transform .18s ease;
 }
-.cat__part-jauge { display: block; height: 100%; border-radius: 999px; background: var(--serie-1); }
-.cat__part-texte { font-size: .72rem; color: var(--encre-3); }
+.groupe[open] .groupe__chevron { transform: rotate(90deg); background: var(--accent); color: #fff; }
+.groupe__nom { font-weight: 650; font-size: 1.02rem; }
+.groupe__compte { display: block; font-weight: 400; font-size: .82rem; color: var(--encre-3); }
 
-.cat__montants { text-align: right; font-variant-numeric: tabular-nums; }
-.cat__reel { font-weight: 600; font-size: .95rem; }
-.cat__prevu { font-size: .76rem; color: var(--encre-3); }
+.groupe__part { display: grid; gap: 4px; }
+.groupe__piste { display: block; height: 7px; border-radius: 999px; background: var(--surface-3); overflow: hidden; }
+.groupe__jauge { display: block; height: 100%; border-radius: 999px; background: var(--encre-3); transition: width .3s ease; }
+.groupe__part-texte { font-size: .8rem; color: var(--encre-3); }
 
-.cat__corps { padding: 2px 0 10px; background: var(--surface-2); }
-.cat__pied { padding: 4px 18px 0; }
+.groupe__montants { text-align: right; font-variant-numeric: tabular-nums; }
+.groupe__reel { font-weight: 700; font-size: 1.08rem; padding: 0 3px; }
+.groupe__prevu { display: block; font-size: .8rem; color: var(--encre-3); white-space: nowrap; }
 
-/* ------------------------------------------------------------- Une ligne --- */
+.groupe__corps { padding: 4px 0 12px; }
+.groupe__pied { padding: 8px 20px 0 64px; }
 
-.ligne {
-  display: grid; align-items: center; gap: 3px 10px;
-  grid-template-columns: 30px minmax(0, 1fr) 106px 106px 84px 30px;
-  grid-template-areas: "actif libelle prevu reel ecart suppr";
-  padding: 3px 18px 3px 14px;
+/* --------------------------------------------------------- Une ligne --- */
+
+.colonnes, .ligne {
+  display: grid; align-items: center; gap: 4px 12px;
+  grid-template-columns: 44px minmax(0, 1fr) 132px 132px 112px 40px;
+  padding: 0 20px;
 }
-.ligne:hover { background: color-mix(in srgb, var(--surface) 60%, transparent); }
-.ligne--pause > :not(.ligne__actif) { opacity: .5; }
-
-.ligne__actif { grid-area: actif; display: flex; justify-content: center; }
-.ligne__libelle { grid-area: libelle; display: flex; align-items: center; gap: 6px; min-width: 0; }
-.ligne__libelle input {
-  width: 100%; min-width: 0;
-  border-color: transparent; background: transparent; font-weight: 500;
+.colonnes {
+  min-height: 34px;
+  font-size: .74rem; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--encre-3);
 }
-.ligne__libelle input:hover { border-color: var(--bord); background: var(--surface); }
-.ligne__libelle input:focus { border-color: var(--serie-1); background: var(--surface); }
+.colonnes span:nth-child(3), .colonnes span:nth-child(4), .colonnes span:nth-child(5) { text-align: right; }
 
+.ligne { min-height: 56px; padding-top: 6px; padding-bottom: 6px; }
+.ligne + .ligne { border-top: 1px solid var(--filet); }
+.ligne:hover { background: color-mix(in srgb, var(--surface-2) 55%, transparent); }
+.ligne--neuve { animation: arrivee 2s ease-out; }
+
+.ligne__actif { display: flex; justify-content: flex-start; }
+.ligne__libelle { display: flex; align-items: center; gap: 10px; min-width: 0; }
+.ligne__libelle .champ { font-weight: 500; }
 .ligne__montants { display: contents; }
-.champ-montant { position: relative; }
-.champ-montant input {
-  width: 100%; text-align: right; font-variant-numeric: tabular-nums;
-  border-color: transparent; background: transparent;
+.montant { display: block; min-width: 0; }
+.montant__etiquette { display: none; }
+.ligne__ecart { text-align: right; white-space: nowrap; font-size: .92rem; font-variant-numeric: tabular-nums; color: var(--encre-3); }
+.ligne__ecart .texte-bon, .ligne__ecart .texte-mauvais { padding: 0 3px; }
+.ligne__plus { display: flex; justify-content: flex-end; }
+
+/* Ligne en pause : visiblement hors jeu. */
+.ligne--pause .ligne__libelle .champ, .ligne--pause .montant .champ { color: var(--encre-3); text-decoration: line-through; background: var(--surface-2); }
+.badge {
+  flex: none; padding: 2px 9px; border-radius: 999px;
+  font-size: .76rem; font-weight: 600; white-space: nowrap;
 }
-.champ-montant input:hover { border-color: var(--bord); background: var(--surface); }
-.champ-montant input:focus { border-color: var(--serie-1); background: var(--surface); }
-.champ-montant input:read-only { color: var(--encre-2); cursor: default; }
-.champ-montant--prevu { grid-area: prevu; }
-.champ-montant--reel { grid-area: reel; }
-.champ-montant__etiquette { display: none; }
+.badge--pause { background: var(--surface-3); color: var(--encre-2); }
 
-.ligne__ecart {
-  grid-area: ecart; text-align: right; white-space: nowrap;
-  font-size: .82rem; font-variant-numeric: tabular-nums; color: var(--encre-3);
+/* Pastille de nature : la même couleur que dans la barre du bilan. */
+.jeton-nature {
+  appearance: none; cursor: pointer; flex: none; padding: 0;
+  width: 14px; height: 14px; border-radius: 4px; border: 0;
 }
-.ligne__ecart--bon { color: var(--bon-texte); }
-.ligne__ecart--mauvais { color: var(--critique); }
-.ligne__suppr { grid-area: suppr; }
+.jeton-nature--fixes { background: var(--serie-1); }
+.jeton-nature--variables { background: var(--serie-2); }
+.jeton-nature:hover { outline: 3px solid color-mix(in srgb, var(--encre) 15%, transparent); }
 
-/* Jeton « ce montant vient d'un module » */
-.jeton-lien {
-  appearance: none; cursor: pointer;
-  display: inline-flex; align-items: center; gap: 4px; flex: none;
-  padding: 1px 8px; border: 1px solid var(--bord); border-radius: 999px;
-  background: var(--surface-3); color: var(--encre-2);
-  font: inherit; font-size: .72rem; white-space: nowrap;
+/* Un montant calculé par un module ne ressemble pas à un champ. */
+.valeur-auto {
+  appearance: none; cursor: pointer; width: 100%;
+  display: flex; align-items: center; justify-content: flex-end; gap: 7px;
+  height: 38px; padding: 6px 10px;
+  border: 1px dashed var(--bord-champ); border-radius: var(--r-s);
+  background: transparent; color: var(--encre); font: inherit; font-size: 1rem;
+  font-variant-numeric: tabular-nums;
 }
-.jeton-lien:hover { background: var(--serie-1); border-color: transparent; color: #fff; }
-
-.entete-colonnes {
-  display: grid; gap: 10px;
-  grid-template-columns: 30px minmax(0, 1fr) 106px 106px 84px 30px;
-  padding: 6px 18px 6px 14px;
-  font-size: .7rem; font-weight: 500; letter-spacing: .06em; text-transform: uppercase;
-  color: var(--encre-3);
+.valeur-auto:hover { border-style: solid; border-color: var(--accent); }
+.valeur-auto__badge {
+  padding: 1px 7px; border-radius: 999px; background: var(--surface-3);
+  color: var(--encre-2); font-size: .72rem; font-weight: 600;
 }
-.entete-colonnes span:nth-child(3),
-.entete-colonnes span:nth-child(4),
-.entete-colonnes span:nth-child(5) { text-align: right; }
 
-/* -------------------------------------------------------- Sous-sections --- */
-
-.sous-bloc { border-bottom: 1px solid var(--filet); }
-.sous-bloc__tete {
-  display: flex; align-items: baseline; gap: 10px;
-  padding: 9px 18px 3px;
+/* Panneau « ⋯ » */
+.ligne-detail {
+  display: flex; align-items: flex-end; gap: 12px 16px; flex-wrap: wrap;
+  margin: 2px 20px 12px 64px; padding: 14px 16px;
+  background: var(--surface-2); border: 1px solid var(--bord); border-radius: var(--r-m);
 }
-.sous-bloc__nom {
-  font-size: .74rem; font-weight: 600; letter-spacing: .07em;
-  text-transform: uppercase; color: var(--encre-2);
-}
-.sous-bloc__total { font-size: .8rem; color: var(--encre-3); font-variant-numeric: tabular-nums; }
+.ligne-detail label { display: grid; gap: 4px; font-size: .82rem; color: var(--encre-2); }
+.ligne-detail .champ { width: auto; min-width: 150px; }
+.ligne-detail .large .champ { min-width: 220px; }
 
-/* ------------------------------------------------------------- Modules --- */
+/* ================================================================ MODULES === */
 
-.modules { display: grid; gap: 14px; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); }
-
+.modules { display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); }
 .module {
-  display: grid; gap: 10px; align-content: start;
-  padding: 16px 18px;
-  background: var(--surface);
-  border: 1px solid var(--bord); border-radius: var(--r-xl);
-  box-shadow: var(--ombre-1);
+  display: grid; gap: 12px; align-content: start; padding: 18px 20px;
+  background: var(--surface); border: 1px solid var(--bord); border-radius: var(--r-xl); box-shadow: var(--ombre-1);
 }
-.module__tete { display: flex; align-items: center; gap: 10px; }
-.module__icone {
-  display: grid; place-items: center; flex: none;
-  width: 30px; height: 30px; border-radius: var(--r-m);
-  background: var(--surface-3); font-size: .95rem;
-}
-.module__titre { font-size: .92rem; font-weight: 600; }
-.module__sous-titre { font-size: .78rem; color: var(--encre-3); }
-.module__valeur { font-size: 1.6rem; font-weight: 600; letter-spacing: -.015em; }
-.module__detail { font-size: .8rem; color: var(--encre-2); }
+.module__tete { display: flex; align-items: center; gap: 12px; }
+.module__icone { display: grid; place-items: center; flex: none; width: 34px; height: 34px; border-radius: var(--r-m); background: var(--surface-3); }
+.module__titre { font-size: 1rem; font-weight: 650; }
+.module__sous-titre { font-size: .84rem; color: var(--encre-3); }
+.module__valeur { font-size: 1.6rem; font-weight: 700; letter-spacing: -.015em; }
+.module__detail { font-size: .88rem; color: var(--encre-2); }
 
-/* --------------------------------------------------------------- Jauges --- */
-
-.jauge { display: grid; gap: 5px; }
-.jauge__entete { display: flex; justify-content: space-between; gap: 10px; font-size: .82rem; }
+.jauge { display: grid; gap: 6px; }
+.jauge__entete { display: flex; justify-content: space-between; gap: 10px; font-size: .9rem; }
 .jauge__nom { color: var(--encre-2); }
-.jauge__chiffres { font-variant-numeric: tabular-nums; }
-.jauge__piste { height: 9px; border-radius: 999px; background: var(--serie-1-clair); overflow: hidden; }
-.jauge__remplissage { height: 100%; border-radius: 999px; background: var(--serie-1); }
+.jauge__chiffres { font-variant-numeric: tabular-nums; font-weight: 600; }
+.jauge__piste { height: 10px; border-radius: 999px; background: var(--serie-1-clair); overflow: hidden; }
+.jauge__remplissage { height: 100%; border-radius: 999px; background: var(--serie-1); transition: width .3s ease; }
 .jauge__remplissage--alerte { background: var(--alerte); }
 .jauge__remplissage--critique { background: var(--critique); }
-.jauge__etat { font-size: .78rem; color: var(--encre-2); }
-.jauge__etat--critique { color: var(--critique); }
+.jauge__etat { font-size: .84rem; color: var(--encre-2); }
+.jauge__etat--critique { color: var(--critique); font-weight: 600; }
 
-/* ----------------------------------------------------- Pages secondaires --- */
+/* ===================================================== PAGES SECONDAIRES === */
 
 .carte {
-  margin-bottom: 16px; padding: 16px 18px;
-  background: var(--surface);
-  border: 1px solid var(--bord); border-radius: var(--r-xl);
-  box-shadow: var(--ombre-1);
+  margin-bottom: 16px; padding: 18px 20px;
+  background: var(--surface); border: 1px solid var(--bord); border-radius: var(--r-xl); box-shadow: var(--ombre-1);
 }
 .carte__tete { margin-bottom: 12px; }
-.carte__tete h2 { font-size: .95rem; }
-.carte__sous-titre { margin: 2px 0 0; font-size: .78rem; color: var(--encre-3); }
+.carte__tete h2 { font-size: 1.05rem; }
+.carte__sous-titre { margin: 3px 0 0; font-size: .86rem; color: var(--encre-3); }
 
-.outils { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 16px; }
-.champ-inline { display: inline-flex; align-items: center; gap: 8px; font-size: .82rem; color: var(--encre-2); }
-.champ-inline input { width: 96px; text-align: right; font-variant-numeric: tabular-nums; }
+.outils { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 16px; }
 
 .graphique { width: 100%; }
 .graphique svg { display: block; width: 100%; height: auto; }
-
-.legende { display: flex; gap: 16px; flex-wrap: wrap; margin: 2px 0 10px; font-size: .78rem; color: var(--encre-2); }
+.legende { display: flex; gap: 16px; flex-wrap: wrap; margin: 2px 0 10px; font-size: .84rem; color: var(--encre-2); }
 .legende__cle { display: inline-flex; align-items: center; gap: 6px; }
-.legende__pastille { width: 11px; height: 11px; border-radius: 3px; background: var(--serie-1); }
-.legende__trait { width: 2px; height: 13px; background: var(--encre-2); }
+.legende__pastille { width: 12px; height: 12px; border-radius: 3px; background: var(--serie-1); }
+.legende__trait { width: 2px; height: 14px; background: var(--encre-2); }
 
-.jumeau { margin-top: 12px; font-size: .84rem; }
+.jumeau { margin-top: 12px; font-size: .9rem; }
 .jumeau summary { cursor: pointer; color: var(--encre-2); }
 .jumeau table { width: 100%; border-collapse: collapse; margin-top: 8px; }
-.jumeau th, .jumeau td {
-  padding: 5px 6px; border-bottom: 1px solid var(--filet);
-  text-align: right; font-variant-numeric: tabular-nums;
-}
-.jumeau th:first-child, .jumeau td:first-child { text-align: left; font-variant-numeric: normal; }
-.jumeau th { color: var(--encre-2); font-weight: 500; }
+.jumeau th, .jumeau td { padding: 6px; border-bottom: 1px solid var(--filet); text-align: right; font-variant-numeric: tabular-nums; }
+.jumeau th:first-child, .jumeau td:first-child { text-align: left; }
+.jumeau th { color: var(--encre-2); font-weight: 600; }
 
 .infobulle {
-  position: fixed; z-index: 60; pointer-events: none;
-  min-width: 150px; padding: 9px 11px;
-  background: var(--surface); color: var(--encre);
-  border: 1px solid var(--bord); border-radius: var(--r-m); box-shadow: var(--ombre-3);
-  font-size: .8rem;
+  position: fixed; z-index: 60; pointer-events: none; min-width: 160px; padding: 10px 12px;
+  background: var(--surface); color: var(--encre); border: 1px solid var(--bord);
+  border-radius: var(--r-m); box-shadow: var(--ombre-3); font-size: .86rem;
 }
-.infobulle__titre { font-weight: 600; margin-bottom: 4px; }
-.infobulle__ligne { display: flex; align-items: center; gap: 8px; justify-content: space-between; }
-.infobulle__valeur { font-weight: 600; font-variant-numeric: tabular-nums; }
+.infobulle__titre { font-weight: 650; margin-bottom: 4px; }
+.infobulle__ligne { display: flex; align-items: center; gap: 10px; justify-content: space-between; }
+.infobulle__valeur { font-weight: 650; font-variant-numeric: tabular-nums; }
 .infobulle__nom { color: var(--encre-2); display: inline-flex; align-items: center; gap: 6px; }
 
-/* --------------------------------------------------------------- Courses --- */
-
-.semaines { display: grid; gap: 14px; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); }
-.semaines--larges { grid-template-columns: repeat(auto-fit, minmax(460px, 1fr)); }
-.semaine__tete { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
-.semaine__titre { font-size: .92rem; font-weight: 600; }
-
-.achat {
-  display: grid; align-items: center; gap: 8px;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr) 92px 30px;
-  padding: 2px 0;
-}
-.achat input { width: 100%; min-width: 0; border-color: transparent; background: transparent; }
-.achat input:hover { border-color: var(--bord); background: var(--surface); }
-.achat input:focus { border-color: var(--serie-1); background: var(--surface); }
-.achat__montant input { text-align: right; font-variant-numeric: tabular-nums; }
-.achat__entete {
-  font-size: .7rem; font-weight: 500; letter-spacing: .06em; text-transform: uppercase;
-  color: var(--encre-3); padding-bottom: 4px; border-bottom: 1px solid var(--filet); margin-bottom: 4px;
-}
-.achat__entete span:nth-child(3) { text-align: right; }
-
-.puces { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 10px; align-items: center; }
-.puce {
-  appearance: none; cursor: pointer;
-  padding: 4px 10px; border: 1px solid var(--bord); border-radius: 999px;
-  background: var(--surface); color: var(--encre-2); font: inherit; font-size: .78rem;
-}
-.puce:hover { background: var(--serie-1); border-color: transparent; color: #fff; }
-.suggestions { width: 100%; }
-.suggestions > summary { cursor: pointer; font-size: .8rem; color: var(--encre-2); padding: 4px 2px; }
-.suggestions > summary:hover { color: var(--encre); }
-
-/* ---------------------------------------------------------------- Heures --- */
-
-.heures { width: 100%; border-collapse: collapse; table-layout: fixed; }
-.heures th {
-  padding: 5px 4px; font-size: .7rem; font-weight: 500; letter-spacing: .06em;
-  text-transform: uppercase; color: var(--encre-3); text-align: left;
-  border-bottom: 1px solid var(--filet);
-}
-.heures td { padding: 2px 3px; border-bottom: 1px solid var(--filet); }
-.heures tr:last-child td { border-bottom: 0; }
-.heures th:first-child, .heures td:first-child { width: 22%; }
-.heures th:last-child, .heures td:last-child { width: 15%; }
-.heures .jour { font-size: .82rem; color: var(--encre-2); white-space: nowrap; padding-left: 6px; }
-.heures .duree { font-size: .82rem; font-variant-numeric: tabular-nums; text-align: right; padding-right: 6px; white-space: nowrap; }
-.heures input {
-  width: 100%; min-width: 0; text-align: center; font-variant-numeric: tabular-nums;
-  border-color: transparent; background: transparent; padding: 5px 2px;
-}
-.heures input:hover { border-color: var(--bord); background: var(--surface); }
-.heures input:focus { border-color: var(--serie-1); background: var(--surface); }
-.heures .separateur { border-left: 1px solid var(--filet); }
-
-.bandeau { display: grid; gap: 12px; margin-bottom: 16px; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); }
-.tuile {
-  padding: 13px 14px; background: var(--surface);
-  border: 1px solid var(--bord); border-radius: var(--r-l); box-shadow: var(--ombre-1);
-}
-.tuile__etiquette { font-size: .78rem; color: var(--encre-2); }
-.tuile__valeur { margin-top: 3px; font-size: 1.4rem; font-weight: 600; letter-spacing: -.015em; }
-.tuile__note { margin-top: 2px; font-size: .78rem; color: var(--encre-3); }
+.bandeau { display: grid; gap: 12px; margin-bottom: 16px; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); }
+.tuile { padding: 14px 16px; background: var(--surface); border: 1px solid var(--bord); border-radius: var(--r-l); box-shadow: var(--ombre-1); }
+.tuile__etiquette { font-size: .86rem; color: var(--encre-2); }
+.tuile__valeur { margin-top: 3px; font-size: 1.5rem; font-weight: 700; letter-spacing: -.015em; }
+.tuile__note { margin-top: 2px; font-size: .84rem; color: var(--encre-3); }
 .tuile__note--bon { color: var(--bon-texte); }
 .tuile__note--mauvais { color: var(--critique); }
 
-/* ------------------------------------------------------- Retours visuels --- */
+.semaines { display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(360px, 1fr)); }
+.semaines--larges { grid-template-columns: repeat(auto-fit, minmax(470px, 1fr)); }
+.semaine__tete { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 12px; }
+.semaine__titre { font-size: 1rem; font-weight: 650; }
 
-.vide {
-  padding: 22px 16px; text-align: center; color: var(--encre-2); font-size: .88rem;
-  background: var(--surface-2); border: 1px dashed var(--bord); border-radius: var(--r-l);
-  margin: 8px 18px;
-}
+.achat { display: grid; align-items: center; gap: 8px; grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr) 112px 36px; padding: 4px 0; }
+.achat__entete { font-size: .74rem; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--encre-3); padding-bottom: 6px; border-bottom: 1px solid var(--filet); margin-bottom: 4px; }
+.achat__entete span:nth-child(3) { text-align: right; }
 
-.toasts {
-  position: fixed; left: 50%; bottom: 20px; transform: translateX(-50%);
-  z-index: 80; display: grid; gap: 8px; width: min(460px, calc(100vw - 32px));
-}
-.toast {
-  display: flex; align-items: center; gap: 12px;
-  padding: 11px 13px;
-  background: var(--surface); color: var(--encre);
-  border: 1px solid var(--bord); border-radius: var(--r-l); box-shadow: var(--ombre-3);
-  font-size: .86rem;
-}
+.puces { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 12px; align-items: center; }
+.puce { appearance: none; cursor: pointer; padding: 5px 11px; border: 1px solid var(--bord-champ); border-radius: 999px; background: var(--surface); color: var(--encre-2); font: inherit; font-size: .84rem; }
+.puce:hover { background: var(--accent); border-color: transparent; color: #fff; }
+.suggestions { width: 100%; }
+.suggestions > summary { cursor: pointer; font-size: .88rem; color: var(--encre-2); padding: 4px 2px; }
+
+.heures { width: 100%; border-collapse: collapse; table-layout: fixed; }
+.heures th { padding: 6px 4px; font-size: .74rem; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--encre-3); text-align: left; border-bottom: 1px solid var(--filet); }
+.heures td { padding: 3px; border-bottom: 1px solid var(--filet); }
+.heures tr:last-child td { border-bottom: 0; }
+.heures th:first-child, .heures td:first-child { width: 22%; }
+.heures th:last-child, .heures td:last-child { width: 15%; }
+.heures .jour { font-size: .92rem; color: var(--encre-2); white-space: nowrap; padding-left: 6px; }
+.heures .duree { font-size: .92rem; font-variant-numeric: tabular-nums; text-align: right; padding-right: 6px; white-space: nowrap; font-weight: 600; }
+.heures .champ { text-align: center; font-variant-numeric: tabular-nums; padding: 6px 2px; }
+.heures .separateur { border-left: 1px solid var(--filet); }
+
+/* ======================================================= RETOURS VISUELS === */
+
+.vide { padding: 22px 16px; margin: 10px 20px; text-align: center; color: var(--encre-2); font-size: .92rem; background: var(--surface-2); border: 1px dashed var(--bord-champ); border-radius: var(--r-l); }
+.toasts { position: fixed; left: 50%; bottom: 20px; transform: translateX(-50%); z-index: 80; display: grid; gap: 8px; width: min(480px, calc(100vw - 32px)); }
+.toast { display: flex; align-items: center; gap: 12px; padding: 12px 14px; background: var(--surface); color: var(--encre); border: 1px solid var(--bord); border-radius: var(--r-l); box-shadow: var(--ombre-3); font-size: .92rem; }
 .toast__texte { flex: 1 1 auto; }
 .toast--erreur { border-color: var(--critique); }
-
-.sauvegarde {
-  position: fixed; right: 14px; bottom: 14px; z-index: 70;
-  padding: 5px 11px; border-radius: 999px;
-  background: var(--surface); border: 1px solid var(--bord);
-  font-size: .76rem; color: var(--encre-2);
-  opacity: 0; transition: opacity .2s ease; pointer-events: none;
-}
+.sauvegarde { position: fixed; right: 14px; bottom: 14px; z-index: 70; padding: 5px 12px; border-radius: 999px; background: var(--surface); border: 1px solid var(--bord); font-size: .8rem; color: var(--encre-2); opacity: 0; transition: opacity .2s ease; pointer-events: none; }
 .sauvegarde.visible { opacity: 1; }
-
-.alerte {
-  margin: 0; padding: 10px 20px;
-  background: color-mix(in srgb, var(--critique) 12%, var(--surface));
-  border-bottom: 1px solid var(--critique);
-  font-size: .85rem;
-}
+.alerte { margin: 0; padding: 10px 20px; background: color-mix(in srgb, var(--critique) 12%, var(--surface)); border-bottom: 1px solid var(--critique); font-size: .9rem; }
 .alerte strong { color: var(--critique); }
 
-/* Page d'auto-vérification */
-.verif { max-width: 780px; margin: 24px auto; padding: 0 16px; }
+.verif { max-width: 800px; margin: 24px auto; padding: 0 16px; }
 .verif ul { list-style: none; padding: 0; margin: 12px 0 0; }
-.verif li { padding: 7px 10px; border-bottom: 1px solid var(--filet); font-size: .86rem; display: flex; gap: 10px; }
+.verif li { padding: 7px 10px; border-bottom: 1px solid var(--filet); font-size: .9rem; display: flex; gap: 10px; }
 .verif .ok { color: var(--bon-texte); }
-.verif .ko { color: var(--critique); font-weight: 600; }
-.verif__bilan { margin-top: 14px; font-weight: 600; }
+.verif .ko { color: var(--critique); font-weight: 650; }
+.verif__bilan { margin-top: 14px; font-weight: 650; }
 
-/* ---------------------------------------------------------- Petits écrans --- */
-
-@media (max-width: 620px) {
-  .bilan__cote {
-    margin-left: 0; width: 100%; text-align: left;
-    display: flex; gap: 14px; flex-wrap: wrap;
-  }
-}
+/* ======================================================== PETITS ÉCRANS === */
 
 @media (max-width: 860px) {
-  .cat > summary { grid-template-columns: 18px minmax(0, 1fr) 150px; }
-  .cat__part { display: none; }
+  .groupe > summary { grid-template-columns: 30px minmax(0, 1fr) auto; }
+  .groupe__part { display: none; }
 }
 
 @media (max-width: 720px) {
-  .tete { padding: 9px 14px; }
-  .nav { padding: 6px 14px; }
-  main { padding: 14px 12px 80px; }
+  .tete { padding: 8px 12px; gap: 10px; flex-wrap: nowrap; }
+  .tete__marque h1 { display: none; }
+  .mois { flex: 1 1 auto; min-width: 0; justify-content: space-between; }
+  .mois__choix { min-width: 0; font-size: .95rem; padding: 3px 4px; }
+  .tete__actions { margin-left: 0; }
+  .nav { padding: 6px 10px; gap: 4px; flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; }
+  .nav::-webkit-scrollbar { display: none; }
+  .nav__groupe { flex-wrap: nowrap; }
+  .nav__separateur { display: none; }
+  .nav__long { display: none; }
+  .nav__lien, .nav__groupe .nav__lien { padding: 6px 11px; font-size: .88rem; }
+  .bilan-mini__int { padding: 7px 12px; gap: 10px; }
+  .bilan-mini__calcul { display: none; }
+  .bilan-mini__etiquette { font-size: .72rem; }
+  .bilan-mini__valeur { font-size: 1.15rem; }
+  main { padding: 14px 10px 90px; }
+  .bilan { padding: 14px 16px; }
   .bilan__valeur { font-size: 2.3rem; }
+  .bilan__equation { margin-left: 0; width: 100%; }
   .semaines, .semaines--larges { grid-template-columns: 1fr; }
+  .bloc__tete, .bloc__aide, .ajout { padding-left: 14px; padding-right: 14px; }
+  .groupe > summary { padding: 10px 14px; gap: 4px 10px; }
+  .groupe__pied { padding-left: 14px; }
 
-  .entete-colonnes { display: none; }
-
-  /* La ligne se replie : libellé au-dessus, montants dessous. */
+  .colonnes { display: none; }
+  /* La ligne se replie : libellé au-dessus, montants dessous, étiquetés. */
   .ligne {
-    grid-template-columns: 30px minmax(0, 1fr) 30px;
-    grid-template-areas:
-      "actif libelle suppr"
-      ".     montants montants";
-    padding: 7px 12px 8px 10px;
-    border-bottom: 1px solid var(--filet);
+    grid-template-columns: 44px minmax(0, 1fr) 40px;
+    grid-template-areas: "actif libelle plus" "montants montants montants";
+    padding: 10px 14px 12px;
   }
-  .ligne__montants {
-    grid-area: montants; display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
-  }
-  .champ-montant { flex: 0 0 auto; display: flex; align-items: center; gap: 5px; }
-  .champ-montant input { width: 92px; border-color: var(--bord); background: var(--surface); }
-  .champ-montant__etiquette {
-    display: inline; font-size: .7rem; letter-spacing: .05em;
-    text-transform: uppercase; color: var(--encre-3);
-  }
-  .ligne__ecart { text-align: left; }
+  .ligne__actif { grid-area: actif; }
+  .ligne__libelle { grid-area: libelle; }
+  .ligne__plus { grid-area: plus; }
+  .ligne__montants { grid-area: montants; display: grid; grid-template-columns: 1fr 1fr auto; gap: 8px; align-items: end; margin-top: 4px; }
+  .montant__etiquette { display: block; font-size: .74rem; font-weight: 600; letter-spacing: .05em; text-transform: uppercase; color: var(--encre-3); margin-bottom: 3px; }
+  .ligne__ecart { align-self: center; padding-top: 16px; }
+  .ligne-detail { margin: 2px 14px 12px; }
+  .ligne-detail .champ, .ligne-detail .large .champ { min-width: 0; width: 100%; }
+  .ligne-detail label { flex: 1 1 140px; }
 
-  .achat {
-    grid-template-columns: minmax(0, 1fr) 88px 30px;
-    grid-template-areas: "poste montant suppr" "libelle libelle libelle";
-    padding: 6px 0; border-bottom: 1px solid var(--filet);
-  }
-  .achat__poste { grid-area: poste; }
-  .achat__libelle { grid-area: libelle; }
-  .achat__montant { grid-area: montant; }
-  .achat__suppr { grid-area: suppr; }
+  .achat { grid-template-columns: minmax(0, 1fr) 104px 36px; grid-template-areas: "poste montant suppr" "libelle libelle libelle"; padding: 8px 0; border-bottom: 1px solid var(--filet); }
+  .achat__poste { grid-area: poste; } .achat__libelle { grid-area: libelle; }
+  .achat__montant { grid-area: montant; } .achat__suppr { grid-area: suppr; }
   .achat__entete { display: none; }
-  .achat input { border-color: var(--bord); background: var(--surface); }
-
-  .heures { font-size: .8rem; }
 }
 
 @media print {
-  .tete__actions, .nav, .outils, .toasts, .sauvegarde, .ligne__suppr { display: none !important; }
-  .vue[hidden] { display: block !important; }
+  .tete__actions, .nav, .outils, .toasts, .sauvegarde, .ligne__plus, .ajout { display: none !important; }
   .bilan, .tete { position: static; }
   body { background: #fff; }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  * { transition: none !important; animation: none !important; }
+  *, .eclat, .ligne--neuve { transition: none !important; animation: none !important; }
 }
-
-/* Panneau « ⋯ » d'une ligne : catégorie, note, nature, lien, suppression */
-.ligne-detail {
-  display: flex; align-items: center; gap: 14px; flex-wrap: wrap;
-  margin: 2px 14px 10px 44px; padding: 11px 13px;
-  background: var(--surface);
-  border: 1px solid var(--bord); border-radius: var(--r-m);
-}
-.ligne-detail input, .ligne-detail select { background: var(--surface-2); }
-.ligne-detail .champ-inline { color: var(--encre-3); font-size: .76rem; }
-@media (max-width: 720px) { .ligne-detail { margin-left: 14px; } }
-
-/* Pastille de nature : la couleur renvoie à la barre du bilan. */
-.jeton-nature {
-  appearance: none; cursor: pointer; flex: none; padding: 0;
-  width: 13px; height: 13px; border-radius: 4px; border: 0;
-}
-.jeton-nature--fixes { background: var(--serie-1); }
-.jeton-nature--variables { background: var(--serie-2); }
-.jeton-nature:hover { box-shadow: 0 0 0 3px color-mix(in srgb, currentColor 18%, transparent); }
-
-.cat__prevu { display: block; }
 </style>
 </head>
 <body>
@@ -769,7 +681,7 @@ input::placeholder { color: var(--encre-3); }
 
   <div class="tete__actions">
     <details class="menu">
-      <summary class="bouton" title="Menu">⋯</summary>
+      <summary class="bouton" title="Menu">⋯ <span class="cache">Menu</span></summary>
       <div class="menu__contenu">
         <button type="button" data-action="nouveau-mois">Créer un nouveau mois…</button>
         <hr>
@@ -787,7 +699,7 @@ input::placeholder { color: var(--encre-3); }
 </header>
 
 <nav class="nav" aria-label="Sections">
-  <button type="button" class="nav__lien" data-vue="budget" aria-current="page">Budget du mois</button>
+  <button type="button" class="nav__lien" data-vue="budget" aria-current="page">Budget<span class="nav__long"> du mois</span></button>
   <span class="nav__separateur" aria-hidden="true"></span>
   <span class="nav__groupe">
     <button type="button" class="nav__lien" data-vue="graphiques">Graphiques</button>
@@ -795,18 +707,79 @@ input::placeholder { color: var(--encre-3); }
       Courses <span class="nav__jeton" id="jeton-courses"></span>
     </button>
     <button type="button" class="nav__lien" data-vue="heures">
-      Heures gardées <span class="nav__jeton" id="jeton-heures"></span>
+      Heures<span class="nav__long"> gardées</span> <span class="nav__jeton" id="jeton-heures"></span>
     </button>
   </span>
 </nav>
+
+<!-- Mini-bilan : apparaît quand le grand bilan sort de l'écran. Position fixe,
+     donc sans effet sur la mise en page (pas de page qui saute en défilant). -->
+<div class="bilan-mini" id="bilan-mini" aria-hidden="true"></div>
 
 <main id="contenu">
 
   <!-- ============================================ LA PAGE PRINCIPALE ==== -->
   <section class="vue" id="vue-budget">
-    <div class="bilan" id="bilan"></div>
-    <section class="bloc" id="bloc-revenus"></section>
-    <section class="bloc" id="bloc-depenses"></section>
+    <div class="bilan" id="bilan" aria-live="polite"></div>
+
+    <section class="bloc" id="bloc-revenus" aria-labelledby="titre-revenus">
+      <header class="bloc__tete" id="tete-revenus"></header>
+      <form class="ajout" id="ajout-revenu" hidden autocomplete="off">
+        <p class="ajout__titre">Nouveau revenu</p>
+        <label class="ajout__champ ajout__champ--large">Libellé
+          <input class="champ" name="libelle" placeholder="ex. Prime, Virement…" required>
+        </label>
+        <label class="ajout__champ">Type
+          <select class="champ" name="type">
+            <option value="salaire">Salaire</option>
+            <option value="aide">Aide</option>
+          </select>
+        </label>
+        <label class="ajout__champ">Prévu
+          <span class="champ-euro"><input class="champ champ--nombre" name="estime" inputmode="decimal" placeholder="0,00"></span>
+        </label>
+        <label class="ajout__champ">Reçu
+          <span class="champ-euro"><input class="champ champ--nombre" name="reel" inputmode="decimal" placeholder="0,00"></span>
+        </label>
+        <div class="ajout__actions">
+          <button type="button" class="bouton" data-fermer-ajout="revenu">Annuler</button>
+          <button type="submit" class="bouton bouton--primaire">Ajouter</button>
+        </div>
+      </form>
+      <div class="bloc__corps" id="corps-revenus"></div>
+    </section>
+
+    <section class="bloc" id="bloc-depenses" aria-labelledby="titre-depenses">
+      <header class="bloc__tete" id="tete-depenses"></header>
+      <form class="ajout" id="ajout-depense" hidden autocomplete="off">
+        <p class="ajout__titre">Nouvelle dépense</p>
+        <label class="ajout__champ ajout__champ--large">Libellé
+          <input class="champ" name="libelle" placeholder="ex. Netflix, Loyer…" required>
+        </label>
+        <label class="ajout__champ">Catégorie
+          <input class="champ" name="categorie" list="liste-categories" placeholder="ex. Abonnements">
+        </label>
+        <label class="ajout__champ">Nature
+          <select class="champ" name="nature">
+            <option value="variable">Variable</option>
+            <option value="fixe">Charge fixe</option>
+          </select>
+        </label>
+        <label class="ajout__champ">Prévu
+          <span class="champ-euro"><input class="champ champ--nombre" name="estime" inputmode="decimal" placeholder="0,00"></span>
+        </label>
+        <label class="ajout__champ">Payé
+          <span class="champ-euro"><input class="champ champ--nombre" name="reel" inputmode="decimal" placeholder="0,00"></span>
+        </label>
+        <div class="ajout__actions">
+          <button type="button" class="bouton" data-fermer-ajout="depense">Annuler</button>
+          <button type="submit" class="bouton bouton--primaire">Ajouter</button>
+        </div>
+      </form>
+      <div class="bloc__corps" id="corps-depenses"></div>
+    </section>
+
+    <datalist id="liste-categories"></datalist>
     <div class="modules" id="modules"></div>
   </section>
 
@@ -815,7 +788,7 @@ input::placeholder { color: var(--encre-3); }
     <article class="carte">
       <header class="carte__tete">
         <h2>Dépenses par catégorie</h2>
-        <p class="carte__sous-titre">Barre : dépensé · trait : prévu</p>
+        <p class="carte__sous-titre">Barre : payé · trait : prévu. Les lignes en pause ne comptent pas.</p>
       </header>
       <div id="graphique-categories" class="graphique"></div>
       <details class="jumeau"><summary>Voir les chiffres</summary>
@@ -839,7 +812,8 @@ input::placeholder { color: var(--encre-3); }
   <section class="vue" id="vue-courses" hidden>
     <div class="outils">
       <label class="champ-inline">Budget confié aux courses
-        <input type="text" inputmode="decimal" id="budget-courses">
+        <span class="champ-euro"><input type="text" inputmode="decimal" class="champ champ--nombre" id="budget-courses"
+               data-entite="mois" data-champ="budgetCourses" data-cle="mois-budgetCourses"></span>
       </label>
       <span class="pousse"></span>
       <button type="button" class="bouton" id="retirer-semaine">− Semaine</button>
@@ -853,10 +827,12 @@ input::placeholder { color: var(--encre-3); }
   <section class="vue" id="vue-heures" hidden>
     <div class="outils">
       <label class="champ-inline">Taux horaire
-        <input type="text" inputmode="decimal" id="taux-horaire">
+        <span class="champ-euro"><input type="text" inputmode="decimal" class="champ champ--nombre" id="taux-horaire"
+               data-entite="mois" data-champ="tauxHoraire" data-cle="mois-tauxHoraire"></span>
       </label>
-      <label class="champ-inline">Cotisations (%)
-        <input type="text" inputmode="decimal" id="taux-cotisation">
+      <label class="champ-inline">Cotisations
+        <span class="champ-pourcent"><input type="text" inputmode="decimal" class="champ champ--nombre" id="taux-cotisation"
+               data-entite="mois" data-champ="tauxCotisation" data-cle="mois-tauxCotisation"></span>
       </label>
     </div>
     <div id="resume-heures"></div>
@@ -973,9 +949,11 @@ function nombre(valeur) {
   if (valeur === null || valeur === undefined || valeur === '') return 0;
   if (typeof valeur === 'number') return eur(valeur);
   let texte = String(valeur).trim()
-    .replace(/[\s  ]/g, '')
-    .replace(/€/g, '')
-    .replace(',', '.');
+    .replace(/[\s\u00a0\u202f]/g, '')
+    .replace(/\u20ac/g, '');
+  // « 1.234,56 » : le point sépare les milliers, la virgule les décimales.
+  if (texte.includes(',') && texte.includes('.')) texte = texte.replace(/\./g, '');
+  texte = texte.replace(',', '.');
   if (texte === '' || texte === '-' || texte === '.' || texte === '-.') return 0;
   const lu = Number(texte);
   return Number.isFinite(lu) ? eur(lu) : 0;
@@ -1113,10 +1091,12 @@ function recapBudget(lignes) {
   for (const ligne of lignes) {
     const cle = ligne.type + '-' + ligne.nature;
     if (!groupes[cle]) continue;
+    // Une ligne en pause sort entièrement des totaux : ni son prévu, ni son réel
+    // ne comptent. Désactiver une dépense doit se voir immédiatement dans le reste.
     const actif = !!ligne.actif;
     const estimeSaisi = eur(ligne.estime);
     const estime = actif ? estimeSaisi : 0;
-    const reel = eur(ligne.reel);
+    const reel = actif ? eur(ligne.reel) : 0;
 
     cumule(groupes[cle], estime, reel);
 
@@ -1128,9 +1108,12 @@ function recapBudget(lignes) {
     if (ligne.type === 'depense') {
       const categorie = (ligne.categorie || '').trim() || 'Sans catégorie';
       if (!parCategorie.has(categorie)) {
-        parCategorie.set(categorie, { categorie, estime: 0, reel: 0 });
+        parCategorie.set(categorie, { categorie, estime: 0, reel: 0, nb: 0, enPause: 0 });
       }
-      cumule(parCategorie.get(categorie), estime, reel);
+      const cumulCategorie = parCategorie.get(categorie);
+      cumule(cumulCategorie, estime, reel);
+      cumulCategorie.nb += 1;
+      if (!actif) cumulCategorie.enPause += 1;
     }
 
     const lien = (ligne.lien || '').trim();
@@ -1373,138 +1356,6 @@ function donneesDeDepart() {
   return D;
 }
 
-/* ========================================================================== */
-/* 4. Modifications des données                                               */
-/* ========================================================================== */
-
-function moisActif() {
-  return D.mois.find(m => m.id === D.moisActif) || trieMois(D.mois)[0];
-}
-
-/** Toute modification passe par ici : on synchronise, on enregistre, on redessine. */
-function applique(message) {
-  synchroniseLiens(moisActif());
-  const enregistre = enregistreDonnees();
-  dessineTout();
-  if (message && enregistre) signaleSauvegarde(message);
-}
-
-function prochainRang(collection) {
-  return collection.reduce((maxi, e) => Math.max(maxi, Number(e.rang) || 0), 0) + 10;
-}
-
-function majMois(champ, valeur) {
-  const mois = moisActif();
-  if (champ === 'note') mois.note = String(valeur || '');
-  else if (champ === 'budgetCourses') {
-    // Le budget des courses appartient à la ligne de dépense : une seule source.
-    const ligne = ligneReliee(mois, 'courses');
-    if (ligne) ligne.estime = nombre(valeur); else mois.budgetCourses = nombre(valeur);
-  } else mois[champ] = nombre(valeur);
-  applique('Enregistré');
-}
-
-function creeLigne(champs) {
-  const mois = moisActif();
-  const ligne = {
-    id: D.prochainId++,
-    type: TYPES.includes(champs.type) ? champs.type : 'depense',
-    nature: NATURES.includes(champs.nature) ? champs.nature : 'variable',
-    categorie: String(champs.categorie || '').trim(),
-    libelle: String(champs.libelle || '').trim(),
-    estime: nombre(champs.estime),
-    reel: nombre(champs.reel),
-    actif: champs.actif === undefined ? true : !!champs.actif,
-    note: String(champs.note || ''),
-    lien: String(champs.lien || '').trim(),
-    rang: Number(champs.rang) || prochainRang(mois.lignes),
-  };
-  mois.lignes.push(ligne);
-  return ligne;
-}
-
-function majLigne(id, champ, valeur) {
-  const ligne = moisActif().lignes.find(l => l.id === id);
-  if (!ligne) return;
-  if (champ === 'estime' || champ === 'reel') ligne[champ] = nombre(valeur);
-  else if (champ === 'actif') ligne.actif = !!valeur;
-  else if (champ === 'type') ligne.type = TYPES.includes(valeur) ? valeur : 'depense';
-  else if (champ === 'nature') ligne.nature = NATURES.includes(valeur) ? valeur : 'variable';
-  else if (champ === 'note') ligne.note = String(valeur || '');
-  else ligne[champ] = String(valeur || '').trim();
-  applique('Enregistré');
-}
-
-function supprimeLigne(id) {
-  const mois = moisActif();
-  const index = mois.lignes.findIndex(l => l.id === id);
-  if (index < 0) return null;
-  return mois.lignes.splice(index, 1)[0];
-}
-
-function creeAchat(champs) {
-  const mois = moisActif();
-  const achat = {
-    id: D.prochainId++,
-    semaine: Math.max(1, Number(champs.semaine) || 1),
-    poste: String(champs.poste || '').trim(),
-    libelle: String(champs.libelle || '').trim(),
-    montant: nombre(champs.montant),
-    rang: Number(champs.rang) || prochainRang(mois.achats),
-  };
-  mois.achats.push(achat);
-  return achat;
-}
-
-function majAchat(id, champ, valeur) {
-  const achat = moisActif().achats.find(a => a.id === id);
-  if (!achat) return;
-  if (champ === 'montant') achat.montant = nombre(valeur);
-  else if (champ === 'semaine') achat.semaine = Math.max(1, Number(valeur) || 1);
-  else achat[champ] = String(valeur || '').trim();
-  applique('Enregistré');
-}
-
-function supprimeAchat(id) {
-  const mois = moisActif();
-  const index = mois.achats.findIndex(a => a.id === id);
-  if (index < 0) return null;
-  return mois.achats.splice(index, 1)[0];
-}
-
-function majCreneau(id, champ, valeur) {
-  const creneau = moisActif().creneaux.find(c => c.id === id);
-  if (!creneau) return;
-  const minutes = minutesDepuisHeure(valeur);
-  creneau[champ] = minutes === null ? '' : heureDepuisMinutes(minutes);
-  applique('Enregistré');
-}
-
-function majSemaine(numero, budget) {
-  const semaine = moisActif().semaines.find(s => s.numero === numero);
-  if (semaine) semaine.budget = nombre(budget);
-  applique('Enregistré');
-}
-
-function ajouteSemaine() {
-  const mois = moisActif();
-  const numero = mois.semaines.reduce((maxi, s) => Math.max(maxi, s.numero), 0) + 1;
-  mois.semaines.push({ numero, budget: BUDGET_SEMAINE_DEFAUT });
-  assureCreneaux(mois);
-  applique('Semaine ajoutée');
-}
-
-function retireSemaine(numero) {
-  const mois = moisActif();
-  if (mois.semaines.length <= 1) {
-    toast('Il faut garder au moins une semaine.', { erreur: true });
-    return;
-  }
-  mois.semaines = mois.semaines.filter(s => s.numero !== numero);
-  mois.achats = mois.achats.filter(a => a.semaine !== numero);
-  mois.creneaux = mois.creneaux.filter(c => c.semaine !== numero);
-  applique('Semaine supprimée');
-}
 
 /* -- Liaison entre le budget et les modules -------------------------------- *
 
@@ -1556,9 +1407,139 @@ function modulePilote(mois, lien) {
   return lien === 'courses' ? mois.achats.length > 0
     : recapHeures(mois.creneaux, mois.tauxHoraire, mois.tauxCotisation).minutes > 0;
 }
+/* ========================================================================== */
+/* 4. Modifications des données                                               */
+/*                                                                            */
+/* Ces fonctions modifient les données et rien d'autre : elles n'enregistrent */
+/* pas et ne redessinent pas. C'est la couche d'interaction (section 6) qui   */
+/* décide quand recalculer, quand enregistrer et quand reconstruire la page.  */
+/* ========================================================================== */
+
+function moisActif() {
+  return D.mois.find(m => m.id === D.moisActif) || trieMois(D.mois)[0];
+}
+
+function prochainRang(collection) {
+  return collection.reduce((maxi, e) => Math.max(maxi, Number(e.rang) || 0), 0) + 10;
+}
+
+/** Champs dont la modification change la forme de la page (et pas seulement un chiffre). */
+const CHAMPS_STRUCTURELS = new Set(['actif', 'nature', 'type', 'lien', 'categorie']);
+
+/** Écrit une valeur saisie dans une ligne de budget. */
+function ecrisLigne(ligne, champ, valeur) {
+  if (champ === 'estime' || champ === 'reel') ligne[champ] = nombre(valeur);
+  else if (champ === 'actif') ligne.actif = !!valeur;
+  else if (champ === 'type') ligne.type = TYPES.includes(valeur) ? valeur : 'depense';
+  else if (champ === 'nature') ligne.nature = NATURES.includes(valeur) ? valeur : 'variable';
+  else if (champ === 'lien') {
+    const lien = String(valeur || '').trim();
+    // Un module ne pilote qu'une seule ligne : on retire le lien de l'ancienne.
+    if (lien) for (const autre of moisActif().lignes) if (autre !== ligne && autre.lien === lien) autre.lien = '';
+    ligne.lien = lien;
+  }
+  else if (champ === 'categorie') ligne.categorie = String(valeur || '').trim() || 'Sans catégorie';
+  else if (champ === 'libelle' || champ === 'note') ligne[champ] = String(valeur || '');
+}
+
+function ecrisAchat(achat, champ, valeur) {
+  if (champ === 'montant') achat.montant = nombre(valeur);
+  else if (champ === 'semaine') achat.semaine = Math.max(1, Number(valeur) || 1);
+  else if (champ === 'poste' || champ === 'libelle') achat[champ] = String(valeur || '');
+}
+
+/** Normalise un horaire saisi (« 9h30 » -> « 09:30 ») ; vide s'il est illisible. */
+function ecrisCreneau(creneau, champ, valeur) {
+  const minutes = minutesDepuisHeure(valeur);
+  creneau[champ] = minutes === null ? '' : heureDepuisMinutes(minutes);
+  return creneau[champ];
+}
+
+function ecrisMois(mois, champ, valeur) {
+  if (champ === 'budgetCourses') {
+    // Le budget des courses appartient à la ligne de dépense reliée : une seule source.
+    const ligne = ligneReliee(mois, 'courses');
+    if (ligne) ligne.estime = nombre(valeur); else mois.budgetCourses = nombre(valeur);
+  } else if (champ === 'tauxHoraire' || champ === 'tauxCotisation') {
+    mois[champ] = nombre(valeur);
+  }
+}
+
+function ecrisSemaine(mois, numero, valeur) {
+  const semaine = mois.semaines.find(s => s.numero === numero);
+  if (semaine) semaine.budget = nombre(valeur);
+}
+
+function creeLigne(champs) {
+  const mois = moisActif();
+  const ligne = {
+    id: D.prochainId++,
+    type: TYPES.includes(champs.type) ? champs.type : 'depense',
+    nature: NATURES.includes(champs.nature) ? champs.nature : 'variable',
+    categorie: String(champs.categorie || '').trim(),
+    libelle: String(champs.libelle || '').trim(),
+    estime: nombre(champs.estime),
+    reel: nombre(champs.reel),
+    actif: champs.actif === undefined ? true : !!champs.actif,
+    note: String(champs.note || ''),
+    lien: String(champs.lien || '').trim(),
+    rang: Number(champs.rang) || prochainRang(mois.lignes),
+  };
+  mois.lignes.push(ligne);
+  return ligne;
+}
+
+function supprimeLigne(id) {
+  const mois = moisActif();
+  const index = mois.lignes.findIndex(l => l.id === id);
+  return index < 0 ? null : mois.lignes.splice(index, 1)[0];
+}
+
+function creeAchat(champs) {
+  const mois = moisActif();
+  const achat = {
+    id: D.prochainId++,
+    semaine: Math.max(1, Number(champs.semaine) || 1),
+    poste: String(champs.poste || '').trim(),
+    libelle: String(champs.libelle || '').trim(),
+    montant: nombre(champs.montant),
+    rang: Number(champs.rang) || prochainRang(mois.achats),
+  };
+  mois.achats.push(achat);
+  return achat;
+}
+
+function supprimeAchat(id) {
+  const mois = moisActif();
+  const index = mois.achats.findIndex(a => a.id === id);
+  return index < 0 ? null : mois.achats.splice(index, 1)[0];
+}
+
+function ajouteSemaine() {
+  const mois = moisActif();
+  const numero = mois.semaines.reduce((maxi, s) => Math.max(maxi, s.numero), 0) + 1;
+  mois.semaines.push({ numero, budget: BUDGET_SEMAINE_DEFAUT });
+  assureCreneaux(mois);
+  return numero;
+}
+
+function retireSemaine(numero) {
+  const mois = moisActif();
+  if (mois.semaines.length <= 1) return false;
+  mois.semaines = mois.semaines.filter(s => s.numero !== numero);
+  mois.achats = mois.achats.filter(a => a.semaine !== numero);
+  mois.creneaux = mois.creneaux.filter(c => c.semaine !== numero);
+  return true;
+}
 
 /* ========================================================================== */
 /* 5. Affichage                                                               */
+/*                                                                            */
+/* Deux niveaux, pour que la saisie ne soit jamais interrompue :              */
+/*   - la STRUCTURE (dessineTout) : champs, lignes, groupes. Reconstruite     */
+/*     seulement quand la forme de la page change (ajout, pause, catégorie…). */
+/*   - les ZONES CALCULÉES (rafraichitCalculs) : bilan, totaux, écarts,       */
+/*     jauges. Recalculées à chaque frappe, sans toucher aux champs.          */
 /* ========================================================================== */
 
 const $  = (sel, racine = document) => racine.querySelector(sel);
@@ -1570,15 +1551,22 @@ const etat = {
   vue: 'budget',
   mois: null,
   recap: null,
-  creneaux: [],
-  categoriesFermees: new Set(),
+  groupesOuverts: new Set(),
   detailsOuverts: new Set(),
+  nouvelleLigne: null,
+  suivi: new Map(),          // derniers chiffres affichés, pour signaler ce qui change
+  eclats: new Map(),         // chiffres en train de briller : clé -> instant du changement
+  suiviMois: null,
+  pilotageRendu: '',
+  renduEnAttente: false,
+  pointeurEnfonce: false,
+  valeurInitiale: null,
 };
 
 /** replaceChildren insère « null » comme texte : on filtre avant. */
 function remplace(hote, ...enfants) {
-  hote.replaceChildren(
-    ...enfants.flat().filter(e => e !== null && e !== undefined && e !== false));
+  if (!hote) return;
+  hote.replaceChildren(...enfants.flat(Infinity).filter(e => e !== null && e !== undefined && e !== false));
 }
 
 function el(balise, attributs = {}, ...enfants) {
@@ -1590,7 +1578,7 @@ function el(balise, attributs = {}, ...enfants) {
     else if (nom.startsWith('on')) noeud.addEventListener(nom.slice(2), valeur);
     else noeud.setAttribute(nom, valeur === true ? '' : valeur);
   }
-  for (const enfant of enfants.flat()) {
+  for (const enfant of enfants.flat(Infinity)) {
     if (enfant === null || enfant === undefined || enfant === false) continue;
     noeud.append(enfant.nodeType ? enfant : document.createTextNode(String(enfant)));
   }
@@ -1598,25 +1586,24 @@ function el(balise, attributs = {}, ...enfants) {
 }
 
 const formatEuros = new Intl.NumberFormat('fr-FR',
-  { style: 'currency', currency: 'EUR', maximumFractionDigits: 2 });
+  { style: 'currency', currency: 'EUR', minimumFractionDigits: 2, maximumFractionDigits: 2 });
 const formatNombre = new Intl.NumberFormat('fr-FR',
   { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
-const euros = (v) => formatEuros.format(Number(v) || 0);
-const signe = (v) => (Number(v) > 0 ? '+' : '') + euros(v);
+const euros = (v) => formatEuros.format(eur(v));
+const signe = (v) => (eur(v) > 0 ? '+' : (eur(v) < 0 ? '−' : '')) + formatEuros.format(Math.abs(eur(v)));
 const pourcent = (part) => Math.round(part * 100) + ' %';
 
 /** Montant tel qu'on le saisit : « 19,99 », et rien du tout si c'est zéro. */
 function montantSaisi(valeur) {
-  const n = Number(valeur) || 0;
+  const n = eur(valeur);
   return n === 0 ? '' : formatNombre.format(n).replace(/[  ]/g, ' ');
 }
 
 function libelleMois(code) {
   const [annee, mois] = String(code).split('-').map(Number);
   if (!annee || !mois) return code;
-  const nom = new Date(annee, mois - 1, 1)
-    .toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' });
+  const nom = new Date(annee, mois - 1, 1).toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' });
   return nom.charAt(0).toUpperCase() + nom.slice(1);
 }
 
@@ -1629,25 +1616,21 @@ function decaleMois(code, pas) {
 let minuteurSauvegarde = null;
 function signaleSauvegarde(texte = 'Enregistré') {
   const zone = $('#sauvegarde');
-  zone.textContent = texte;
+  zone.textContent = '✓ ' + texte;
   zone.classList.add('visible');
   clearTimeout(minuteurSauvegarde);
   minuteurSauvegarde = setTimeout(() => zone.classList.remove('visible'), 1400);
 }
 
 function toast(texte, options = {}) {
-  const boite = el('div', { class: 'toast' + (options.erreur ? ' toast--erreur' : '') },
+  const boite = el('div', { class: 'toast' + (options.erreur ? ' toast--erreur' : ''), role: 'status' },
     el('span', { class: 'toast__texte', texte }));
   if (options.action) {
-    boite.append(el('button', {
-      class: 'bouton', texte: options.action.libelle,
-      onclick: () => { boite.remove(); options.action.faire(); },
-    }));
+    boite.append(el('button', { type: 'button', class: 'bouton', texte: options.action.libelle,
+      onclick: () => { boite.remove(); options.action.faire(); } }));
   }
-  boite.append(el('button', {
-    class: 'bouton bouton--fantome', title: 'Fermer', texte: '✕',
-    onclick: () => boite.remove(),
-  }));
+  boite.append(el('button', { type: 'button', class: 'bouton bouton--discret bouton--icone',
+    title: 'Fermer', 'aria-label': 'Fermer', texte: '✕', onclick: () => boite.remove() }));
   $('#toasts').append(boite);
   setTimeout(() => boite.remove(), options.duree || 7000);
 }
@@ -1661,15 +1644,14 @@ function montreAlerteStockage(detail) {
     'Utilisez le menu ⋯ → « Sauvegarder tout » pour conserver un fichier.'));
 }
 
-/* -- Focus conservé pendant le redessin ---------------------------------- */
+/* -- Focus conservé quand la structure est reconstruite ------------------- */
 
 function memoriseFocus() {
   const actif = document.activeElement;
   if (!actif || !actif.dataset || !actif.dataset.cle) return null;
-  return {
-    cle: actif.dataset.cle,
-    debut: typeof actif.selectionStart === 'number' ? actif.selectionStart : null,
-  };
+  const texte = typeof actif.selectionStart === 'number';
+  return { cle: actif.dataset.cle,
+           debut: texte ? actif.selectionStart : null, fin: texte ? actif.selectionEnd : null };
 }
 
 function restaureFocus(memoire) {
@@ -1678,49 +1660,571 @@ function restaureFocus(memoire) {
   if (!champ) return;
   champ.focus({ preventScroll: true });
   if (memoire.debut !== null && typeof champ.setSelectionRange === 'function') {
-    const position = Math.min(memoire.debut, champ.value.length);
-    try { champ.setSelectionRange(position, position); } catch (e) { /* champ non textuel */ }
+    const n = champ.value.length;
+    try { champ.setSelectionRange(Math.min(memoire.debut, n), Math.min(memoire.fin, n)); } catch (e) { /* non textuel */ }
   }
 }
 
-/* -- Rendu général -------------------------------------------------------- */
+/* -- Groupes : l'ordre est STABLE (celui de saisie), jamais celui des montants,
+      pour qu'une catégorie ne saute pas ailleurs pendant qu'on la modifie. -- */
+
+function cleCategorie(ligne) { return (ligne.categorie || '').trim() || 'Sans catégorie'; }
+
+function groupesRevenus(mois) {
+  return [
+    { cle: 'r:salaire', type: 'salaire', nom: 'Salaires' },
+    { cle: 'r:aide', type: 'aide', nom: 'Aides' },
+  ].map(g => Object.assign(g, {
+    lignes: mois.lignes.filter(l => l.type === g.type).sort((a, b) => a.rang - b.rang),
+  }));
+}
+
+function groupesDepenses(mois) {
+  const parCle = new Map();
+  for (const l of mois.lignes.filter(x => x.type === 'depense').sort((a, b) => a.rang - b.rang)) {
+    const cle = cleCategorie(l);
+    if (!parCle.has(cle)) parCle.set(cle, { cle: 'd:' + cle, categorie: cle, nom: cle, lignes: [] });
+    parCle.get(cle).lignes.push(l);
+  }
+  return Array.from(parCle.values());
+}
+
+function signaturePilotage(mois) {
+  return modulePilote(mois, 'courses') + '|' + modulePilote(mois, 'heures');
+}
+
+/* ======================================================= RENDU STRUCTUREL === */
 
 function dessineTout() {
+  etat.renduEnAttente = false;
   const memoire = memoriseFocus();
   const mois = moisActif();
   synchroniseLiens(mois);
   etat.mois = mois;
   etat.recap = recap(mois);
-  etat.creneaux = mois.creneaux.map(c => {
-    const minutes = dureeCreneau(c);
-    return Object.assign({}, c, { minutes, duree: minutes ? formatDuree(minutes) : '' });
-  });
+  etat.pilotageRendu = signaturePilotage(mois);
 
   dessineSelecteurMois();
-  dessineJetonsNav();
-  dessineBilan();
-  dessineRevenus();
-  dessineDepenses();
-  dessineModules();
-  dessineGraphiqueCategories();
-  dessineGraphiqueEvolution();
-  dessineCourses();
-  dessineHeures();
+  dessineBlocRevenus();
+  dessineBlocDepenses();
+  dessinePageCourses();
+  dessinePageHeures();
+  rafraichitCalculs();
   restaureFocus(memoire);
+  if (etat.nouvelleLigne) setTimeout(() => { etat.nouvelleLigne = null; }, 50);
 }
 
 function dessineSelecteurMois() {
   const choix = $('#choix-mois');
-  choix.textContent = '';
-  for (const mois of trieMois(D.mois)) {
-    choix.append(el('option', { value: mois.id, selected: mois.id === D.moisActif },
-      libelleMois(mois.libelle)));
+  remplace(choix, trieMois(D.mois).map(m =>
+    el('option', { value: m.id, selected: m.id === D.moisActif }, libelleMois(m.libelle))));
+}
+
+function boutonPlier(bloc) {
+  return el('button', { type: 'button', class: 'bouton bouton--discret', 'data-plier': bloc });
+}
+
+/** Met à jour le libellé « Tout ouvrir / Tout fermer » selon l'état des groupes. */
+function majBoutonsPlier() {
+  for (const bouton of $$('[data-plier]')) {
+    const groupes = $$('#corps-' + bouton.dataset.plier + ' .groupe');
+    const tousOuverts = groupes.length > 0 && groupes.every(g => g.open);
+    bouton.textContent = tousOuverts ? '▴ Tout fermer' : '▾ Tout ouvrir';
+    bouton.dataset.sens = tousOuverts ? 'fermer' : 'ouvrir';
   }
 }
 
+function entetesColonnes(sorte) {
+  return el('div', { class: 'colonnes', 'aria-hidden': 'true' },
+    el('span', { texte: 'Actif' }), el('span', { texte: 'Libellé' }),
+    el('span', { texte: 'Prévu' }), el('span', { texte: sorte === 'depense' ? 'Payé' : 'Reçu' }),
+    el('span', { texte: 'Écart' }), el('span'));
+}
+
+function champMontant(ligne, champ, etiquette) {
+  return el('label', { class: 'montant' },
+    el('span', { class: 'montant__etiquette', texte: etiquette }),
+    el('span', { class: 'champ-euro' },
+      el('input', {
+        type: 'text', inputmode: 'decimal', class: 'champ champ--nombre',
+        value: montantSaisi(ligne[champ]), placeholder: '0,00',
+        'aria-label': etiquette + ' — ' + (ligne.libelle || 'ligne sans nom'),
+        'data-cle': 'ligne-' + ligne.id + '-' + champ,
+        'data-entite': 'ligne', 'data-id': ligne.id, 'data-champ': champ,
+      })));
+}
+
+function ligneBudget(l, sorte) {
+  const lien = l.lien || '';
+  const moduleLie = lien === 'courses' || lien === 'heures' ? lien : null;
+  const auto = moduleLie && modulePilote(etat.mois, moduleLie);
+  const nomModule = moduleLie === 'courses' ? 'Courses' : 'Heures gardées';
+  const libelleReel = sorte === 'depense' ? 'Payé' : 'Reçu';
+
+  const libelle = el('div', { class: 'ligne__libelle' });
+  if (sorte === 'depense') {
+    const fixe = l.nature === 'fixe';
+    libelle.append(el('button', {
+      type: 'button', class: 'jeton-nature jeton-nature--' + (fixe ? 'fixes' : 'variables'),
+      title: (fixe ? 'Charge fixe' : 'Dépense variable') + ' — cliquer pour passer en ' +
+             (fixe ? 'variable' : 'charge fixe'),
+      'aria-label': (fixe ? 'Charge fixe' : 'Dépense variable') + ', cliquer pour changer',
+      'data-bascule-nature': l.id, 'data-cle': 'ligne-' + l.id + '-nature-bouton',
+    }));
+  }
+  libelle.append(el('input', {
+    type: 'text', class: 'champ', value: l.libelle,
+    placeholder: sorte === 'depense' ? 'Nom de la dépense' : 'Source du revenu',
+    'aria-label': 'Libellé', 'data-cle': 'ligne-' + l.id + '-libelle',
+    'data-entite': 'ligne', 'data-id': l.id, 'data-champ': 'libelle',
+  }));
+  if (!l.actif) libelle.append(el('span', { class: 'badge badge--pause', texte: 'En pause' }));
+
+  const reel = auto
+    ? el('div', { class: 'montant' },
+        el('span', { class: 'montant__etiquette', texte: libelleReel }),
+        el('button', {
+          type: 'button', class: 'valeur-auto', 'data-aller': moduleLie,
+          title: 'Montant calculé automatiquement par le module ' + nomModule + ' — cliquer pour l’ouvrir',
+          'aria-label': libelleReel + ' calculé par le module ' + nomModule + ', ouvrir le module',
+        },
+          el('span', { 'data-auto': l.id }),
+          el('span', { class: 'valeur-auto__badge', texte: '↗ ' + (moduleLie === 'courses' ? 'Courses' : 'Heures') })))
+    : champMontant(l, 'reel', libelleReel);
+
+  const ligne = el('div', {
+    class: 'ligne' + (l.actif ? '' : ' ligne--pause') + (etat.nouvelleLigne === l.id ? ' ligne--neuve' : ''),
+    'data-ligne': l.id,
+  },
+    el('div', { class: 'ligne__actif' },
+      el('input', {
+        type: 'checkbox', class: 'bascule', checked: !!l.actif,
+        title: l.actif ? 'Compté dans les totaux — cliquer pour mettre en pause'
+                       : 'En pause, hors des totaux — cliquer pour réactiver',
+        'aria-label': 'Compter « ' + (l.libelle || 'cette ligne') + ' » dans les totaux',
+        'data-cle': 'ligne-' + l.id + '-actif',
+        'data-entite': 'ligne', 'data-id': l.id, 'data-champ': 'actif',
+      })),
+    libelle,
+    el('div', { class: 'ligne__montants' },
+      champMontant(l, 'estime', 'Prévu'),
+      reel,
+      el('span', { class: 'ligne__ecart', 'data-ecart': l.id })),
+    el('div', { class: 'ligne__plus' },
+      el('button', {
+        type: 'button', class: 'bouton bouton--discret bouton--icone', texte: '⋯',
+        title: 'Catégorie, note, nature, suppression…',
+        'aria-label': 'Plus d’options pour « ' + (l.libelle || 'cette ligne') + ' »',
+        'aria-expanded': String(etat.detailsOuverts.has(l.id)),
+        'data-detail': l.id, 'data-cle': 'ligne-' + l.id + '-detail',
+      })));
+
+  return etat.detailsOuverts.has(l.id) ? [ligne, detailLigne(l, sorte)] : [ligne];
+}
+
+function detailLigne(l, sorte) {
+  const selecteur = (champ, etiquette, options) => el('label', {}, etiquette,
+    el('select', {
+      class: 'champ', 'aria-label': etiquette, 'data-cle': 'ligne-' + l.id + '-' + champ,
+      'data-entite': 'ligne', 'data-id': l.id, 'data-champ': champ,
+    }, options.map(([v, t]) => el('option', { value: v, selected: String(l[champ] || '') === v }, t))));
+  const texte = (champ, etiquette, attributs = {}) => el('label', { class: 'large' }, etiquette,
+    el('input', Object.assign({
+      type: 'text', class: 'champ', value: l[champ] || '', 'aria-label': etiquette,
+      'data-cle': 'ligne-' + l.id + '-' + champ,
+      'data-entite': 'ligne', 'data-id': l.id, 'data-champ': champ,
+    }, attributs)));
+
+  return el('div', { class: 'ligne-detail' },
+    sorte === 'depense' ? texte('categorie', 'Catégorie', { list: 'liste-categories' }) : null,
+    sorte === 'depense'
+      ? selecteur('nature', 'Nature', [['fixe', 'Charge fixe'], ['variable', 'Dépense variable']])
+      : selecteur('type', 'Type', [['salaire', 'Salaire'], ['aide', 'Aide']]),
+    texte('note', 'Note', { placeholder: 'facultatif' }),
+    selecteur('lien', 'Calculé par', Object.entries(LIENS).map(([v, t]) => [v, v ? t : 'Personne (saisie à la main)'])),
+    el('span', { class: 'pousse' }),
+    el('button', { type: 'button', class: 'bouton danger', texte: 'Supprimer la ligne',
+                   'data-supprimer': 'ligne', 'data-id': l.id }));
+}
+
+function groupe(g, sorte) {
+  const libelleAjout = sorte === 'depense' ? '+ Ajouter une dépense dans « ' + g.nom + ' »'
+    : (g.type === 'aide' ? '+ Ajouter une aide' : '+ Ajouter un salaire');
+  return el('details', { class: 'groupe', open: etat.groupesOuverts.has(g.cle), 'data-groupe': g.cle },
+    el('summary', { 'data-zone-groupe': g.cle }),
+    el('div', { class: 'groupe__corps' },
+      entetesColonnes(sorte),
+      g.lignes.length ? g.lignes.map(l => ligneBudget(l, sorte))
+                      : el('div', { class: 'vide', texte: 'Aucune ligne pour le moment.' }),
+      el('div', { class: 'groupe__pied' },
+        el('button', { type: 'button', class: 'bouton bouton--discret', texte: libelleAjout,
+                       'data-ajouter': sorte === 'depense' ? 'depense' : g.type,
+                       'data-categorie': g.categorie || '' }))));
+}
+
+function dessineBlocRevenus() {
+  remplace($('#tete-revenus'),
+    el('div', { class: 'bloc__titre' },
+      el('h2', { id: 'titre-revenus', texte: 'Ce qui rentre' }),
+      el('span', { class: 'bloc__chiffre', 'data-zone': 'total-revenus', 'data-suivi': 'total-revenus' }),
+      el('span', { class: 'bloc__sous', 'data-zone': 'prevu-revenus' })),
+    el('span', { class: 'pousse' }),
+    boutonPlier('revenus'),
+    el('button', { type: 'button', class: 'bouton bouton--primaire', texte: '+ Revenu',
+                   'data-ouvrir-ajout': 'revenu' }));
+
+  remplace($('#corps-revenus'),
+    el('div', { class: 'bloc__aide' },
+      el('span', {}, 'Écart = reçu − prévu :'),
+      el('span', { class: 'texte-bon', texte: '+ reçu en plus' }),
+      el('span', { class: 'texte-mauvais', texte: '− reçu en moins' })),
+    groupesRevenus(etat.mois).map(g => groupe(g, 'revenu')));
+}
+
+function dessineBlocDepenses() {
+  const groupes = groupesDepenses(etat.mois);
+  remplace($('#liste-categories'), groupes.map(g => el('option', { value: g.categorie })));
+
+  remplace($('#tete-depenses'),
+    el('div', { class: 'bloc__titre' },
+      el('h2', { id: 'titre-depenses', texte: 'Ce qui sort' }),
+      el('span', { class: 'bloc__chiffre', 'data-zone': 'total-depenses', 'data-suivi': 'total-depenses' }),
+      el('span', { class: 'bloc__sous', 'data-zone': 'prevu-depenses' })),
+    el('span', { class: 'pousse' }),
+    boutonPlier('depenses'),
+    el('button', { type: 'button', class: 'bouton bouton--primaire', texte: '+ Dépense',
+                   'data-ouvrir-ajout': 'depense' }));
+
+  remplace($('#corps-depenses'),
+    el('div', { class: 'bloc__aide' },
+      el('span', {}, el('i', { class: 'pastille pastille--fixes' }), 'charge fixe'),
+      el('span', {}, el('i', { class: 'pastille pastille--variables' }), 'dépense variable'),
+      el('span', {}, '· Écart = prévu − payé :'),
+      el('span', { class: 'texte-bon', texte: '+ marge restante' }),
+      el('span', { class: 'texte-mauvais', texte: '− dépassement' })),
+    groupes.length ? groupes.map(g => groupe(g, 'depense'))
+                   : el('div', { class: 'vide', texte: 'Aucune dépense pour l’instant. Utilisez « + Dépense ».' }));
+}
+
+/* ======================================================= ZONES CALCULÉES === */
+
+function rafraichitCalculs() {
+  const mois = moisActif();
+  synchroniseLiens(mois);
+  etat.mois = mois;
+  etat.recap = recap(mois);
+  // Un module qui commence (ou cesse) de piloter sa ligne change la forme de celle-ci.
+  if (signaturePilotage(mois) !== etat.pilotageRendu) planifieRendu();
+
+  dessineBilan();
+  dessineBilanMini();
+  dessineJetonsNav();
+  majBlocRevenus();
+  majBlocDepenses();
+  majLignes();
+  dessineModules();
+  majPageCourses();
+  majPageHeures();
+  majBoutonsPlier();
+  if (etat.vue === 'graphiques') { dessineGraphiqueCategories(); dessineGraphiqueEvolution(); }
+  signaleChangements();
+}
+
+const DUREE_ECLAT = 1200;
+
+/** Fait briller un instant tout chiffre suivi dont la valeur vient de changer.
+    L'éclat survit à une reconstruction : un élément recréé pendant l'animation
+    la reprend là où elle en était, au lieu de s'éteindre d'un coup. */
+function signaleChangements() {
+  if (etat.suiviMois !== etat.mois.id) { etat.suivi.clear(); etat.eclats.clear(); etat.suiviMois = etat.mois.id; }
+  const premier = etat.suivi.size === 0;
+  const maintenant = performance.now();
+  for (const noeud of $$('[data-suivi]')) {
+    const cle = noeud.dataset.suivi;
+    const texte = noeud.textContent;
+    const avant = etat.suivi.get(cle);
+    if (!premier && avant !== undefined && avant !== texte) {
+      etat.eclats.set(cle, maintenant);
+      noeud.style.animationDelay = '0ms';
+      noeud.classList.remove('eclat');
+      void noeud.offsetWidth;          // relance l'animation
+      noeud.classList.add('eclat');
+    } else if (etat.eclats.has(cle) && !noeud.classList.contains('eclat')) {
+      const ecoule = maintenant - etat.eclats.get(cle);
+      if (ecoule < DUREE_ECLAT) {
+        noeud.style.animationDelay = -ecoule + 'ms';
+        noeud.classList.add('eclat');
+      } else {
+        etat.eclats.delete(cle);
+      }
+    }
+    etat.suivi.set(cle, texte);
+  }
+}
+
+function texteZone(selecteur, texte) {
+  const noeud = $(selecteur);
+  if (noeud && noeud.textContent !== texte) noeud.textContent = texte;
+}
+
 function dessineJetonsNav() {
-  $('#jeton-courses').textContent = euros(etat.recap.courses.depense);
-  $('#jeton-heures').textContent = etat.recap.heures.duree;
+  texteZone('#jeton-courses', euros(etat.recap.courses.depense));
+  texteZone('#jeton-heures', etat.recap.heures.duree);
+}
+
+/* --------------------------------------------------------------- Le bilan --- */
+
+function dessineBilan() {
+  const b = etat.recap.budget;
+  const revenus = b.revenus.reel;
+  const fixes = b.depensesFixes.reel;
+  const variables = b.depensesVariables.reel;
+  const depenses = b.depenses.reel;
+  const reste = b.restant.reel;
+  const depassement = reste < 0;
+
+  // La barre entière vaut les revenus reçus. Ce qui est peint est parti.
+  let partFixes = 0, partVariables = 0;
+  if (revenus > 0) {
+    partFixes = fixes / revenus * 100;
+    partVariables = variables / revenus * 100;
+    const total = partFixes + partVariables;
+    if (total > 100) { partFixes *= 100 / total; partVariables *= 100 / total; }
+  } else if (depenses > 0) {
+    partFixes = fixes / depenses * 100;
+    partVariables = variables / depenses * 100;
+  }
+  const part = (m) => revenus > 0 ? ' (' + pourcent(m / revenus) + ')' : '';
+
+  const piste = el('div', {
+    class: 'bilan__piste', role: 'img',
+    'aria-label': 'Sur ' + euros(revenus) + ' reçus : ' + euros(fixes) + ' de charges fixes, ' +
+                  euros(variables) + ' de dépenses variables, ' +
+                  (depassement ? 'dépassement de ' + euros(-reste) : 'reste ' + euros(reste)),
+  },
+    partFixes > 0 ? el('div', { class: 'bilan__part bilan__part--fixes' +
+      (partVariables <= 0 && !depassement ? ' bilan__part--fin' : ''), style: 'width:' + partFixes + '%' }) : null,
+    partVariables > 0 ? el('div', { class: 'bilan__part bilan__part--variables' +
+      (depassement ? '' : ' bilan__part--fin'), style: 'width:' + partVariables + '%' }) : null);
+
+  // Ce qui explique l'écart avec le reste prévu.
+  const ecartReste = eur(reste - b.restant.estime);
+  const ecartRevenus = eur(b.revenus.reel - b.revenus.estime);
+  const ecartDepenses = eur(b.depenses.estime - b.depenses.reel);
+  const explication = [];
+  if (Math.abs(ecartRevenus) >= 0.01) {
+    explication.push('revenus ' + (ecartRevenus > 0 ? signe(ecartRevenus) + ' reçus en plus'
+                                                     : signe(ecartRevenus) + ' pas encore reçus'));
+  }
+  if (Math.abs(ecartDepenses) >= 0.01) {
+    explication.push('dépenses ' + (ecartDepenses > 0 ? signe(ecartDepenses) + ' pas encore payées'
+                                                        : signe(ecartDepenses) + ' de dépassement'));
+  }
+
+  remplace($('#bilan'),
+    el('div', { class: 'bilan__haut' },
+      el('div', {},
+        el('div', { class: 'bilan__etiquette', texte: depassement ? 'Découvert ce mois-ci' : 'Reste à vivre' }),
+        el('div', { class: 'bilan__valeur' + (depassement ? ' bilan__valeur--negatif' : ''),
+                    'data-suivi': 'reste', texte: euros(reste) })),
+      el('div', { class: 'bilan__equation', 'aria-label': 'Calcul du reste' },
+        el('span', {}, 'Reçu ', el('b', { 'data-suivi': 'recu', texte: euros(revenus) })),
+        el('span', { class: 'bilan__operateur', texte: '−' }),
+        el('span', {}, 'Payé ', el('b', { 'data-suivi': 'paye', texte: euros(depenses) })),
+        el('span', { class: 'bilan__operateur', texte: '=' }),
+        el('span', {}, el('b', { texte: euros(reste) })))),
+    piste,
+    el('div', { class: 'bilan__legende' },
+      el('span', { class: 'bilan__cle' }, el('i', { class: 'pastille pastille--fixes' }),
+        'Charges fixes', el('b', { 'data-suivi': 'fixes', texte: euros(fixes) }), el('small', { texte: part(fixes) })),
+      el('span', { class: 'bilan__cle' }, el('i', { class: 'pastille pastille--variables' }),
+        'Dépenses variables', el('b', { 'data-suivi': 'variables', texte: euros(variables) }),
+        el('small', { texte: part(variables) })),
+      el('span', { class: 'bilan__cle' }, el('i', { class: 'pastille pastille--reste' }),
+        depassement ? 'Dépassement' : 'Reste', el('b', { texte: euros(Math.abs(reste)) }),
+        el('small', { texte: depassement ? '' : part(reste) }))),
+    depassement ? el('div', { class: 'bilan__alerte', role: 'alert' },
+      '✕ Vos dépenses dépassent vos revenus de ' + euros(-reste) + ' ce mois-ci.') : null,
+    el('div', { class: 'bilan__prevu' },
+      'Reste prévu en début de mois : ', el('b', { 'data-suivi': 'reste-prevu', texte: euros(b.restant.estime) }),
+      Math.abs(ecartReste) < 0.01 ? ' — conforme au prévu.'
+        : [' — écart ', el('b', { class: ecartReste > 0 ? 'texte-bon' : 'texte-mauvais', texte: signe(ecartReste) }),
+           explication.length ? ' (' + explication.join(' ; ') + ').' : '.']));
+}
+
+/** Version condensée du bilan, affichée quand le grand bilan n'est pas à l'écran. */
+function dessineBilanMini() {
+  const b = etat.recap.budget;
+  const revenus = b.revenus.reel, reste = b.restant.reel;
+  let fixes = 0, variables = 0;
+  if (revenus > 0) {
+    fixes = b.depensesFixes.reel / revenus * 100;
+    variables = b.depensesVariables.reel / revenus * 100;
+    const total = fixes + variables;
+    if (total > 100) { fixes *= 100 / total; variables *= 100 / total; }
+  }
+  remplace($('#bilan-mini'), el('div', { class: 'bilan-mini__int' },
+    el('span', { class: 'bilan-mini__etiquette', texte: reste < 0 ? 'Découvert' : 'Reste à vivre' }),
+    el('span', { class: 'bilan-mini__valeur' + (reste < 0 ? ' bilan-mini__valeur--negatif' : ''),
+                 'data-suivi': 'mini-reste', texte: euros(reste) }),
+    el('div', { class: 'bilan__piste' },
+      fixes > 0 ? el('div', { class: 'bilan__part bilan__part--fixes', style: 'width:' + fixes + '%' }) : null,
+      variables > 0 ? el('div', { class: 'bilan__part bilan__part--variables bilan__part--fin', style: 'width:' + variables + '%' }) : null),
+    el('span', { class: 'bilan-mini__calcul', texte: 'Reçu ' + euros(revenus) + ' − Payé ' + euros(b.depenses.reel) })));
+}
+
+/** Le mini-bilan se montre quand le grand n'est pas visible (et jamais sur les graphiques). */
+function majVisibiliteMini() {
+  const mini = $('#bilan-mini'), grand = $('#bilan');
+  if (!mini || !grand) return;
+  const pose = etat.vue === 'courses' || etat.vue === 'heures';
+  mini.classList.toggle('pose', pose);
+  let visible = pose;
+  if (etat.vue === 'budget') {
+    const haut = $('.tete').offsetHeight + $('.nav').offsetHeight;
+    visible = grand.getBoundingClientRect().bottom < haut;
+  }
+  mini.classList.toggle('visible', visible);
+}
+
+/* ------------------------------------------------- Totaux des blocs --- */
+
+function totauxGroupeRevenus(g) {
+  const b = etat.recap.budget;
+  const cumul = g.type === 'aide' ? b.aides : b.salaires;
+  return { reel: cumul.reel, estime: cumul.estime, nb: g.lignes.length,
+           enPause: g.lignes.filter(l => !l.actif).length };
+}
+
+function totauxGroupeDepenses(g) {
+  const cumul = etat.recap.budget.parCategorie.find(c => c.categorie === g.categorie);
+  return cumul || { reel: 0, estime: 0, nb: g.lignes.length, enPause: 0 };
+}
+
+function contenuResume(g, sorte, t) {
+  const revenus = etat.recap.budget.revenus.reel;
+  let compte = t.nb + (t.nb > 1 ? ' lignes' : ' ligne');
+  if (t.enPause) compte += ' · ' + t.enPause + ' en pause';
+  if (sorte === 'depense' && g.lignes.some(l => l.lien === 'garde')) {
+    compte += ' · net après CAF ' + euros(etat.recap.budget.gardeNette.reel);
+  }
+  const part = sorte === 'depense' && revenus > 0 ? Math.min(1, Math.max(0, t.reel / revenus)) : null;
+  return [
+    el('span', { class: 'groupe__chevron', 'aria-hidden': 'true', texte: '▶' }),
+    el('span', {}, el('span', { class: 'groupe__nom', texte: g.nom }),
+                   el('span', { class: 'groupe__compte', texte: compte })),
+    el('span', { class: 'groupe__part' },
+      part === null ? null : [
+        el('span', { class: 'groupe__piste' }, el('span', { class: 'groupe__jauge', style: 'width:' + (part * 100) + '%' })),
+        el('span', { class: 'groupe__part-texte', texte: pourcent(part) + ' de vos revenus' })]),
+    el('span', { class: 'groupe__montants' },
+      el('span', { class: 'groupe__reel', 'data-suivi': 'g:' + g.cle, texte: euros(t.reel) }),
+      el('span', { class: 'groupe__prevu', texte: 'sur ' + euros(t.estime) + ' prévus' })),
+  ];
+}
+
+function majBlocRevenus() {
+  const b = etat.recap.budget;
+  texteZone('[data-zone="total-revenus"]', euros(b.revenus.reel));
+  texteZone('[data-zone="prevu-revenus"]', 'reçus sur ' + euros(b.revenus.estime) + ' prévus');
+  for (const g of groupesRevenus(etat.mois)) {
+    remplace($('[data-zone-groupe="' + CSS.escape(g.cle) + '"]'), contenuResume(g, 'revenu', totauxGroupeRevenus(g)));
+  }
+}
+
+function majBlocDepenses() {
+  const b = etat.recap.budget;
+  texteZone('[data-zone="total-depenses"]', euros(b.depenses.reel));
+  texteZone('[data-zone="prevu-depenses"]', 'payés sur ' + euros(b.depenses.estime) + ' prévus');
+  for (const g of groupesDepenses(etat.mois)) {
+    remplace($('[data-zone-groupe="' + CSS.escape(g.cle) + '"]'), contenuResume(g, 'depense', totauxGroupeDepenses(g)));
+  }
+}
+
+/** Écart de chaque ligne et montants calculés par les modules. */
+function majLignes() {
+  for (const l of etat.mois.lignes) {
+    const zone = $('[data-ecart="' + l.id + '"]');
+    if (zone) remplace(zone, contenuEcart(l));
+    const auto = $('[data-auto="' + l.id + '"]');
+    if (auto) texteZone('[data-auto="' + l.id + '"]', euros(l.reel));
+  }
+}
+
+function contenuEcart(l) {
+  if (!l.actif) return el('span', { title: 'En pause : cette ligne ne compte pas dans les totaux', texte: 'hors total' });
+  const estime = eur(l.estime), reel = eur(l.reel);
+  const ecart = l.type === 'depense' ? eur(estime - reel) : eur(reel - estime);
+  if (Math.abs(ecart) < 0.005) return el('span', { title: 'Conforme au prévu', texte: '—' });
+  const titre = l.type === 'depense'
+    ? (ecart > 0 ? formatEuros.format(ecart) + ' de moins que prévu (ou pas encore payé)'
+                 : formatEuros.format(-ecart) + ' de plus que prévu')
+    : (ecart > 0 ? formatEuros.format(ecart) + ' reçus en plus du prévu'
+                 : formatEuros.format(-ecart) + ' reçus en moins que prévu');
+  return el('span', { class: ecart > 0 ? 'texte-bon' : 'texte-mauvais', title: titre,
+                      'data-suivi': 'e:' + l.id, texte: signe(ecart) });
+}
+
+/* ---------------------------------------------------------- Les modules --- */
+
+function jauge(nom, valeur, budget) {
+  const part = budget > 0 ? valeur / budget : (valeur > 0 ? 2 : 0);
+  const pct = Math.min(100, Math.max(0, part * 100));
+  let mod = '', icone = '✓', message = 'Dans le budget';
+  if (part > 1) { mod = '--critique'; icone = '✕'; message = 'Budget dépassé'; }
+  else if (part >= 0.85) { mod = '--alerte'; icone = '⚠'; message = 'Budget presque atteint'; }
+  const reste = eur(budget - valeur);
+  return el('div', { class: 'jauge' },
+    el('div', { class: 'jauge__entete' },
+      el('span', { class: 'jauge__nom', texte: nom }),
+      el('span', { class: 'jauge__chiffres', texte: euros(valeur) + ' / ' + euros(budget) })),
+    el('div', {
+      class: 'jauge__piste', role: 'meter', 'aria-valuenow': Math.round(valeur),
+      'aria-valuemin': '0', 'aria-valuemax': Math.round(budget) || 0,
+      'aria-label': nom + ' : ' + euros(valeur) + ' sur ' + euros(budget),
+    }, el('div', { class: 'jauge__remplissage jauge__remplissage' + mod, style: 'width:' + pct + '%' })),
+    el('div', { class: 'jauge__etat jauge__etat' + mod,
+                texte: icone + ' ' + message + ' · ' + (reste >= 0 ? 'reste ' + euros(reste)
+                                                                   : 'dépassé de ' + euros(-reste)) }));
+}
+
+function tuile(etiquette, valeur, note, classeNote, suivi) {
+  return el('div', { class: 'tuile' },
+    el('div', { class: 'tuile__etiquette', texte: etiquette }),
+    el('div', { class: 'tuile__valeur', 'data-suivi': suivi || null, texte: valeur }),
+    note ? el('div', { class: 'tuile__note ' + (classeNote || ''), texte: note }) : null);
+}
+
+function dessineModules() {
+  const { courses, heures } = etat.recap;
+  const ligneCourses = ligneReliee(etat.mois, 'courses');
+  const ligneHeures = ligneReliee(etat.mois, 'heures');
+  const detailLien = (ligne, lien, nomDefaut, verbe) => !ligne
+    ? 'Aucune ligne reliée : choisissez « ' + LIENS[lien] + ' » dans le ⋯ d’une ligne.'
+    : (modulePilote(etat.mois, lien)
+      ? '↳ ' + verbe + ' « ' + (ligne.libelle || nomDefaut) + ' » dans le budget'
+      : '↳ ' + verbe + ' « ' + (ligne.libelle || nomDefaut) + ' » dès la première saisie ici');
+
+  remplace($('#modules'),
+    el('article', { class: 'module' },
+      el('header', { class: 'module__tete' },
+        el('span', { class: 'module__icone', 'aria-hidden': 'true', texte: '🛒' }),
+        el('div', {}, el('div', { class: 'module__titre', texte: 'Courses' }),
+                      el('div', { class: 'module__sous-titre', texte: courses.semaines.length + ' semaines suivies' }))),
+      jauge('Dépensé', courses.depense, courses.budgetTotal),
+      el('div', { class: 'module__detail', texte: detailLien(ligneCourses, 'courses', 'Courses', 'remplit la dépense') }),
+      el('button', { type: 'button', class: 'bouton', 'data-aller': 'courses', texte: 'Ouvrir les courses →' })),
+    el('article', { class: 'module' },
+      el('header', { class: 'module__tete' },
+        el('span', { class: 'module__icone', 'aria-hidden': 'true', texte: '⏱' }),
+        el('div', {}, el('div', { class: 'module__titre', texte: 'Heures gardées' }),
+                      el('div', { class: 'module__sous-titre',
+                                  texte: heures.duree + ' à ' + formatNombre.format(heures.tauxHoraire) + ' €/h' }))),
+      el('div', { class: 'module__valeur', 'data-suivi': 'net-heures', texte: euros(heures.net) }),
+      el('div', { class: 'module__detail',
+                  texte: 'Salaire net = brut ' + euros(heures.brut) + ' − cotisations ' + euros(heures.cotisation) }),
+      el('div', { class: 'module__detail', texte: detailLien(ligneHeures, 'heures', 'Caracole', 'remplit le revenu') }),
+      el('button', { type: 'button', class: 'bouton', 'data-aller': 'heures', texte: 'Ouvrir les heures →' })));
 }
 
 function montreVue(nom) {
@@ -1733,399 +2237,9 @@ function montreVue(nom) {
   for (const vue of $$('.vue')) vue.hidden = vue.id !== 'vue-' + nom;
   $('#contenu').classList.toggle('large', nom !== 'budget');
   if (nom === 'graphiques') { dessineGraphiqueCategories(); dessineGraphiqueEvolution(); }
+  majVisibiliteMini();
   if (location.hash.slice(1) !== nom) history.replaceState(null, '', '#' + nom);
   try { localStorage.setItem('comptes.vue', nom); } catch (e) { /* ignoré */ }
-}
-
-/* ======================================================= LE BILAN (héros) ===
-   La barre entière vaut les revenus du mois. Ce qui est peint est parti,
-   ce qui reste vide est ce dont on dispose encore : c'est là que se lit
-   l'incidence des dépenses sur les revenus.
-   ========================================================================== */
-
-function dessineBilan() {
-  const b = etat.recap.budget;
-  const revenus = b.revenus.reel;
-  const fixes = b.depensesFixes.reel;
-  const variables = b.depensesVariables.reel;
-  const depenses = b.depenses.reel;
-  const reste = b.restant.reel;
-  const depassement = reste < 0;
-
-  // Largeurs en pourcentage des revenus ; en cas de dépassement la barre est pleine.
-  let partFixes = 0, partVariables = 0;
-  if (revenus > 0) {
-    partFixes = (fixes / revenus) * 100;
-    partVariables = (variables / revenus) * 100;
-    const totale = partFixes + partVariables;
-    if (totale > 100) { partFixes = partFixes * 100 / totale; partVariables = partVariables * 100 / totale; }
-  } else if (depenses > 0) {
-    partFixes = (fixes / depenses) * 100;
-    partVariables = (variables / depenses) * 100;
-  }
-
-  const piste = el('div', {
-    class: 'bilan__piste', role: 'img',
-    'aria-label': 'Sur ' + euros(revenus) + ' encaissés, ' + euros(fixes) +
-                  ' de charges fixes et ' + euros(variables) + ' de dépenses variables' +
-                  (depassement ? ', budget dépassé de ' + euros(-reste)
-                               : ', il reste ' + euros(reste)),
-  });
-  if (partFixes > 0) {
-    piste.append(el('div', {
-      class: 'bilan__part bilan__part--fixes' + (partVariables <= 0 && !depassement ? ' bilan__part--fin' : ''),
-      style: 'width:' + partFixes + '%',
-    }));
-  }
-  if (partVariables > 0) {
-    piste.append(el('div', {
-      class: 'bilan__part bilan__part--variables' + (depassement ? '' : ' bilan__part--fin'),
-      style: 'width:' + partVariables + '%',
-    }));
-  }
-
-  const cle = (classe, nom, montant) => el('span', { class: 'bilan__cle' },
-    el('i', { class: 'bilan__pastille bilan__pastille--' + classe, 'aria-hidden': 'true' }),
-    nom, ' ', el('b', { texte: euros(montant) }));
-
-  remplace($('#bilan'),
-    el('div', { class: 'bilan__haut' },
-      el('div', {},
-        el('span', { class: 'bilan__etiquette', texte: depassement ? 'Découvert' : 'Reste à vivre' }),
-        el('strong', { class: 'bilan__valeur' + (depassement ? ' bilan__valeur--negatif' : ''),
-                       texte: euros(reste) })),
-      el('div', { class: 'bilan__cote' },
-        el('div', {}, 'Encaissé ', el('b', { texte: euros(revenus) })),
-        el('div', {}, 'Dépensé ', el('b', { texte: euros(depenses) })),
-        el('div', {}, 'Prévu ', el('b', { texte: euros(b.restant.estime) })))),
-    piste,
-    el('div', { class: 'bilan__legende' },
-      cle('fixes', 'Charges fixes', fixes),
-      cle('variables', 'Dépenses variables', variables),
-      cle('reste', depassement ? 'Dépassement' : 'Reste', Math.abs(reste))),
-    depassement
-      ? el('div', { class: 'bilan__alerte' }, '✕ ',
-          'Vos dépenses dépassent vos revenus de ' + euros(-reste) + ' ce mois-ci.')
-      : null);
-}
-
-/* ============================================================ UNE LIGNE ===
-   Colonnes visibles : interrupteur · nature · libellé · prévu · réel · écart.
-   Le reste (catégorie, note, lien, suppression) est derrière le bouton « ⋯ ».
-   ========================================================================== */
-
-function champMontant(entite, id, champ, valeur, etiquette, options = {}) {
-  return el('label', { class: 'champ-montant champ-montant--' + options.place },
-    el('span', { class: 'champ-montant__etiquette', texte: options.court || etiquette }),
-    el('input', {
-      type: 'text', inputmode: 'decimal', value: montantSaisi(valeur), placeholder: '0,00',
-      readonly: options.verrouille || null,
-      title: options.titre || null,
-      'aria-label': etiquette,
-      'data-cle': entite + '-' + id + '-' + champ,
-      'data-entite': entite, 'data-id': id, 'data-champ': champ,
-    }));
-}
-
-function ligneBudget(l, options = {}) {
-  const estime = l.actif ? Number(l.estime) : 0;
-  // Dépense : dépenser moins que prévu est bon. Revenu : encaisser plus est bon.
-  const ecart = l.type === 'depense' ? estime - Number(l.reel) : Number(l.reel) - estime;
-  const lien = l.lien || '';
-  const moduleLie = lien === 'courses' ? 'courses' : (lien === 'heures' ? 'heures' : null);
-
-  const libelle = el('div', { class: 'ligne__libelle' });
-  if (options.nature) {
-    const estFixe = l.nature === 'fixe';
-    libelle.append(el('button', {
-      type: 'button',
-      class: 'jeton-nature jeton-nature--' + (estFixe ? 'fixes' : 'variables'),
-      title: (estFixe ? 'Charge fixe' : 'Dépense variable') + ' — cliquer pour basculer',
-      'aria-label': (estFixe ? 'Charge fixe' : 'Dépense variable') + ', cliquer pour basculer',
-      'data-bascule-nature': l.id,
-    }));
-  }
-  libelle.append(el('input', {
-    type: 'text', value: l.libelle, placeholder: options.placeholder || 'Libellé',
-    'aria-label': 'Libellé', 'data-cle': 'ligne-' + l.id + '-libelle',
-    'data-entite': 'ligne', 'data-id': l.id, 'data-champ': 'libelle',
-  }));
-  if (moduleLie) {
-    libelle.append(el('button', {
-      type: 'button', class: 'jeton-lien', 'data-aller': moduleLie,
-      title: 'Montant calculé dans le module ' +
-             (moduleLie === 'courses' ? 'Courses' : 'Heures gardées') + ' — cliquer pour l’ouvrir',
-    }, '↗ ', moduleLie === 'courses' ? 'Courses' : 'Heures'));
-  }
-
-  const ligne = el('div', {
-    class: 'ligne' + (l.actif ? '' : ' ligne--pause'), 'data-ligne': l.id,
-  },
-    el('div', { class: 'ligne__actif' },
-      el('input', {
-        type: 'checkbox', class: 'bascule', checked: !!l.actif,
-        title: l.actif ? 'Compté dans les totaux' : 'En pause : non compté',
-        'aria-label': 'Compter « ' + (l.libelle || 'cette ligne') + ' » dans les totaux',
-        'data-cle': 'ligne-' + l.id + '-actif',
-        'data-entite': 'ligne', 'data-id': l.id, 'data-champ': 'actif',
-      })),
-    libelle,
-    el('div', { class: 'ligne__montants' },
-      champMontant('ligne', l.id, 'estime', l.estime, 'Montant prévu',
-        { place: 'prevu', court: 'Prévu' }),
-      champMontant('ligne', l.id, 'reel', l.reel, 'Montant réel',
-        { place: 'reel', court: 'Réel', verrouille: !!moduleLie,
-          titre: moduleLie ? 'Calculé automatiquement par le module ' +
-                 (moduleLie === 'courses' ? 'Courses' : 'Heures gardées') : null }),
-      el('span', {
-        class: 'ligne__ecart' +
-          (ecart > 0.004 ? ' ligne__ecart--bon' : (ecart < -0.004 ? ' ligne__ecart--mauvais' : '')),
-        title: 'Écart entre le prévu et le réel',
-        texte: ecart === 0 ? '—' : signe(ecart),
-      })),
-    el('div', { class: 'ligne__suppr' },
-      el('button', {
-        type: 'button', class: 'bouton bouton--rond', texte: '⋯',
-        title: 'Catégorie, note, suppression…',
-        'aria-expanded': String(etat.detailsOuverts.has(l.id)),
-        'data-detail': l.id,
-      })));
-
-  if (!etat.detailsOuverts.has(l.id)) return [ligne];
-  return [ligne, detailLigne(l, options)];
-}
-
-function detailLigne(l, options) {
-  const champ = (nom, etiquette, valeur, attributs = {}) =>
-    el('label', { class: 'champ-inline' }, etiquette,
-      el('input', Object.assign({
-        type: 'text', value: valeur || '', 'aria-label': etiquette,
-        'data-cle': 'ligne-' + l.id + '-' + nom,
-        'data-entite': 'ligne', 'data-id': l.id, 'data-champ': nom,
-      }, attributs)));
-
-  return el('div', { class: 'ligne-detail' },
-    options.categorie === false ? null
-      : champ('categorie', 'Catégorie', l.categorie,
-              { list: 'liste-categories', style: 'width:170px;text-align:left' }),
-    champ('note', 'Note', l.note, { style: 'width:220px;text-align:left' }),
-    el('label', { class: 'champ-inline' }, 'Nature',
-      el('select', {
-        'data-cle': 'ligne-' + l.id + '-nature', 'aria-label': 'Nature',
-        'data-entite': 'ligne', 'data-id': l.id, 'data-champ': 'nature',
-      }, [['fixe', 'Fixe'], ['variable', 'Variable']].map(([v, t]) =>
-        el('option', { value: v, selected: l.nature === v }, t)))),
-    options.type ? el('label', { class: 'champ-inline' }, 'Type',
-      el('select', {
-        'data-cle': 'ligne-' + l.id + '-type', 'aria-label': 'Type',
-        'data-entite': 'ligne', 'data-id': l.id, 'data-champ': 'type',
-      }, [['salaire', 'Salaire'], ['aide', 'Aide']].map(([v, t]) =>
-        el('option', { value: v, selected: l.type === v }, t)))) : null,
-    el('label', { class: 'champ-inline' }, 'Relié à',
-      el('select', {
-        'data-cle': 'ligne-' + l.id + '-lien', 'aria-label': 'Module relié',
-        'data-entite': 'ligne', 'data-id': l.id, 'data-champ': 'lien',
-      }, Object.entries(LIENS).map(([v, t]) =>
-        el('option', { value: v, selected: (l.lien || '') === v }, t)))),
-    el('span', { class: 'pousse' }),
-    el('button', {
-      type: 'button', class: 'bouton bouton--fantome danger', texte: '✕ Supprimer',
-      'data-supprimer': 'ligne', 'data-id': l.id,
-    }));
-}
-
-/* ========================================================== CE QUI RENTRE === */
-
-function dessineRevenus() {
-  const b = etat.recap.budget;
-  const lignes = etat.mois.lignes.filter(l => l.type !== 'depense');
-
-  const corps = el('div', { class: 'bloc__corps' });
-  const sections = [
-    ['salaire', 'Salaires', b.salaires],
-    ['aide', 'Aides', b.aides],
-  ];
-
-  for (const [type, nom, totaux] of sections) {
-    const membres = lignes.filter(l => l.type === type);
-    const sousBloc = el('section', { class: 'sous-bloc' },
-      el('div', { class: 'sous-bloc__tete' },
-        el('span', { class: 'sous-bloc__nom', texte: nom }),
-        el('span', { class: 'sous-bloc__total',
-                     texte: euros(totaux.reel) + ' encaissés · ' + euros(totaux.estime) + ' prévus' })));
-    if (membres.length) {
-      for (const l of membres) sousBloc.append(...ligneBudget(l, { type: true, categorie: false,
-                                                                  placeholder: 'Source du revenu' }));
-    } else {
-      sousBloc.append(el('div', { class: 'vide', texte: 'Aucune ligne.' }));
-    }
-    sousBloc.append(el('div', { class: 'cat__pied' },
-      el('button', { type: 'button', class: 'bouton bouton--fantome',
-                     texte: '+ Ajouter', 'data-ajouter': type })));
-    corps.append(sousBloc);
-  }
-
-  remplace($('#bloc-revenus'),
-    el('header', { class: 'bloc__tete' },
-      el('div', { class: 'bloc__titre' },
-        el('h2', { texte: 'Ce qui rentre' }),
-        el('span', { class: 'bloc__total', texte: euros(b.revenus.reel) }),
-        el('span', { class: 'bloc__prevu', texte: 'prévu ' + euros(b.revenus.estime) })),
-      el('span', { class: 'pousse' })),
-    el('div', { class: 'entete-colonnes' },
-      el('span', {}), el('span', { texte: 'Libellé' }),
-      el('span', { texte: 'Prévu' }), el('span', { texte: 'Réel' }),
-      el('span', { texte: 'Écart' }), el('span', {})),
-    corps);
-}
-
-/* =========================================================== CE QUI SORT === */
-
-function dessineDepenses() {
-  const b = etat.recap.budget;
-  const revenus = b.revenus.reel;
-  const parCategorie = new Map();
-  for (const l of etat.mois.lignes) {
-    if (l.type !== 'depense') continue;
-    const cle = (l.categorie || '').trim() || 'Sans catégorie';
-    if (!parCategorie.has(cle)) parCategorie.set(cle, []);
-    parCategorie.get(cle).push(l);
-  }
-  // Les catégories les plus lourdes d'abord : c'est ce qui pèse qu'on veut voir.
-  const ordre = b.parCategorie.map(c => c.categorie)
-    .filter(c => parCategorie.has(c))
-    .concat(Array.from(parCategorie.keys()).filter(c => !b.parCategorie.some(x => x.categorie === c)));
-
-  const corps = el('div', { class: 'bloc__corps' });
-  corps.append(el('datalist', { id: 'liste-categories' },
-    Array.from(parCategorie.keys()).sort((a, x) => a.localeCompare(x, 'fr'))
-      .map(c => el('option', { value: c }))));
-
-  if (!ordre.length) {
-    corps.append(el('div', { class: 'vide',
-      texte: 'Aucune dépense pour l’instant. Utilisez « + Dépense ».' }));
-  }
-
-  for (const nom of ordre) {
-    const membres = parCategorie.get(nom);
-    const totalReel = eur(membres.reduce((s, l) => s + Number(l.reel), 0));
-    const totalPrevu = eur(membres.reduce((s, l) => s + (l.actif ? Number(l.estime) : 0), 0));
-    const part = revenus > 0 ? Math.min(1, totalReel / revenus) : 0;
-    const ouverte = !etat.categoriesFermees.has(nom);
-
-    const details = el('details', { class: 'cat', open: ouverte, 'data-categorie': nom });
-    details.append(el('summary', {},
-      el('span', { class: 'cat__fleche', 'aria-hidden': 'true', texte: '▶' }),
-      el('span', {},
-        el('span', { class: 'cat__nom', texte: nom }),
-        el('span', { class: 'cat__compte',
-                     texte: membres.length + (membres.length > 1 ? ' lignes' : ' ligne') })),
-      el('span', { class: 'cat__part' },
-        el('span', { class: 'cat__part-piste' },
-          el('span', { class: 'cat__part-jauge', style: 'width:' + (part * 100) + '%' })),
-        el('span', { class: 'cat__part-texte',
-                     texte: revenus > 0 ? pourcent(part) + ' de vos revenus' : '—' })),
-      el('span', { class: 'cat__montants' },
-        el('span', { class: 'cat__reel', texte: euros(totalReel) }),
-        el('span', { class: 'cat__prevu', texte: 'sur ' + euros(totalPrevu) + ' prévus' }))));
-
-    const contenu = el('div', { class: 'cat__corps' });
-    for (const l of membres) contenu.append(...ligneBudget(l, { nature: true }));
-    contenu.append(el('div', { class: 'cat__pied' },
-      el('button', { type: 'button', class: 'bouton bouton--fantome',
-                     texte: '+ Ajouter dans « ' + nom + ' »',
-                     'data-ajouter': 'depense', 'data-categorie': nom })));
-    details.append(contenu);
-    corps.append(details);
-  }
-
-  const toutesOuvertes = ordre.every(n => !etat.categoriesFermees.has(n));
-  remplace($('#bloc-depenses'),
-    el('header', { class: 'bloc__tete' },
-      el('div', { class: 'bloc__titre' },
-        el('h2', { texte: 'Ce qui sort' }),
-        el('span', { class: 'bloc__total', texte: euros(b.depenses.reel) }),
-        el('span', { class: 'bloc__prevu', texte: 'prévu ' + euros(b.depenses.estime) })),
-      el('span', { class: 'pousse' }),
-      el('button', { type: 'button', class: 'bouton bouton--fantome',
-                     texte: toutesOuvertes ? 'Tout replier' : 'Tout déplier',
-                     'data-plier': toutesOuvertes ? 'fermer' : 'ouvrir' }),
-      el('button', { type: 'button', class: 'bouton bouton--primaire',
-                     texte: '+ Dépense', 'data-ajouter': 'depense' })),
-    el('div', { class: 'entete-colonnes' },
-      el('span', {}), el('span', { texte: 'Libellé' }),
-      el('span', { texte: 'Prévu' }), el('span', { texte: 'Réel' }),
-      el('span', { texte: 'Écart' }), el('span', {})),
-    corps);
-}
-
-/* ============================================================== MODULES === */
-
-function dessineModules() {
-  const { courses, heures } = etat.recap;
-  const ligneCourses = ligneReliee(etat.mois, 'courses');
-  const ligneHeures = ligneReliee(etat.mois, 'heures');
-
-  remplace($('#modules'),
-    el('article', { class: 'module' },
-      el('header', { class: 'module__tete' },
-        el('span', { class: 'module__icone', 'aria-hidden': 'true', texte: '🛒' }),
-        el('div', {},
-          el('div', { class: 'module__titre', texte: 'Courses' }),
-          el('div', { class: 'module__sous-titre',
-                      texte: courses.semaines.length + ' semaines suivies' }))),
-      jauge('Dépensé', courses.depense, courses.budgetTotal),
-      el('div', { class: 'module__detail' },
-        !ligneCourses
-          ? 'Aucune ligne de dépense reliée. Choisissez « Courses » dans le ⋯ d’une dépense.'
-          : modulePilote(etat.mois, 'courses')
-            ? '↳ alimente la ligne « ' + (ligneCourses.libelle || 'Courses') + ' » de vos dépenses'
-            : '↳ alimentera « ' + (ligneCourses.libelle || 'Courses') +
-              ' » dès le premier achat saisi ici'),
-      el('button', { type: 'button', class: 'bouton', 'data-aller': 'courses',
-                     texte: 'Ouvrir le suivi des courses →' })),
-
-    el('article', { class: 'module' },
-      el('header', { class: 'module__tete' },
-        el('span', { class: 'module__icone', 'aria-hidden': 'true', texte: '⏱' }),
-        el('div', {},
-          el('div', { class: 'module__titre', texte: 'Heures gardées' }),
-          el('div', { class: 'module__sous-titre',
-                      texte: heures.duree + ' à ' + formatNombre.format(heures.tauxHoraire) + ' €/h' }))),
-      el('div', { class: 'module__valeur', texte: euros(heures.net) }),
-      el('div', { class: 'module__detail',
-                  texte: 'Salaire net · brut ' + euros(heures.brut) +
-                         ' − cotisations ' + euros(heures.cotisation) }),
-      el('div', { class: 'module__detail' },
-        !ligneHeures
-          ? 'Aucun revenu relié. Choisissez « Heures gardées » dans le ⋯ d’un revenu.'
-          : modulePilote(etat.mois, 'heures')
-            ? '↳ alimente le revenu « ' + (ligneHeures.libelle || 'Caracole') + ' »'
-            : '↳ alimentera « ' + (ligneHeures.libelle || 'Caracole') +
-              ' » dès le premier horaire saisi ici'),
-      el('button', { type: 'button', class: 'bouton', 'data-aller': 'heures',
-                     texte: 'Ouvrir le relevé d’heures →' })));
-}
-
-function jauge(nom, valeur, budget) {
-  const part = budget > 0 ? valeur / budget : 0;
-  const pct = Math.min(100, Math.max(0, part * 100));
-  let mod = '', icone = '✓', message = 'Dans le budget';
-  if (part > 1) { mod = '--critique'; icone = '✕'; message = 'Budget dépassé'; }
-  else if (part >= 0.85) { mod = '--alerte'; icone = '⚠'; message = 'Budget presque atteint'; }
-
-  return el('div', { class: 'jauge' },
-    el('div', { class: 'jauge__entete' },
-      el('span', { class: 'jauge__nom', texte: nom }),
-      el('span', { class: 'jauge__chiffres', texte: euros(valeur) + ' / ' + euros(budget) })),
-    el('div', {
-      class: 'jauge__piste', role: 'meter', 'aria-valuenow': Math.round(valeur),
-      'aria-valuemin': '0', 'aria-valuemax': Math.round(budget) || 0,
-      'aria-label': nom + ' : ' + euros(valeur) + ' sur ' + euros(budget),
-    }, el('div', { class: 'jauge__remplissage jauge__remplissage' + mod,
-                   style: 'width:' + pct + '%' })),
-    el('div', { class: 'jauge__etat jauge__etat' + mod,
-                texte: icone + ' ' + message + ' · reste ' + euros(budget - valeur) }));
 }
 
 /* ========================================================== GRAPHIQUES === */
@@ -2203,7 +2317,7 @@ function dessineGraphiqueCategories() {
   }
 
   hote.append(el('div', { class: 'legende' },
-    el('span', { class: 'legende__cle' }, el('span', { class: 'legende__pastille' }), 'Dépensé'),
+    el('span', { class: 'legende__cle' }, el('span', { class: 'legende__pastille' }), 'Payé'),
     el('span', { class: 'legende__cle' }, el('span', { class: 'legende__trait' }), 'Prévu')));
 
   const largeur = Math.max(300, hote.clientWidth || 700);
@@ -2271,7 +2385,7 @@ function dessineGraphiqueCategories() {
     const montre = (evenement) => {
       remplace($('#infobulle'),
         el('div', { class: 'infobulle__titre', texte: categorie.categorie }),
-        ligneInfobulle('Dépensé', euros(categorie.reel), 'var(--serie-1)'),
+        ligneInfobulle('Payé', euros(categorie.reel), 'var(--serie-1)'),
         ligneInfobulle('Prévu', euros(categorie.estime), null),
         ligneInfobulle(ecart >= 0 ? 'Reste' : 'Dépassement', euros(Math.abs(ecart)), null));
       placeInfobulle(evenement, groupe);
@@ -2418,336 +2532,453 @@ function dessineGraphiqueEvolution() {
         el('td', { texte: euros(m.recap.restant.reel) }))))));
 }
 
-/* ============================================================= COURSES === */
 
-function tuile(etiquette, valeur, note, classeNote) {
-  return el('div', { class: 'tuile' },
-    el('div', { class: 'tuile__etiquette', texte: etiquette }),
-    el('div', { class: 'tuile__valeur', texte: valeur }),
-    note ? el('div', { class: 'tuile__note ' + (classeNote || ''), texte: note }) : null);
+/* ============================================================== COURSES === */
+
+/** Écrit la valeur d'un champ, sauf si l'utilisateur est en train de le modifier. */
+function valeurChampSiLibre(selecteur, valeur) {
+  const champ = $(selecteur);
+  if (champ && champ !== document.activeElement) champ.value = valeur;
 }
 
 function champAchat(achat, champ, etiquette, classe, options = {}) {
-  return el('div', { class: classe },
-    el('input', {
-      type: 'text', value: options.montant ? montantSaisi(achat[champ]) : (achat[champ] || ''),
-      placeholder: options.placeholder || null, list: options.liste || null,
-      inputmode: options.montant ? 'decimal' : null,
-      'aria-label': etiquette,
-      'data-cle': 'achat-' + achat.id + '-' + champ,
-      'data-entite': 'achat', 'data-id': achat.id, 'data-champ': champ,
+  const entree = el('input', {
+    type: 'text', class: 'champ' + (options.montant ? ' champ--nombre' : ''),
+    value: options.montant ? montantSaisi(achat[champ]) : (achat[champ] || ''),
+    placeholder: options.placeholder || null, list: options.liste || null,
+    inputmode: options.montant ? 'decimal' : null, 'aria-label': etiquette,
+    'data-cle': 'achat-' + achat.id + '-' + champ,
+    'data-entite': 'achat', 'data-id': achat.id, 'data-champ': champ,
+  });
+  return el('div', { class: classe }, options.montant ? el('span', { class: 'champ-euro' }, entree) : entree);
+}
+
+function dessinePageCourses() {
+  const mois = etat.mois;
+  valeurChampSiLibre('#budget-courses', montantSaisi(budgetCourses(mois)));
+  const semaines = mois.semaines.slice().sort((a, b) => a.numero - b.numero);
+
+  remplace($('#semaines-courses'),
+    el('datalist', { id: 'postes-courses' }, POSTES_COURANTS.map(p => el('option', { value: p }))),
+    el('datalist', { id: 'achats-courses' }, ACHATS_COURANTS.map(a => el('option', { value: a }))),
+    semaines.map(semaine => {
+      const achats = mois.achats.filter(a => a.semaine === semaine.numero);
+      return el('article', { class: 'carte' },
+        el('header', { class: 'semaine__tete' },
+          el('span', { class: 'semaine__titre', texte: 'Semaine ' + semaine.numero }),
+          el('span', { class: 'pousse' }),
+          el('label', { class: 'champ-inline' }, 'Budget',
+            el('span', { class: 'champ-euro' },
+              el('input', {
+                type: 'text', inputmode: 'decimal', class: 'champ champ--nombre',
+                value: montantSaisi(semaine.budget), placeholder: '0,00',
+                'aria-label': 'Budget de la semaine ' + semaine.numero,
+                'data-cle': 'semaine-' + semaine.numero + '-budget',
+                'data-entite': 'semaine', 'data-id': semaine.numero, 'data-champ': 'budget',
+              })))),
+        el('div', { 'data-zone-semaine': semaine.numero }),
+        el('div', { style: 'height:12px' }),
+        achats.length
+          ? [el('div', { class: 'achat achat__entete', 'aria-hidden': 'true' },
+               el('span', { texte: 'Poste' }), el('span', { texte: 'Achat' }),
+               el('span', { texte: 'Montant' }), el('span')),
+             achats.map(achat => el('div', { class: 'achat' },
+               champAchat(achat, 'poste', 'Poste', 'achat__poste', { liste: 'postes-courses', placeholder: 'Marché…' }),
+               champAchat(achat, 'libelle', 'Achat', 'achat__libelle', { liste: 'achats-courses', placeholder: 'Article' }),
+               champAchat(achat, 'montant', 'Montant', 'achat__montant', { montant: true, placeholder: '0,00' }),
+               el('div', { class: 'achat__suppr' },
+                 el('button', { type: 'button', class: 'bouton bouton--discret bouton--icone danger', texte: '✕',
+                                title: 'Supprimer ' + (achat.libelle || 'cet achat'),
+                                'aria-label': 'Supprimer ' + (achat.libelle || 'cet achat'),
+                                'data-supprimer': 'achat', 'data-id': achat.id }))))]
+          : el('div', { class: 'vide', style: 'margin:8px 0', texte: 'Rien pour cette semaine.' }),
+        el('div', { class: 'puces' },
+          el('button', { type: 'button', class: 'bouton bouton--discret', texte: '+ Ajouter un achat',
+                         'data-ajouter-achat': semaine.numero }),
+          el('details', { class: 'suggestions' },
+            el('summary', { texte: 'Ajout rapide' }),
+            el('div', { class: 'puces' }, ACHATS_COURANTS.map(nom => el('button', {
+              type: 'button', class: 'puce', texte: nom,
+              'data-ajouter-achat': semaine.numero, 'data-libelle': nom, 'data-poste': 'Marché',
+            }))))));
     }));
 }
 
-function dessineCourses() {
+function majPageCourses() {
   const { courses } = etat.recap;
   const ligne = ligneReliee(etat.mois, 'courses');
-  $('#budget-courses').value = montantSaisi(courses.budgetTotal);
-
   remplace($('#resume-courses'),
     el('div', { class: 'bandeau' },
-      tuile('Dépensé', euros(courses.depense), 'sur ' + euros(courses.budgetTotal) + ' confiés'),
+      tuile('Dépensé', euros(courses.depense), 'sur ' + euros(courses.budgetTotal) + ' confiés', null, 'c-depense'),
       tuile('Restant', euros(courses.restant),
             courses.restant >= 0 ? 'Encore disponible' : 'Dépassement',
-            courses.restant >= 0 ? 'tuile__note--bon' : 'tuile__note--mauvais'),
+            courses.restant >= 0 ? 'tuile__note--bon' : 'tuile__note--mauvais', 'c-restant'),
       tuile('Semaines', String(courses.semaines.length),
-            'Budgets hebdomadaires ' + euros(courses.budgetSemaines))),
+            'Budgets hebdomadaires cumulés ' + euros(courses.budgetSemaines))),
     el('div', { class: 'carte' },
       jauge('Budget du mois', courses.depense, courses.budgetTotal),
       el('p', { class: 'carte__sous-titre', style: 'margin-top:10px' },
-        ligne
-          ? 'Ce budget est le montant prévu de la ligne « ' + (ligne.libelle || 'Courses') +
-            ' » de vos dépenses, et le total dépensé y revient automatiquement.'
-          : 'Aucune ligne de dépense n’est reliée : ce total ne remonte pas dans le budget.')));
-
-  const hote = $('#semaines-courses');
-  hote.textContent = '';
-  hote.append(el('datalist', { id: 'postes-courses' },
-    POSTES_COURANTS.map(p => el('option', { value: p }))));
-  hote.append(el('datalist', { id: 'achats-courses' },
-    ACHATS_COURANTS.map(a => el('option', { value: a }))));
-
+        !ligne ? 'Aucune ligne de dépense n’est reliée : ce total ne remonte pas dans le budget.'
+          : 'Ce budget est le montant prévu de la dépense « ' + (ligne.libelle || 'Courses') + ' ». ' +
+            (modulePilote(etat.mois, 'courses')
+              ? 'Le total dépensé ici devient son montant payé.'
+              : 'Dès le premier achat saisi ici, le total dépensé deviendra son montant payé.'))));
   for (const semaine of courses.semaines) {
-    const achats = etat.mois.achats.filter(a => a.semaine === semaine.numero);
-
-    const liste = el('div', {});
-    if (achats.length) {
-      liste.append(el('div', { class: 'achat achat__entete' },
-        el('span', { texte: 'Poste' }), el('span', { texte: 'Achat' }),
-        el('span', { texte: 'Montant' }), el('span', {})));
-      for (const achat of achats) {
-        liste.append(el('div', { class: 'achat' },
-          champAchat(achat, 'poste', 'Poste', 'achat__poste',
-            { liste: 'postes-courses', placeholder: 'Marché…' }),
-          champAchat(achat, 'libelle', 'Achat', 'achat__libelle',
-            { liste: 'achats-courses', placeholder: 'Article' }),
-          champAchat(achat, 'montant', 'Montant', 'achat__montant', { montant: true }),
-          el('div', { class: 'achat__suppr' },
-            el('button', {
-              type: 'button', class: 'bouton bouton--rond danger', texte: '✕',
-              title: 'Supprimer ' + (achat.libelle || 'cet achat'),
-              'data-supprimer': 'achat', 'data-id': achat.id,
-            }))));
-      }
-    } else {
-      liste.append(el('div', { class: 'vide', style: 'margin:8px 0',
-                               texte: 'Rien pour cette semaine.' }));
-    }
-
-    hote.append(el('article', { class: 'carte' },
-      el('header', { class: 'semaine__tete' },
-        el('span', { class: 'semaine__titre', texte: 'Semaine ' + semaine.numero }),
-        el('span', { class: 'pousse' }),
-        el('label', { class: 'champ-inline' }, 'Budget',
-          el('input', {
-            type: 'text', inputmode: 'decimal', value: montantSaisi(semaine.budget),
-            'aria-label': 'Budget de la semaine ' + semaine.numero,
-            'data-cle': 'semaine-' + semaine.numero + '-budget',
-            'data-entite': 'semaine', 'data-id': semaine.numero, 'data-champ': 'budget',
-          }))),
-      jauge('Dépensé', semaine.depense, semaine.budget),
-      el('div', { style: 'height:12px' }),
-      liste,
-      el('div', { class: 'puces' },
-        el('button', { type: 'button', class: 'bouton bouton--fantome',
-                       texte: '+ Ajouter un achat', 'data-ajouter-achat': semaine.numero }),
-        el('details', { class: 'suggestions' },
-          el('summary', { texte: 'Ajout rapide' }),
-          el('div', { class: 'puces' },
-            ACHATS_COURANTS.map(nom => el('button', {
-              type: 'button', class: 'puce', texte: nom,
-              'data-ajouter-achat': semaine.numero, 'data-libelle': nom, 'data-poste': 'Marché',
-            })))))));
+    remplace($('[data-zone-semaine="' + semaine.numero + '"]'), jauge('Dépensé', semaine.depense, semaine.budget));
   }
 }
 
-/* ============================================================== HEURES === */
+/* =============================================================== HEURES === */
 
 function celluleHeure(creneau, champ, etiquette, separateur) {
   return el('td', { class: separateur ? 'separateur' : null },
     el('input', {
-      type: 'text', inputmode: 'numeric', value: creneau[champ] || '', placeholder: '--:--',
-      'aria-label': etiquette,
-      'data-cle': 'creneau-' + creneau.id + '-' + champ,
+      type: 'text', inputmode: 'numeric', class: 'champ', value: creneau[champ] || '', placeholder: '--:--',
+      'aria-label': etiquette, 'data-cle': 'creneau-' + creneau.id + '-' + champ,
       'data-entite': 'creneau', 'data-id': creneau.id, 'data-champ': champ,
     }));
 }
 
-function dessineHeures() {
-  const { heures } = etat.recap;
-  const ligne = ligneReliee(etat.mois, 'heures');
-  $('#taux-horaire').value = montantSaisi(etat.mois.tauxHoraire);
-  $('#taux-cotisation').value = montantSaisi(etat.mois.tauxCotisation);
+function dessinePageHeures() {
+  const mois = etat.mois;
+  valeurChampSiLibre('#taux-horaire', montantSaisi(mois.tauxHoraire));
+  valeurChampSiLibre('#taux-cotisation', montantSaisi(mois.tauxCotisation));
+  const semaines = Array.from(new Set(mois.creneaux.map(c => c.semaine))).sort((a, b) => a - b);
 
-  remplace($('#resume-heures'),
-    el('div', { class: 'bandeau' },
-      tuile('Heures gardées', heures.duree,
-            heures.parSemaine.length + ' semaine(s) renseignée(s)'),
-      tuile('Salaire brut', euros(heures.brut),
-            heures.duree + ' × ' + formatNombre.format(heures.tauxHoraire) + ' €'),
-      tuile('Cotisations', euros(heures.cotisation),
-            formatNombre.format(heures.tauxCotisation) + ' % du brut'),
-      tuile('Salaire net', euros(heures.net),
-            ligne ? 'Reporté sur « ' + (ligne.libelle || 'Caracole') + ' »'
-                  : 'Aucun revenu relié',
-            ligne ? 'tuile__note--bon' : null)));
-
-  const parSemaine = new Map();
-  for (const creneau of etat.creneaux) {
-    if (!parSemaine.has(creneau.semaine)) parSemaine.set(creneau.semaine, []);
-    parSemaine.get(creneau.semaine).push(creneau);
-  }
-
-  const hote = $('#semaines-heures');
-  hote.textContent = '';
-
-  for (const numero of Array.from(parSemaine.keys()).sort((a, b) => a - b)) {
-    const creneaux = parSemaine.get(numero).sort((a, b) => a.jour - b.jour);
-    const minutes = creneaux.reduce((s, c) => s + c.minutes, 0);
-
-    hote.append(el('article', { class: 'carte' },
+  remplace($('#semaines-heures'), semaines.map(numero => {
+    const creneaux = mois.creneaux.filter(c => c.semaine === numero).sort((a, b) => a.jour - b.jour);
+    return el('article', { class: 'carte' },
       el('header', { class: 'semaine__tete' },
         el('span', { class: 'semaine__titre', texte: 'Semaine ' + numero }),
         el('span', { class: 'pousse' }),
-        el('span', { class: 'chiffres', texte: minutes ? formatDuree(minutes) : '—' })),
+        el('span', { class: 'chiffres', 'data-zone-heures': numero })),
       el('table', { class: 'heures' },
         el('thead', {}, el('tr', {},
-          el('th', { texte: 'Jour' }),
-          el('th', { texte: 'Matin' }), el('th', { texte: '' }),
+          el('th', { texte: 'Jour' }), el('th', { texte: 'Matin' }), el('th', { texte: '' }),
           el('th', { class: 'separateur', texte: 'Après-midi' }), el('th', { texte: '' }),
           el('th', { style: 'text-align:right', texte: 'Durée' }))),
-        el('tbody', {}, creneaux.map(creneau => el('tr', {}, [
-          el('td', { class: 'jour', texte: JOURS[creneau.jour] }),
-          celluleHeure(creneau, 'matinDebut', JOURS[creneau.jour] + ' matin, début'),
-          celluleHeure(creneau, 'matinFin', JOURS[creneau.jour] + ' matin, fin'),
-          celluleHeure(creneau, 'apremDebut', JOURS[creneau.jour] + ' après-midi, début', true),
-          celluleHeure(creneau, 'apremFin', JOURS[creneau.jour] + ' après-midi, fin'),
-          el('td', { class: 'duree', texte: creneau.duree || '—' }),
-        ]))))));
+        el('tbody', {}, creneaux.map(c => el('tr', {},
+          el('td', { class: 'jour', texte: JOURS[c.jour] }),
+          celluleHeure(c, 'matinDebut', JOURS[c.jour] + ' matin, arrivée'),
+          celluleHeure(c, 'matinFin', JOURS[c.jour] + ' matin, départ'),
+          celluleHeure(c, 'apremDebut', JOURS[c.jour] + ' après-midi, arrivée', true),
+          celluleHeure(c, 'apremFin', JOURS[c.jour] + ' après-midi, départ'),
+          el('td', { class: 'duree', 'data-duree': c.id }))))));
+  }));
+}
+
+function majPageHeures() {
+  const { heures } = etat.recap;
+  const ligne = ligneReliee(etat.mois, 'heures');
+  remplace($('#resume-heures'),
+    el('div', { class: 'bandeau' },
+      tuile('Heures gardées', heures.duree, heures.parSemaine.filter(s => s.minutes > 0).length + ' semaine(s) renseignée(s)', null, 'h-duree'),
+      tuile('Salaire brut', euros(heures.brut), heures.duree + ' × ' + formatNombre.format(heures.tauxHoraire) + ' €', null, 'h-brut'),
+      tuile('Cotisations', euros(heures.cotisation), formatNombre.format(heures.tauxCotisation) + ' % du brut', null, 'h-cotis'),
+      tuile('Salaire net', euros(heures.net),
+            ligne ? 'Reporté sur « ' + (ligne.libelle || 'Caracole') + ' »' : 'Aucun revenu relié',
+            ligne ? 'tuile__note--bon' : null, 'h-net')));
+
+  for (const numero of new Set(etat.mois.creneaux.map(c => c.semaine))) {
+    const minutes = etat.mois.creneaux.filter(c => c.semaine === numero).reduce((s, c) => s + dureeCreneau(c), 0);
+    texteZone('[data-zone-heures="' + numero + '"]', minutes ? formatDuree(minutes) : '—');
+  }
+  for (const c of etat.mois.creneaux) {
+    const minutes = dureeCreneau(c);
+    texteZone('[data-duree="' + c.id + '"]', minutes ? formatDuree(minutes) : '—');
   }
 }
 
 /* ========================================================================== */
 /* 6. Interactions                                                            */
+/*                                                                            */
+/* Trois règles :                                                             */
+/*   1. Pendant la frappe, les chiffres se recalculent sans reconstruire les  */
+/*      champs : le curseur ne saute pas, la touche Tab fonctionne.           */
+/*   2. Une reconstruction de la page n'a jamais lieu sous le pointeur :      */
+/*      elle attend que le clic soit terminé, sinon le clic serait perdu.     */
+/*   3. L'enregistrement suit de peu la frappe, et il est forcé si l'on       */
+/*      ferme l'onglet.                                                       */
 /* ========================================================================== */
 
-document.addEventListener('change', (evenement) => {
-  const cible = evenement.target;
+/* -- Enregistrement ------------------------------------------------------- */
 
-  if (cible.id === 'choix-mois') { D.moisActif = Number(cible.value); applique(); return; }
-  if (cible.id === 'fichier-import') { importeFichier(cible.files[0]); return; }
+let minuteurEnregistrement = null;
 
-  const champsMois = { 'budget-courses': 'budgetCourses', 'taux-horaire': 'tauxHoraire',
-                       'taux-cotisation': 'tauxCotisation' };
-  if (champsMois[cible.id]) { majMois(champsMois[cible.id], cible.value); return; }
+function enregistreBientot() {
+  clearTimeout(minuteurEnregistrement);
+  minuteurEnregistrement = setTimeout(enregistreMaintenant, 350);
+}
 
-  const { entite, id, champ } = cible.dataset;
-  if (!entite || !champ) return;
-  const valeur = cible.type === 'checkbox' ? cible.checked : cible.value;
-  if (entite === 'ligne') majLigne(Number(id), champ, valeur);
-  else if (entite === 'achat') majAchat(Number(id), champ, valeur);
-  else if (entite === 'creneau') majCreneau(Number(id), champ, valeur);
-  else if (entite === 'semaine') majSemaine(Number(id), valeur);
+function enregistreMaintenant() {
+  clearTimeout(minuteurEnregistrement);
+  minuteurEnregistrement = null;
+  if (enregistreDonnees()) signaleSauvegarde('Enregistré');
+}
+
+window.addEventListener('pagehide', () => { if (minuteurEnregistrement) enregistreMaintenant(); });
+document.addEventListener('visibilitychange', () => {
+  if (document.hidden && minuteurEnregistrement) enregistreMaintenant();
 });
 
-/* Retour immédiat sur l'écart pendant la frappe, avant l'enregistrement. */
+/* -- Reconstruction différée : jamais sous le pointeur --------------------- */
+
+let minuteurSecours = null;
+
+function planifieRendu() {
+  etat.renduEnAttente = true;
+  if (!etat.pointeurEnfonce) setTimeout(rendsSiBesoin, 0);
+  // Filet de sécurité si le relâchement du pointeur n'arrive jamais (glisser hors de la fenêtre…).
+  clearTimeout(minuteurSecours);
+  minuteurSecours = setTimeout(() => { etat.pointeurEnfonce = false; rendsSiBesoin(); }, 800);
+}
+
+function rendsSiBesoin() { if (etat.renduEnAttente) dessineTout(); }
+
+document.addEventListener('pointerdown', () => { etat.pointeurEnfonce = true; }, true);
+const relachePointeur = () => {
+  etat.pointeurEnfonce = false;
+  // Le clic est distribué juste après le relâchement : on reconstruit après lui.
+  if (etat.renduEnAttente) setTimeout(rendsSiBesoin, 0);
+};
+document.addEventListener('pointerup', relachePointeur, true);
+document.addEventListener('pointercancel', relachePointeur, true);
+
+/* -- Retrouver l'objet visé par un champ ----------------------------------- */
+
+function cible(dataset) {
+  const mois = moisActif();
+  const id = Number(dataset.id);
+  if (dataset.entite === 'ligne') return mois.lignes.find(l => l.id === id);
+  if (dataset.entite === 'achat') return mois.achats.find(a => a.id === id);
+  if (dataset.entite === 'creneau') return mois.creneaux.find(c => c.id === id);
+  return null;
+}
+
+/* -- Saisie : recalcul immédiat, sans reconstruire ------------------------- */
+
 document.addEventListener('input', (evenement) => {
-  const cible = evenement.target;
-  if (cible.dataset.entite !== 'ligne') return;
-  if (cible.dataset.champ !== 'estime' && cible.dataset.champ !== 'reel') return;
-  const ligne = cible.closest('.ligne');
-  const cellule = ligne && ligne.querySelector('.ligne__ecart');
-  if (!cellule) return;
-  const lit = (nom) => {
-    const champ = ligne.querySelector('[data-champ="' + nom + '"]');
-    return nombre(champ ? champ.value : 0);
-  };
-  const bascule = ligne.querySelector('[data-champ="actif"]');
-  const ecart = (!bascule || bascule.checked ? lit('estime') : 0) - lit('reel');
-  cellule.textContent = ecart === 0 ? '—' : signe(ecart);
-  cellule.className = 'ligne__ecart' +
-    (ecart > 0.004 ? ' ligne__ecart--bon' : (ecart < -0.004 ? ' ligne__ecart--mauvais' : ''));
+  const champ = evenement.target;
+  const d = champ.dataset || {};
+  if (!d.entite || !d.champ) return;
+  const mois = moisActif();
+
+  if (d.entite === 'ligne') {
+    if (CHAMPS_STRUCTURELS.has(d.champ)) return;      // traités à la validation
+    const ligne = cible(d); if (!ligne) return;
+    ecrisLigne(ligne, d.champ, champ.value);
+  } else if (d.entite === 'achat') {
+    const achat = cible(d); if (!achat) return;
+    ecrisAchat(achat, d.champ, champ.value);
+  } else if (d.entite === 'semaine') {
+    ecrisSemaine(mois, Number(d.id), champ.value);
+  } else if (d.entite === 'mois') {
+    ecrisMois(mois, d.champ, champ.value);
+  } else {
+    return;                                           // un horaire incomplet n'a pas de sens
+  }
+  rafraichitCalculs();
+  enregistreBientot();
 });
 
-document.addEventListener('click', (evenement) => {
-  // Les catégories se replient nous-mêmes, pour retenir leur état d'un mois à l'autre.
-  const sommaire = evenement.target.closest('.cat > summary');
-  if (sommaire) {
-    evenement.preventDefault();
-    const nom = sommaire.parentElement.dataset.categorie;
-    if (etat.categoriesFermees.has(nom)) etat.categoriesFermees.delete(nom);
-    else etat.categoriesFermees.add(nom);
-    enregistrePreferences();
-    dessineDepenses();
-    return;
-  }
+/* -- Validation d'un champ (sortie du champ, Entrée, case, liste) ---------- */
 
-  const cible = evenement.target.closest('button');
-  if (!cible) {
-    if (!evenement.target.closest('.menu')) {
-      $$('.menu[open]').forEach(m => m.removeAttribute('open'));
-    }
-    return;
-  }
-
-  if (cible.dataset.vue) { montreVue(cible.dataset.vue); window.scrollTo({ top: 0 }); return; }
-  if (cible.dataset.aller) { montreVue(cible.dataset.aller); window.scrollTo({ top: 0 }); return; }
-  if (cible.dataset.action) { actionMenu(cible.dataset.action); return; }
-  if (cible.dataset.ajouter) { ajouteLigne(cible); return; }
-  if (cible.dataset.ajouterAchat) { ajouteAchat(cible); return; }
-  if (cible.dataset.supprimer) { demandeSuppression(cible); return; }
-
-  if (cible.dataset.detail) {
-    const id = Number(cible.dataset.detail);
-    if (etat.detailsOuverts.has(id)) etat.detailsOuverts.delete(id);
-    else etat.detailsOuverts.add(id);
+document.addEventListener('change', (evenement) => {
+  const champ = evenement.target;
+  if (champ.id === 'choix-mois') {
+    enregistreMaintenant();
+    D.moisActif = Number(champ.value);
+    etat.detailsOuverts.clear();
     dessineTout();
     return;
   }
+  if (champ.id === 'fichier-import') { importeFichier(champ.files[0]); return; }
 
-  if (cible.dataset.basculeNature) {
-    const ligne = etat.mois.lignes.find(l => l.id === Number(cible.dataset.basculeNature));
-    if (ligne) majLigne(ligne.id, 'nature', ligne.nature === 'fixe' ? 'variable' : 'fixe');
-    return;
+  const d = champ.dataset || {};
+  if (!d.entite || !d.champ) return;
+  const mois = moisActif();
+
+  if (d.entite === 'ligne') {
+    const ligne = cible(d); if (!ligne) return;
+    ecrisLigne(ligne, d.champ, champ.type === 'checkbox' ? champ.checked : champ.value);
+    if (CHAMPS_STRUCTURELS.has(d.champ)) {
+      // La ligne doit rester visible là où elle arrive.
+      etat.groupesOuverts.add(ligne.type === 'depense' ? 'd:' + cleCategorie(ligne) : 'r:' + ligne.type);
+      enregistrePreferences();
+      enregistreMaintenant();
+      rafraichitCalculs();
+      planifieRendu();
+      return;
+    }
+    if (d.champ === 'libelle' || d.champ === 'note') { ligne[d.champ] = ligne[d.champ].trim(); champ.value = ligne[d.champ]; }
+    else champ.value = montantSaisi(ligne[d.champ]);
+  } else if (d.entite === 'achat') {
+    const achat = cible(d); if (!achat) return;
+    ecrisAchat(achat, d.champ, champ.value);
+    champ.value = d.champ === 'montant' ? montantSaisi(achat.montant) : achat[d.champ].trim();
+    if (d.champ !== 'montant') achat[d.champ] = champ.value;
+  } else if (d.entite === 'semaine') {
+    ecrisSemaine(mois, Number(d.id), champ.value);
+    champ.value = montantSaisi((mois.semaines.find(s => s.numero === Number(d.id)) || {}).budget);
+  } else if (d.entite === 'mois') {
+    ecrisMois(mois, d.champ, champ.value);
+    champ.value = montantSaisi(d.champ === 'budgetCourses' ? budgetCourses(mois) : mois[d.champ]);
+  } else if (d.entite === 'creneau') {
+    const creneau = cible(d); if (!creneau) return;
+    champ.value = ecrisCreneau(creneau, d.champ, champ.value);
   }
+  rafraichitCalculs();
+  enregistreMaintenant();
+});
 
-  if (cible.dataset.plier) {
-    const fermer = cible.dataset.plier === 'fermer';
-    etat.categoriesFermees = new Set(fermer
-      ? $$('.cat').map(d => d.dataset.categorie)
-      : []);
-    enregistrePreferences();
-    dessineDepenses();
-    return;
-  }
+/* -- Clavier : Entrée valide, Échap annule la saisie en cours -------------- */
 
-  if (cible.id === 'mois-precedent') { changeMoisRelatif(-1); return; }
-  if (cible.id === 'mois-suivant') { changeMoisRelatif(1); return; }
-  if (cible.id === 'ajouter-semaine') { ajouteSemaine(); return; }
-  if (cible.id === 'retirer-semaine') {
-    const semaines = etat.recap.courses.semaines;
-    const derniere = semaines[semaines.length - 1];
-    if (!derniere) return;
-    if (!confirm('Supprimer la semaine ' + derniere.numero +
-                 ' et tout ce qu’elle contient ?')) return;
-    retireSemaine(derniere.numero);
+document.addEventListener('focusin', (evenement) => {
+  const champ = evenement.target;
+  if (champ.dataset && champ.dataset.champ && champ.tagName === 'INPUT' && champ.type !== 'checkbox') {
+    etat.valeurInitiale = { noeud: champ, valeur: champ.value };
   }
 });
 
-/* Entrée valide la saisie ; Échap annule la modification en cours. */
 document.addEventListener('keydown', (evenement) => {
-  if (!evenement.target.dataset || !evenement.target.dataset.champ) return;
-  if (evenement.key === 'Enter') { evenement.preventDefault(); evenement.target.blur(); }
-  if (evenement.key === 'Escape') dessineTout();
+  const champ = evenement.target;
+  if (!champ.dataset || !champ.dataset.champ || champ.tagName !== 'INPUT') return;
+  if (evenement.key === 'Enter') { evenement.preventDefault(); champ.blur(); }
+  if (evenement.key === 'Escape' && etat.valeurInitiale && etat.valeurInitiale.noeud === champ) {
+    evenement.preventDefault();
+    champ.value = etat.valeurInitiale.valeur;
+    champ.dispatchEvent(new Event('input', { bubbles: true }));
+    champ.blur();
+  }
 });
 
-window.addEventListener('hashchange', () => {
-  const nom = location.hash.slice(1);
-  if (nom && nom !== 'autotest') montreVue(nom);
+/* -- Clics ------------------------------------------------------------------ */
+
+document.addEventListener('click', (evenement) => {
+  etat.pointeurEnfonce = false;
+
+  // Ouvrir / fermer un groupe : on agit directement, sans rien reconstruire.
+  const sommaire = evenement.target.closest('.groupe > summary');
+  if (sommaire) {
+    evenement.preventDefault();
+    basculeGroupe(sommaire.parentElement, !sommaire.parentElement.open);
+    return;
+  }
+
+  const bouton = evenement.target.closest('button');
+  if (!bouton) {
+    if (!evenement.target.closest('.menu')) $$('.menu[open]').forEach(m => m.removeAttribute('open'));
+    return;
+  }
+  const d = bouton.dataset;
+
+  if (d.vue) { montreVue(d.vue); window.scrollTo({ top: 0 }); return; }
+  if (d.aller) { montreVue(d.aller); window.scrollTo({ top: 0 }); return; }
+  if (d.action) { actionMenu(d.action); return; }
+  if (d.ouvrirAjout) { ouvreAjout(d.ouvrirAjout); return; }
+  if (d.fermerAjout) { fermeAjout(d.fermerAjout); return; }
+  if (d.ajouter) { ajouteLigneRapide(bouton); return; }
+  if (d.ajouterAchat) { ajouteAchat(bouton); return; }
+  if (d.supprimer) { demandeSuppression(bouton); return; }
+  if (d.plier) { plieBloc(d.plier, d.sens !== 'fermer'); return; }
+
+  if (d.detail) {
+    const id = Number(d.detail);
+    if (etat.detailsOuverts.has(id)) etat.detailsOuverts.delete(id); else etat.detailsOuverts.add(id);
+    dessineTout();
+    return;
+  }
+  if (d.basculeNature) {
+    const ligne = moisActif().lignes.find(l => l.id === Number(d.basculeNature));
+    if (!ligne) return;
+    ecrisLigne(ligne, 'nature', ligne.nature === 'fixe' ? 'variable' : 'fixe');
+    enregistreMaintenant();
+    dessineTout();
+    toast('« ' + (ligne.libelle || 'Ligne') + ' » est maintenant ' +
+          (ligne.nature === 'fixe' ? 'une charge fixe.' : 'une dépense variable.'), { duree: 3500 });
+    return;
+  }
+
+  if (bouton.id === 'mois-precedent') { changeMoisRelatif(-1); return; }
+  if (bouton.id === 'mois-suivant') { changeMoisRelatif(1); return; }
+  if (bouton.id === 'ajouter-semaine') { ajouteSemaine(); enregistreMaintenant(); dessineTout(); return; }
+  if (bouton.id === 'retirer-semaine') {
+    const semaines = moisActif().semaines;
+    const derniere = semaines.reduce((m, s) => Math.max(m, s.numero), 0);
+    if (semaines.length <= 1) { toast('Il faut garder au moins une semaine.', { erreur: true }); return; }
+    if (!confirm('Supprimer la semaine ' + derniere + ' et tout ce qu’elle contient ?')) return;
+    retireSemaine(derniere);
+    enregistreMaintenant();
+    dessineTout();
+  }
 });
 
-/** Publie les hauteurs réelles de l'en-tête et de la navigation : sur un écran
-    étroit elles passent sur deux lignes, et le bilan doit rester dessous. */
-function ajusteAncrages() {
-  const racine = document.documentElement;
-  const tete = $('.tete'), nav = $('.nav');
-  if (tete) racine.style.setProperty('--haut-tete', tete.offsetHeight + 'px');
-  if (nav) racine.style.setProperty('--haut-nav', nav.offsetHeight + 'px');
+/* -- Groupes repliables ------------------------------------------------------ */
+
+function basculeGroupe(details, ouvrir) {
+  details.open = ouvrir;
+  if (ouvrir) etat.groupesOuverts.add(details.dataset.groupe);
+  else etat.groupesOuverts.delete(details.dataset.groupe);
+  enregistrePreferences();
+  majBoutonsPlier();
 }
 
-/* Le bilan se compacte quand on descend, sans jamais quitter l'écran. */
-window.addEventListener('scroll', () => {
-  const bilan = $('#bilan');
-  if (bilan) bilan.classList.toggle('compact', window.scrollY > 70);
-}, { passive: true });
+function plieBloc(bloc, ouvrir) {
+  for (const details of $$('#corps-' + bloc + ' .groupe')) basculeGroupe(details, ouvrir);
+}
 
-let minuteurRedimension = null;
-window.addEventListener('resize', () => {
-  clearTimeout(minuteurRedimension);
-  ajusteAncrages();
-  minuteurRedimension = setTimeout(() => {
-    ajusteAncrages();
-    if (etat.vue === 'graphiques') { dessineGraphiqueCategories(); dessineGraphiqueEvolution(); }
-  }, 180);
+/* -- Ajouts ------------------------------------------------------------------ */
+
+function ouvreAjout(sorte) {
+  const formulaire = $('#ajout-' + sorte);
+  formulaire.hidden = false;
+  formulaire.querySelector('[name="libelle"]').focus();
+}
+
+function fermeAjout(sorte) {
+  const formulaire = $('#ajout-' + sorte);
+  formulaire.reset();
+  formulaire.hidden = true;
+}
+
+document.addEventListener('submit', (evenement) => {
+  const formulaire = evenement.target;
+  if (!formulaire.classList.contains('ajout')) return;
+  evenement.preventDefault();
+  const v = Object.fromEntries(new FormData(formulaire));
+  const depense = formulaire.id === 'ajout-depense';
+
+  const ligne = creeLigne({
+    type: depense ? 'depense' : v.type,
+    nature: depense ? v.nature : 'fixe',
+    categorie: depense ? (String(v.categorie || '').trim() || 'Sans catégorie')
+                       : (v.type === 'aide' ? 'Aide' : 'Salaire'),
+    libelle: v.libelle, estime: v.estime, reel: v.reel,
+  });
+  etat.groupesOuverts.add(depense ? 'd:' + cleCategorie(ligne) : 'r:' + ligne.type);
+  etat.nouvelleLigne = ligne.id;
+  enregistrePreferences();
+  fermeAjout(depense ? 'depense' : 'revenu');
+  enregistreMaintenant();
+  dessineTout();
+  const rangee = $('[data-ligne="' + ligne.id + '"]');
+  if (rangee) rangee.scrollIntoView({ block: 'center', behavior: 'smooth' });
+  toast('« ' + ligne.libelle + ' » ajouté' + (depense ? ' dans ' + cleCategorie(ligne) : '') + '.', { duree: 3500 });
 });
 
-/* -- Actions -------------------------------------------------------------- */
-
-function ajouteLigne(bouton) {
+function ajouteLigneRapide(bouton) {
   const type = bouton.dataset.ajouter;
-  const categorie = bouton.dataset.categorie || '';
   const ligne = creeLigne({
     type,
     nature: type === 'depense' ? 'variable' : 'fixe',
-    categorie: categorie || (type === 'depense' ? 'Sans catégorie'
-                                                : (type === 'aide' ? 'Aide' : 'Salaire')),
+    categorie: bouton.dataset.categorie || (type === 'depense' ? 'Sans catégorie' : (type === 'aide' ? 'Aide' : 'Salaire')),
   });
-  // Une ligne neuve s'ouvre sur son panneau : la catégorie est à portée de main.
-  if (!categorie) etat.detailsOuverts.add(ligne.id);
-  etat.categoriesFermees.delete(ligne.categorie);
-  applique('Ligne ajoutée');
-  montreVue('budget');
-  const champ = document.querySelector('[data-cle="ligne-' + ligne.id + '-libelle"]');
+  etat.groupesOuverts.add(type === 'depense' ? 'd:' + cleCategorie(ligne) : 'r:' + type);
+  etat.nouvelleLigne = ligne.id;
+  enregistrePreferences();
+  enregistreMaintenant();
+  dessineTout();
+  const champ = $('[data-cle="ligne-' + ligne.id + '-libelle"]');
   if (champ) { champ.focus(); champ.scrollIntoView({ block: 'center', behavior: 'smooth' }); }
 }
 
@@ -2757,10 +2988,10 @@ function ajouteAchat(bouton) {
     libelle: bouton.dataset.libelle || '',
     poste: bouton.dataset.poste || '',
   });
-  applique('Achat ajouté');
-  const cle = bouton.dataset.libelle
-    ? 'achat-' + achat.id + '-montant' : 'achat-' + achat.id + '-libelle';
-  const champ = document.querySelector('[data-cle="' + cle + '"]');
+  enregistreMaintenant();
+  dessineTout();
+  const cle = bouton.dataset.libelle ? 'achat-' + achat.id + '-montant' : 'achat-' + achat.id + '-libelle';
+  const champ = $('[data-cle="' + cle + '"]');
   if (champ) champ.focus();
 }
 
@@ -2770,53 +3001,58 @@ function demandeSuppression(bouton) {
   const supprime = entite === 'ligne' ? supprimeLigne(id) : supprimeAchat(id);
   if (!supprime) return;
   etat.detailsOuverts.delete(id);
-  applique();
-  toast('« ' + (supprime.libelle || 'Ligne sans nom') + ' » supprimée.', {
+  enregistreMaintenant();
+  dessineTout();
+  toast('« ' + (supprime.libelle || 'Ligne sans nom') + ' » supprimé.', {
     action: {
       libelle: 'Annuler',
       faire: () => {
-        if (entite === 'ligne') creeLigne(supprime); else creeAchat(supprime);
-        applique('Ligne rétablie');
+        const retour = entite === 'ligne' ? creeLigne(supprime) : creeAchat(supprime);
+        if (entite === 'ligne') etat.nouvelleLigne = retour.id;
+        enregistreMaintenant();
+        dessineTout();
+        signaleSauvegarde('Rétabli');
       },
     },
   });
 }
 
+/* -- Mois --------------------------------------------------------------------- */
+
 function nouveauMois() {
-  const propose = decaleMois(etat.mois.libelle, 1);
-  const saisi = prompt(
-    'Quel mois créer ? (format AAAA-MM)\n\n' +
-    'Les lignes récurrentes du mois affiché sont recopiées, ' +
-    'avec les montants réels remis à zéro.', propose);
+  const propose = decaleMois(moisActif().libelle, 1);
+  const saisi = prompt('Quel mois créer ? (format AAAA-MM)\n\n' +
+    'Les lignes du mois affiché sont recopiées avec leurs montants prévus ; ' +
+    'les montants payés et reçus repartent de zéro.', propose);
   if (!saisi) return;
   const libelle = saisi.trim();
-  if (!/^\d{4}-\d{2}$/.test(libelle)) {
+  if (!/^\d{4}-(0[1-9]|1[0-2])$/.test(libelle)) {
     toast('Le mois doit être au format AAAA-MM (par exemple 2026-10).', { erreur: true });
     return;
   }
   const mois = creeMois(libelle, D.moisActif);
   D.moisActif = mois.id;
-  applique('Mois créé');
+  etat.detailsOuverts.clear();
+  enregistreMaintenant();
+  dessineTout();
 }
 
 function changeMoisRelatif(pas) {
-  const cible = decaleMois(etat.mois.libelle, pas);
-  const existant = D.mois.find(m => m.libelle === cible);
-  if (existant) { D.moisActif = existant.id; applique(); return; }
-  if (!confirm(libelleMois(cible) + ' n’existe pas encore. ' +
-               'Le créer à partir du mois affiché ?')) return;
-  const mois = creeMois(cible, D.moisActif);
-  D.moisActif = mois.id;
-  applique('Mois créé');
+  enregistreMaintenant();
+  const cibleMois = decaleMois(moisActif().libelle, pas);
+  const existant = D.mois.find(m => m.libelle === cibleMois);
+  if (!existant && !confirm(libelleMois(cibleMois) + ' n’existe pas encore. ' +
+                            'Le créer à partir du mois affiché ?')) return;
+  D.moisActif = (existant || creeMois(cibleMois, D.moisActif)).id;
+  etat.detailsOuverts.clear();
+  enregistreMaintenant();
+  dessineTout();
 }
 
-/* -- Import / export ------------------------------------------------------ */
+/* -- Import / export ------------------------------------------------------------ */
 
 function telecharge(nomFichier, contenu, typeMime) {
-  const lien = el('a', {
-    href: URL.createObjectURL(new Blob([contenu], { type: typeMime })),
-    download: nomFichier,
-  });
+  const lien = el('a', { href: URL.createObjectURL(new Blob([contenu], { type: typeMime })), download: nomFichier });
   document.body.append(lien);
   lien.click();
   lien.remove();
@@ -2835,25 +3071,21 @@ function construitCsv(mois) {
     return /[";\n]/.test(texte) ? '"' + texte.replace(/"/g, '""') + '"' : texte;
   }).join(';'));
 
-  ajoute(['Type', 'Nature', 'Catégorie', 'Libellé', 'Estimé', 'Réel', 'Écart', 'Actif', 'Note']);
-  for (const ligne of mois.lignes) {
-    const estime = ligne.actif ? eur(ligne.estime) : 0;
-    ajoute([ligne.type, ligne.nature, ligne.categorie, ligne.libelle,
-            virgule(ligne.estime), virgule(ligne.reel), virgule(estime - eur(ligne.reel)),
-            ligne.actif ? 'oui' : 'non', ligne.note]);
+  ajoute(['Type', 'Nature', 'Catégorie', 'Libellé', 'Prévu', 'Payé / reçu', 'Écart', 'Compté', 'Note']);
+  for (const l of mois.lignes) {
+    const estime = l.actif ? eur(l.estime) : 0;
+    const reel = l.actif ? eur(l.reel) : 0;
+    const ecart = l.type === 'depense' ? estime - reel : reel - estime;
+    ajoute([l.type, l.nature, l.categorie, l.libelle, virgule(l.estime), virgule(l.reel),
+            virgule(ecart), l.actif ? 'oui' : 'non (en pause)', l.note]);
   }
   ajoute([]);
-  ajoute(['TOTAL DÉPENSES', '', '', '',
-          virgule(totaux.budget.depenses.estime), virgule(totaux.budget.depenses.reel)]);
-  ajoute(['TOTAL REVENUS', '', '', '',
-          virgule(totaux.budget.revenus.estime), virgule(totaux.budget.revenus.reel)]);
-  ajoute(['RESTE À VIVRE', '', '', '',
-          virgule(totaux.budget.restant.estime), virgule(totaux.budget.restant.reel)]);
+  ajoute(['TOTAL DÉPENSES', '', '', '', virgule(totaux.budget.depenses.estime), virgule(totaux.budget.depenses.reel)]);
+  ajoute(['TOTAL REVENUS', '', '', '', virgule(totaux.budget.revenus.estime), virgule(totaux.budget.revenus.reel)]);
+  ajoute(['RESTE À VIVRE', '', '', '', virgule(totaux.budget.restant.estime), virgule(totaux.budget.restant.reel)]);
   ajoute([]);
   ajoute(['Courses — semaine', 'Poste', 'Libellé', 'Montant']);
-  for (const achat of mois.achats) {
-    ajoute([achat.semaine, achat.poste, achat.libelle, virgule(achat.montant)]);
-  }
+  for (const a of mois.achats) ajoute([a.semaine, a.poste, a.libelle, virgule(a.montant)]);
   ajoute([]);
   ajoute(['Heures gardées', totaux.heures.duree]);
   ajoute(['Salaire brut', virgule(totaux.heures.brut)]);
@@ -2864,32 +3096,27 @@ function construitCsv(mois) {
 
 function actionMenu(action) {
   $$('.menu[open]').forEach(m => m.removeAttribute('open'));
-
   if (action === 'nouveau-mois') { nouveauMois(); return; }
   if (action === 'export-csv') {
-    telecharge('comptes-' + etat.mois.libelle + '.csv', construitCsv(etat.mois),
-               'text/csv;charset=utf-8');
+    telecharge('comptes-' + moisActif().libelle + '.csv', construitCsv(moisActif()), 'text/csv;charset=utf-8');
     return;
   }
   if (action === 'export-json') {
+    enregistreMaintenant();
     telecharge('comptes-sauvegarde-' + new Date().toISOString().slice(0, 10) + '.json',
-               JSON.stringify(Object.assign({ application: 'comptes' }, D), null, 2),
-               'application/json');
+               JSON.stringify(Object.assign({ application: 'comptes' }, D), null, 2), 'application/json');
     toast('Sauvegarde téléchargée. Rangez ce fichier : il contient tous vos mois.');
     return;
   }
   if (action === 'import-json') { $('#fichier-import').click(); return; }
   if (action === 'theme') { changeTheme(); return; }
   if (action === 'supprimer-mois') {
-    if (D.mois.length <= 1) {
-      toast('C’est le seul mois : il ne peut pas être supprimé.', { erreur: true });
-      return;
-    }
-    if (!confirm('Supprimer définitivement ' + libelleMois(etat.mois.libelle) +
-                 ' et toutes ses données ?')) return;
+    if (D.mois.length <= 1) { toast('C’est le seul mois : il ne peut pas être supprimé.', { erreur: true }); return; }
+    if (!confirm('Supprimer définitivement ' + libelleMois(moisActif().libelle) + ' et toutes ses données ?')) return;
     D.mois = D.mois.filter(m => m.id !== D.moisActif);
     D.moisActif = trieMois(D.mois)[0].id;
-    applique('Mois supprimé');
+    enregistreMaintenant();
+    dessineTout();
   }
 }
 
@@ -2898,7 +3125,6 @@ async function importeFichier(fichier) {
   try {
     const donnees = validees(JSON.parse(await fichier.text()));
     if (!donnees) throw new Error('ce fichier ne contient aucun mois exploitable');
-
     const existants = new Set(D.mois.map(m => m.libelle));
     let importes = 0;
     for (const mois of donnees.mois) {
@@ -2911,10 +3137,10 @@ async function importeFichier(fichier) {
       importes++;
     }
     if (importes) D.moisActif = trieMois(D.mois)[0].id;
-    applique();
-    toast(importes
-      ? importes + ' mois restauré(s). Les mois déjà présents ont été conservés.'
-      : 'Aucun mois nouveau à restaurer : ils sont déjà tous là.');
+    enregistreMaintenant();
+    dessineTout();
+    toast(importes ? importes + ' mois restauré(s). Les mois déjà présents ont été conservés.'
+                   : 'Aucun mois nouveau à restaurer : ils sont déjà tous là.');
   } catch (erreur) {
     toast('Fichier illisible : ' + erreur.message, { erreur: true });
   } finally {
@@ -2922,7 +3148,7 @@ async function importeFichier(fichier) {
   }
 }
 
-/* -- Thème et préférences ------------------------------------------------- */
+/* -- Thème, préférences, mise en page ------------------------------------------- */
 
 function changeTheme() {
   const suite = { auto: 'light', light: 'dark', dark: 'auto' };
@@ -2933,18 +3159,46 @@ function appliqueTheme(theme) {
   document.documentElement.dataset.theme = theme;
   $('#etat-theme').textContent = { auto: 'auto', light: 'clair', dark: 'sombre' }[theme];
   try { localStorage.setItem('comptes.theme', theme); } catch (e) { /* ignoré */ }
-  if (etat.recap && etat.vue === 'graphiques') {
-    dessineGraphiqueCategories();
-    dessineGraphiqueEvolution();
-  }
+  if (etat.recap && etat.vue === 'graphiques') { dessineGraphiqueCategories(); dessineGraphiqueEvolution(); }
 }
 
 function enregistrePreferences() {
-  try {
-    localStorage.setItem('comptes.categoriesFermees',
-      JSON.stringify(Array.from(etat.categoriesFermees)));
-  } catch (e) { /* ignoré */ }
+  try { localStorage.setItem('comptes.groupesOuverts', JSON.stringify(Array.from(etat.groupesOuverts))); }
+  catch (e) { /* ignoré */ }
 }
+
+/** Publie les hauteurs réelles de l'en-tête et de la navigation (elles varient selon l'écran). */
+function ajusteAncrages() {
+  const racine = document.documentElement;
+  const tete = $('.tete'), nav = $('.nav');
+  if (tete) racine.style.setProperty('--haut-tete', tete.offsetHeight + 'px');
+  if (nav) racine.style.setProperty('--haut-nav', nav.offsetHeight + 'px');
+}
+
+window.addEventListener('hashchange', () => {
+  const nom = location.hash.slice(1);
+  if (nom && nom !== 'autotest') montreVue(nom);
+});
+
+/* Le mini-bilan apparaît quand le grand sort de l'écran. Il est en position fixe :
+   il ne déplace rien, donc la page ne peut pas se mettre à sauter en défilant. */
+let defilementPrevu = false;
+window.addEventListener('scroll', () => {
+  if (defilementPrevu) return;
+  defilementPrevu = true;
+  requestAnimationFrame(() => { defilementPrevu = false; majVisibiliteMini(); });
+}, { passive: true });
+
+let minuteurRedimension = null;
+window.addEventListener('resize', () => {
+  ajusteAncrages();
+  clearTimeout(minuteurRedimension);
+  minuteurRedimension = setTimeout(() => {
+    ajusteAncrages();
+    majVisibiliteMini();
+    if (etat.vue === 'graphiques') { dessineGraphiqueCategories(); dessineGraphiqueEvolution(); }
+  }, 180);
+});
 
 /* ========================================================================== */
 /* 7. Démarrage et auto-vérification                                          */
@@ -2957,8 +3211,8 @@ function demarre() {
   try {
     theme = localStorage.getItem('comptes.theme') || 'auto';
     vue = localStorage.getItem('comptes.vue') || 'budget';
-    const fermees = JSON.parse(localStorage.getItem('comptes.categoriesFermees') || '[]');
-    if (Array.isArray(fermees)) etat.categoriesFermees = new Set(fermees);
+    const ouverts = JSON.parse(localStorage.getItem('comptes.groupesOuverts') || '[]');
+    if (Array.isArray(ouverts)) etat.groupesOuverts = new Set(ouverts);
   } catch (e) { /* stockage indisponible */ }
   appliqueTheme(theme);
 
@@ -2969,7 +3223,6 @@ function demarre() {
   dessineTout();
   montreVue(location.hash.slice(1) || vue);
   ajusteAncrages();
-  // Les polices peuvent finir de charger après le premier rendu.
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(ajusteAncrages);
 }
 
@@ -2986,6 +3239,8 @@ function verifie() {
   teste('Montant « 12,50 € »', nombre('12,50 €'), 12.5);
   teste('Montant vide', nombre(''), 0);
   teste('Montant illisible', nombre('abc'), 0);
+  teste('Montant « 1.234,56 » (point des milliers)', nombre('1.234,56'), 1234.56);
+  teste('Montant négatif « -12,5 »', nombre('-12,5'), -12.5);
 
   teste('Heure « 09:30 »', minutesDepuisHeure('09:30'), 570);
   teste('Heure « 9h30 »', minutesDepuisHeure('9h30'), 570);
@@ -3044,6 +3299,24 @@ function verifie() {
   teste('Coût net de la garde', b.gardeNette.reel, 170);
   teste('Revenus absents des catégories',
         b.parCategorie.some(x => x.categorie === 'Salaire'), false);
+  // Désactiver une ligne DÉJÀ PAYÉE doit la retirer du total payé et du reste.
+  const avecPause = recapBudget([
+    { type: 'salaire', nature: 'fixe', estime: 1000, reel: 1000, actif: true },
+    { type: 'depense', nature: 'variable', categorie: 'Abonnements', libelle: 'Claude Max',
+      estime: 90, reel: 90, actif: false },
+    { type: 'depense', nature: 'fixe', categorie: 'Santé', libelle: 'MNH',
+      estime: 70, reel: 70, actif: true },
+  ]);
+  teste('Pause : le payé d’une ligne en pause sort du total', avecPause.depenses.reel, 70);
+  teste('Pause : le reste à vivre remonte d’autant', avecPause.restant.reel, 930);
+  teste('Pause : la catégorie tombe à zéro',
+        avecPause.parCategorie.find(c => c.categorie === 'Abonnements').reel, 0);
+  teste('Pause : la catégorie compte sa ligne en pause',
+        avecPause.parCategorie.find(c => c.categorie === 'Abonnements').enPause, 1);
+  teste('Pause : un revenu en pause sort des revenus', recapBudget([
+    { type: 'salaire', nature: 'fixe', estime: 500, reel: 500, actif: false },
+    { type: 'aide', nature: 'fixe', estime: 200, reel: 200, actif: true },
+  ]).revenus.reel, 200);
   teste('Type inconnu ignoré',
         recapBudget([{ type: 'autre', nature: 'fixe', estime: 99, reel: 99, actif: true }])
           .depenses.reel, 0);
@@ -3089,6 +3362,22 @@ function verifie() {
   ligneCourses.lien = 'courses';
   synchroniseLiens(mois);
   teste('Reliée à nouveau, elle reprend le total du module', ligneCourses.reel, 60);
+
+  // Modifier le budget depuis le module Courses modifie la ligne de dépense (une seule source).
+  ecrisMois(mois, 'budgetCourses', '320,50');
+  teste('Budget courses saisi dans le module = prévu de la dépense', ligneCourses.estime, 320.5);
+  teste('Et le module le relit', budgetCourses(mois), 320.5);
+
+  // Un module ne pilote qu'une seule ligne.
+  const autre = creeLigne({ type: 'depense', categorie: 'Quotidien', libelle: 'Marché' });
+  ecrisLigne(autre, 'lien', 'courses');
+  teste('Relier une 2e ligne aux courses délie la première', ligneCourses.lien, '');
+  teste('La nouvelle ligne est bien reliée', ligneReliee(mois, 'courses').id, autre.id);
+
+  // Saisie des horaires.
+  const creneau = mois.creneaux.find(c => c.semaine === 4 && c.jour === 2);
+  teste('Horaire « 8h5 » normalisé', ecrisCreneau(creneau, 'matinDebut', '8h5'), '08:05');
+  teste('Horaire illisible effacé', ecrisCreneau(creneau, 'matinFin', 'midi'), '');
 
   // Aller-retour export / import.
   donneesDeDepart();
