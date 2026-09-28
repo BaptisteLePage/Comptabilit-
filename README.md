@@ -1,38 +1,40 @@
 # Comptes
 
-Application de suivi budgétaire mensuel : interface HTML, moteur Python, aucune
-dépendance à installer. Elle reprend la logique du tableau Excel d'origine
-(dépenses fixes et variables, salaires, aides, budget courses, compte d'heures
-de garde) en la rendant utilisable au quotidien.
+Suivi budgétaire mensuel : **un seul fichier, `comptes.html`**.
 
-## Lancer l'application
+## Utilisation
 
-```bash
-python3 app.py
-```
+Double-cliquez sur `comptes.html`. Il s'ouvre dans votre navigateur. C'est tout :
+rien à installer, pas de compte, pas de connexion internet.
 
-Le navigateur s'ouvre sur `http://127.0.0.1:8000`. C'est tout : pas de `pip
-install`, pas de compte, pas de connexion internet. Le serveur n'écoute que sur
-votre machine et les données restent dans `donnees/comptes.db`.
+À la première ouverture, un mois est créé et pré-rempli avec les données du
+tableau Excel d'origine, pour ne pas partir d'une page blanche.
 
-Options utiles :
+**Conseil** : rangez `comptes.html` quelque part de stable (Documents, par
+exemple) et mettez un raccourci sur le bureau. Vous pouvez aussi le garder
+ouvert dans un onglet et le mettre en favori.
 
-```bash
-python3 app.py --port 8080          # changer de port
-python3 app.py --sans-navigateur    # ne pas ouvrir le navigateur
-python3 app.py --sans-exemple       # démarrer sur un mois vide
-python3 app.py --base ~/comptes.db  # ranger les données ailleurs
-```
+## Où sont les données
 
-Au tout premier démarrage, un mois est créé et pré-rempli avec les données du
-tableau Excel, pour ne pas partir d'une page blanche.
+Elles sont enregistrées **dans votre navigateur**, sur votre ordinateur, et ne
+partent nulle part. Chaque modification est enregistrée toute seule : il n'y a
+pas de bouton « Sauvegarder ».
+
+Trois conséquences à connaître :
+
+- Changer de navigateur (Chrome → Firefox) ou d'ordinateur ne transporte pas
+  les données : passez par le menu `⋯` → **Sauvegarder tout (JSON)**, puis
+  **Restaurer une sauvegarde** de l'autre côté.
+- Effacer les données de navigation en cochant « cookies et données de sites »
+  efface aussi vos comptes. Une sauvegarde JSON de temps en temps met à l'abri.
+- En navigation privée, rien n'est conservé à la fermeture. L'application vous
+  prévient par un bandeau rouge si elle n'arrive pas à enregistrer.
 
 ## Ce que l'on peut faire
 
 **Ajouter ou retirer une ligne** — un bouton « + Ligne » dans chaque catégorie,
 une croix en bout de ligne pour supprimer, et un « Annuler » qui reste
-disponible quelques secondes après une suppression. Tout s'enregistre tout seul
-dès qu'on quitte un champ : il n'y a pas de bouton « Sauvegarder ».
+disponible quelques secondes après une suppression.
 
 **Mettre un abonnement en pause** — l'interrupteur en début de ligne remplace le
 couple de colonnes « Actif / Ref » du tableau. Une ligne en pause garde son
@@ -57,12 +59,11 @@ Le bouton « Reporter le net dans les revenus » recopie le net dans la ligne de
 salaire reliée.
 
 **Exporter** — le menu `⋯` produit un CSV du mois (ouvrable directement dans
-Excel : séparateur `;`, virgule décimale) ou une sauvegarde JSON complète,
-restaurable depuis le même menu.
+Excel : séparateur `;`, virgule décimale) ou une sauvegarde JSON complète.
 
 Le thème suit celui du système et peut être forcé en clair ou sombre. Les
 montants s'écrivent avec la virgule française (`19,99`). La touche `Entrée`
-valide une saisie, `Échap` l'annule.
+valide une saisie, `Échap` l'annule. L'affichage s'adapte au téléphone.
 
 ## Comment le tableau Excel a été traduit
 
@@ -85,29 +86,25 @@ Deux écarts assumés, à corriger d'un clic si besoin :
 - Les lignes laissées vides dans le tableau (Voiture, Taxe foncière, Repas
   différé, De côté…) n'ont pas été reprises.
 
-## Organisation du code
+## Vérifier que les calculs sont justes
 
-```
-app.py                 point d'entrée : options, base de données, serveur
-comptes/modele.py      tous les calculs, sans base ni réseau (donc testables)
-comptes/base.py        schéma SQLite et accès aux données
-comptes/serveur.py     routes de l'API JSON, export CSV, service des fichiers
-comptes/exemple.py     données de départ reprises du tableau
-web/                   interface : index.html, style.css, app.js
-tests/                 tests unitaires
-```
+Ouvrez `comptes.html#autotest` (ajoutez `#autotest` à la fin de l'adresse dans
+la barre du navigateur). Une page liste 40 vérifications : lecture des montants
+à la virgule, durées de garde, salaire brut/net, budget courses, totaux,
+lignes en pause, duplication d'un mois, sauvegarde et restauration. Un lien
+ramène ensuite à l'application.
 
-Le principe : toute modification part au serveur, qui renvoie le mois entier
-recalculé. Les totaux affichés ne peuvent donc jamais s'écarter de ceux
-enregistrés.
+## Modifier l'application
 
-## Tests
+Tout tient dans `comptes.html` : le style est dans la balise `<style>`, le code
+dans la balise `<script>`, découpé en sept sections commentées (réglages,
+calculs, stockage, modifications, affichage, interactions, démarrage). Les
+calculs sont regroupés dans la section 2 et ne touchent ni à l'écran ni au
+stockage, ce qui les rend faciles à relire et à tester.
 
-```bash
-python3 -m unittest discover -s tests
-```
+## Historique
 
-## Sauvegarde
-
-Tout tient dans `donnees/comptes.db`. Copier ce fichier suffit à tout sauvegarder.
-Le menu `⋯` permet aussi d'exporter un JSON lisible et de le réimporter.
+Une version précédente fonctionnait avec un petit serveur Python
+(`python3 app.py`). Elle a été retirée au profit de ce fichier unique, plus
+simple à ouvrir. Elle reste disponible dans l'historique du dépôt, au commit
+`075749f`.
